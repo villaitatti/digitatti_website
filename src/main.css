@@ -21,6 +21,10 @@ body {
     height: 100vh;
 }
 
+#mainCol1, #mainCol2 {
+    display: none;
+}
+
 #arc_big {
     margin-top: 10px;
 }
@@ -43,7 +47,7 @@ body {
 }
 
 #aboutSection {
-    font-size: 25pt;
+    font-size: 20pt;
     text-align: center;
     height: 100vh;
     padding-left: 20%;
@@ -56,7 +60,7 @@ body {
     font-weight: lighter;
 }
 
-.sectionTitle {
+.titleSection {
     border-bottom: 1px solid black;
     margin: 100px 5% 100px 5%;
     font-size: 20pt;
@@ -82,4 +86,12 @@ body {
 #projectsContainer {
     padding-left:5%;
     padding-right:5%;
+}
+
+.fellowImage {
+    display: inline-block;
+    border-radius:50%;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
 }
