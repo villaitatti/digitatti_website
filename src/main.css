@@ -89,9 +89,51 @@ body {
 }
 
 .fellowImage {
-    display: inline-block;
+    display: block;
     border-radius:50%;
     width: 200px;
     height: 200px;
     object-fit: cover;
+}
+
+.fellowContainer {
+    width: 25%;
+    display: inline-block;
+    text-align: center;
+}
+
+#fellowsContainer {
+    max-width: 1200px;
+}
+
+.fellowName {
+    margin-top: 20px;
+}
+
+#contactContainer {
+    padding-left:5%;
+    padding-right:5%;
+}
+
+#address {
+    margin-top: 50px;
+}
+
+#contactContainer .form-control {
+    background-color: #F6F5F4;
+    border-radius: 1px;
+    border: none;
+
+}
+
+.form-control::placeholder {
+    color: #8C8179;
+}
+
+#formBtn {
+    background-color: white;
+    color: black;
+    padding: 10px 40px 10px 40px;
+    border: 1px solid black;
+    border-radius: 1px;
 }

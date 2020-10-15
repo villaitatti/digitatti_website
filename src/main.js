@@ -36,8 +36,8 @@ function showProjects(){
 
 function showFellows(){
     $.each(fellows, function(k,v){
-        let fellowhtml = "<div class='fellowContainer'>";
-        fellowhtml += "<img class='fellowImage' src='assets/images/fellows/" + v.picture +"'>";
+        let fellowhtml = "<div class='fellowContainer justify-content-center'>";
+        fellowhtml += `<img class='fellowImage mx-auto' src='assets/images/fellows/${v.picture}'>`;
         fellowhtml += "<p class='fellowName'>" + v.name + "</p>";
         fellowhtml += "<p class='fellowTitle' style='display:none;'>" + v.title + "</p>";
         fellowhtml += "<p class='fellowBio' style='display:none;'>" + v.description + "</p>";
