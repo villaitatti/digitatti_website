@@ -1,6 +1,3 @@
-
-
-
 $(document).ready(function(){
     $("a").on('click', function(event) {
         if (this.hash !== "") {
@@ -14,4 +11,18 @@ $(document).ready(function(){
             });
         }
     });
+
+    showProjects();
 });
+
+
+function showProjects(){
+    $.each(projects, function(k,v){
+        let projecthtml = "<div class='projectContainer'>";
+        projecthtml += "<img class='projectImage' src='assets/images/projects/" + v.picture +"'>";
+        projecthtml += "<p class='projectTitle'>" + v.title + "</p>";
+        projecthtml += "</div>";
+
+        $('#projectsContainer').append(projecthtml);
+    });
+}

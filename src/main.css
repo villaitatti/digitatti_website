@@ -58,6 +58,28 @@ body {
 
 .sectionTitle {
     border-bottom: 1px solid black;
-    margin: 10vw;
+    margin: 100px 5% 100px 5%;
     font-size: 20pt;
+}
+
+.projectImage {
+    filter: grayscale(100%);
+    width: 100%;
+    transition: all 0.5s ease;
+}
+
+.projectImage:hover {
+    filter: grayscale(0%);
+}
+
+.projectContainer {
+    display: inline-block;
+    width: 50%;
+    padding: 1%;
+    cursor:pointer;
+}
+
+#projectsContainer {
+    padding-left:5%;
+    padding-right:5%;
 }
