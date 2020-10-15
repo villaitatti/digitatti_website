@@ -137,3 +137,30 @@ body {
     border: 1px solid black;
     border-radius: 1px;
 }
+
+#footer {
+    margin-top: 200px;
+    border-top: 1px solid black;
+    padding-top: 10px;
+    margin-left: 1%;
+    margin-right: 1%;
+    height: 90px;
+}
+
+#footer img {
+    width: 20px;
+}
+
+#footerTitle {
+    display: inline-block;
+    font-weight: lighter;
+}
+
+#rightSection p, #rightSection a {
+    font-size: 10pt;
+}
+
+#iconsContainer i {
+    margin-top: 30px;
+    color: black;
+}
