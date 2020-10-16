@@ -14,10 +14,43 @@ $(document).ready(function(){
     showProjects();
     showFellows();
 
-    $('#mainCol1, #mainCol2').fadeIn(2000).animate({
-        'margin-bottom': '5%'
+    setTimeout(function(){$('#subtitle').animate({
+        'margin-bottom': '15px', 'opacity': '1'
     }, {duration: 1500, queue: false}, function() {
         // Animation complete.
+    });}, 1500);
+
+// Wrap every letter in a span
+    var textWrapper = document.querySelector('.ml11 .letters');
+    textWrapper.innerHTML = textWrapper.textContent.replace(/([^\x00-\x80]|\w)/g, "<span class='letter'>$&</span>");
+
+    anime.timeline({loop: false})
+        .add({
+            targets: '.ml11 .line',
+            scaleY: [0,1],
+            opacity: [0.5,1],
+            easing: "easeOutExpo",
+            duration: 700
+        })
+        .add({
+            targets: '.ml11 .line',
+            translateX: [0, document.querySelector('.ml11 .letters').getBoundingClientRect().width + 10],
+            easing: "easeOutExpo",
+            duration: 700,
+            delay: 100
+        }).add({
+        targets: '.ml11 .letter',
+        opacity: [0,1],
+        easing: "easeOutExpo",
+        duration: 600,
+        offset: '-=775',
+        delay: (el, i) => 34 * (i+1)
+    }).add({
+        targets: '.line',
+        opacity: 0,
+        duration: 600,
+        easing: "easeOutExpo",
+        delay: 600
     });
 });
 
