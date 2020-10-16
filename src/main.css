@@ -57,6 +57,39 @@ body {
     font-weight: lighter;
 }
 
+#modalDescription {
+    font-size: 10pt;
+    margin-top: 60px;
+}
+
+#modalClaim {
+    font-size: 20pt;
+    font-weight: lighter;
+}
+
+#aboutModal {
+    text-align: left;
+}
+
+#aboutModal .modal-content {
+    min-height:70vh;
+    padding: 50px;
+}
+
+#aboutModal .modal-header {
+    border-bottom: 1px solid black;
+    margin-bottom: 20px;
+    padding-left: 0 !important;
+}
+
+#aboutModal .modal-dialog {
+    max-width: 70% !important;
+}
+
+#aboutModal .modal-body {
+    padding-left: 0 !important;
+}
+
 .titleSection {
     border-bottom: 1px solid black;
     margin: 100px 5% 100px 5%;
