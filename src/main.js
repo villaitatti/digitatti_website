@@ -57,7 +57,7 @@ $(document).ready(function(){
         });}, 1000);
 
 
-    }, 1000);
+    }, 800);
 
 
     $('.projectContainer').click(function(){
