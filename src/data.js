@@ -38,17 +38,7 @@ var projects = [
         "title":"Yashiro and Berenson: Art History between Japan and Italy",
         "description":"This exhibition presents the extant correspondence--nearly all unpublished--between Bernard Berenson and Yukio Yashiro. At the height of their fame they were among the most influential art historians in the West and in Japan, respectively. Today Yashiro is little known outside of his native country except for his monograph on Botticelli, published in English in 1925, now available on this website. Yashiro described his goals for the book in a remarkable letter from 1922 to Laurence Binyon: “I shall make clear what I, a man brought up in an artistic atmosphere utterly different from that of Europe, feel of Botticelli, that side of Botticelli which, as I think, was never, or perhaps very little, appreciated by European connoisseurs.”",
         "picture":"yashiro.jpg"
-    },
-    {
-        "title":"",
-        "description":"",
-        "picture":""
-    },
-    {
-        "title":"",
-        "description":"",
-        "picture":""
-    },
+    }
 ];
 
 var fellows = [
@@ -75,5 +65,47 @@ var fellows = [
         "title":"Digital Humanities Research Associate (2019-2021) \n Digital Research Infrastructure for the Humanities",
         "bio":"Remo Grillo holds a Master’s degree in Digital Humanities and Digital Knowledge with honors from the Alma Mater Studiorum - University of Bologna. His research focuses on knowledge representation and extraction through ontologies, as well as on natural language processing and algorithms applied to music, museum artifacts, and literature. He worked as a Full-stack Developer while attending the University of Naples Federico II and Ludwig Maximillian University of Munich, where he obtained a Bachelor’s degree with a thesis on Logic, applied to a digital critical edition of the Tractatus Logico-Philosophicus by Ludwig Wittgenstein.",
         "picture":"RemoGrillo.jpg"
+    },
+    {
+        "name":"Catherine Walsh",
+        "title":"Digital Humanities Mellon Fellow (2016-2017) \n Mapping Sculpture",
+        "bio":"Catherine Walsh is an Assistant Professor of Art at the University of Montevallo. She studied at Vanderbilt University and Boston University, where she earned the Ph.D. in History of Art and Architecture in 2015. Her current research project explores relationships between art, nature, and humans in Italian Renaissance art. This project examines the ways that materials of Renaissance art reveal their own displacement from natural environments and the ways that artworks reflect early modern human beings’ nascent ecological anxiety.",
+        "picture":"CatherineWalsh.jpg"
+    },
+    {
+        "name":"Leonardo Impett",
+        "title":"Digital Humanities Fellow (2018-2019)\n Gesture in Italian Early Renaissance Art: a Digital Perspective",
+        "bio":"Leonardo Impett is Assistant Professor of Computer Science at Durham University in the UK. His PhD, at EPFL, was on the use of computer vision for the \"distant reading\" of the history of art. From 2018-2020 he was Scientific Assistant, then Scientist, at the Bibliotheca Hertziana - Max Planck Institute for Art History in Rome. He has a background in computer vision and interdisciplinary machine learning, having studied or worked with the Rainbow Lab and the Machine Learning Lab (Cambridge University), Microsoft Research Cairo, and Boeing Defence Systems. Alongside his research in digital art history, he frequently works with machine learning in cultural institutions, like the Liverpool Biennial, the Royal Opera House, and the Whitney Museum of American Art.",
+        "picture":"LeonardoImpett.jpg"
+    },
+    {
+        "name":"Lisa Tagliaferri",
+        "title":"Digital Humanities Fellow (2019-2020)\n The Renaissance Afterlife of Catherine of Siena",
+        "bio":"Lisa Tagliaferri is an interdisciplinary scholar in literature and the computer sciences. As a postdoctoral researcher at MIT in the Digital Humanities program, she developed software for humanities researchers. With an interest in bringing to light the centrality of innovation throughout the history of humanistic work, Tagliaferri’s research focuses on Italian vernacular communities and recovering literary figures. Her widely downloaded programming book, How to Code in Python 3, has been adopted in classrooms as an open educational resource. She holds a PhD in Comparative Literature and Renaissance Studies from the City University of New York and an MSc in Computer Science from the University of London.",
+        "picture":"LisaTagliaferri.jpg"
+    },
+    {
+        "name":"Nicola Camerlenghi",
+        "title":"Digital Humanities Fellow (2020-2021)\n Towering over Late Medieval and Early Renaissance Rome: 3D Mapping the City's Network of Surveillance and Power",
+        "bio":"Nicola (Nick) Camerlenghi is Associate Professor of the History of Architecture at Dartmouth. He holds a PhD in Art and Archaeology from Princeton, an SMArchS from MIT, and BAs in the History of Art and in Italian from Yale. His research concerns the longue durée of buildings, which he studies by supplementing traditional approaches to archival and archaeological evidence with computer modeling and digital visualizations—including GIS, AR, and VR. His first book, St. Paul’s Outside the Walls: A Roman Basilica, from Antiquity to the Modern Era, (Cambridge, 2018) treats the millennial history of the principle church dedicated to Paul. Broader interests include the architecture and urbanism of Rome; and the history of domes.",
+        "picture":"NicolaCamerlenghi.jpg"
+    },
+    {
+        "name":"Nicola Carboni",
+        "title":"Digital Humanities Fellow (2017-2018)\n SAPHIR (Semantic Augmentation of Photographic - Iconographical Representation)\n",
+        "bio":"Nicola Carboni is a Research Fellow for the Swiss Art Research Infrastructure at the University of Zurich. He completed his PhD in Engineering, on the topic of Knowledge Representation and Visual Heritage, at the CNRS & NTUA where he was also previously appointed Marie Curie Fellow. His research focuses on the conceptualisation and semantic description of tangible/intangible aspects of the heritage. He was awarded a Digital Humanities Fellowship at Villa I Tatti - Harvard University, an Erasmus Mundus MA Scholarship in Digital Library and he holds a B.A. in Heritage Science from the University of Pisa. His interest lies in the multi-interpretation of the spectrum of visual representations, performative action semantic analysis, linked data and data architecture.\n",
+        "picture":"NicolaCarboni.jpg"
+    },
+    {
+        "name":"Stephanie Leone",
+        "title":"Kress Digital Humanities Fellow (2017-2018)\n Building Baroque Rome under Pope Innocent X Pamphilj\n",
+        "bio":"Stephanie C. Leone is Professor of Italian Renaissance and Baroque Art History at Boston College. Her research focuses on papal court patronage, architecture, urbanism, collecting, and the display of art in seventeenth-century Rome. Her monograph on the Palazzo Pamphilj in Piazza Navona (2008) examines the intersection of palaces and social rituals and the roles of patrons, architects, and advisors in building. Leone is the editor and a contributing author of The Pamphilj and the Arts: Patronage and Consumption in Baroque Rome (2011). Among other articles and book chapters, she is the author of “Palace Architecture and Decoration,” in Brill’s A Companion to Early Modern Rome, 1492–1692 (2019). She is currently writing the book manuscript, Innocent X Pamphilj (1644-55): Building Baroque Rome.\n",
+        "picture":"StephanieLeone.jpg"
+    },
+    {
+        "name":"Tracy Chapman Hamilton",
+        "title":"Kress Digital Humanities Fellow (2016-2017)\n Mapping the Medieval Woman\n",
+        "bio":"Tracy Chapman Hamilton's research focuses on late medieval and early modern visual culture in Europe and the Mediterranean, especially rooted in questions of gender studies, collecting, spatiality, and material culture. How women made themselves visible through patronage is the subject of her book Pleasure and Politics at the Court of France: The Artistic Patronage of Queen Marie of Brabant (1260-1321) (Brepols/Harvey Miller, 2019) and collection, Moving Women Moving Objects (300-1500), co-edited by Mariah Proctor-Tiffany (Brill: Maps, Spaces, Cultures Series, 2019). She is currently working on a series of articles, her second book, The Ceremonial Landscape: Art, Gender, and Geography in the Late Medieval World, and a series of digital projects. The first, Mapping the Medieval Woman: A Digital Map of Women’s Lives and Patronage in the Global Middle Ages, was the subject of her fellowship at I Tatti and is in development for public use. She is also a digital consultant and contributor to Pat Simons’ Premodern Women Artists and Patrons: A Global Bibliography and a virtual rendering of Virginia Commonwealth University’s campus gallery, “The Virtual Anderson” (password: hello), built using game design and 3D modeling software. Hamilton has held fellowships from the National Endowment for the Humanities, the Kress and DuPont Foundations, the International Center of Medieval Art, was a participant in the Kress Foundation Summer Institute for Digital Mapping and Art History at Middlebury College in 2014, and was one of the first two Mellon Fellows in the Digital Humanities at The Villa I Tatti, Harvard's University Center for Italian Renaissance Studies in 2016-17. She has held positions at Virginia Commonwealth University, where she is an Affiliate, the University of Richmond where she was an NEH Visiting Associate Professor, and Sweet Briar College, where she originally received tenure.\n",
+        "picture":"TracyChapmanHamilton.jpg"
     }
 ];

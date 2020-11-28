@@ -64,6 +64,10 @@ $(document).ready(function(){
         fillProjectModal(this);
     });
 
+    $('.fellowContainer').click(function(){
+        fillFellowModal(this);
+    });
+
     var arcanimation = document.getElementById('arcanimation');
     // Set up our animation
 
@@ -96,7 +100,7 @@ function showFellows(){
         fellowhtml += `<img class='fellowImage mx-auto' src='assets/images/fellows/${v.picture}'>`;
         fellowhtml += "<p class='fellowName'>" + v.name + "</p>";
         fellowhtml += "<p class='fellowTitle' style='display:none;'>" + v.title + "</p>";
-        fellowhtml += "<p class='fellowBio' style='display:none;'>" + v.description + "</p>";
+        fellowhtml += "<p class='fellowBio' style='display:none;'>" + v.bio + "</p>";
         fellowhtml += "</div>";
 
         $('#fellowsContainer').append(fellowhtml);
@@ -115,4 +119,19 @@ function fillProjectModal(project){
     $('#projectModalDescription').text(desc);
 
     projectModal.modal('show');
+}
+
+function fillFellowModal(fellow){
+    let fellowModal = $("#fellowModal");
+    let image = $(fellow).find('.fellowImage').attr("src");
+    let title = $(fellow).find('.fellowTitle').text();
+    let name = $(fellow).find('.fellowName').text();
+    let bio = $(fellow).find('.fellowBio').text();
+
+    $('#fellowModalImage').attr("src", image);
+    $('#fellowModalTitle').text(title);
+    $('#fellowModalBio').text(bio);
+    $('#fellowModalName').text(name);
+
+    fellowModal.modal('show');
 }

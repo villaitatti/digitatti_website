@@ -9,11 +9,13 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="src/main.css">
     <link href="assets/libs/font-awesome/fa-all.css" rel="stylesheet"> <!--load all styles -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
     <title>digiTatti</title>
 </head>
 <body>
 <div class="container-fluid">
-    <img id="arc_small" src="assets/images/arc_small.png">
+    <img id="arc_small" src="assets/images/arc_small.png"><span id="menutitle">digiTatti</span>
     <div class="row" id="mainTitleContainer">
         <div class="col-12">
             <div class="row" style="height:90%;">
@@ -45,7 +47,7 @@
     </div>
     <div class="row" id="aboutSection">
         <div class="col-12 align-self-center">
-            <p>The Digital Humanities Lab serves as an incubator of new methodologies that leverage technology to address broader questions about the history of culture within the Early Modern period.</p>
+            <p>The Digital Humanities Lab serves as an <span class="wordHighlight">incubator</span> of new methodologies that leverage <span class="wordHighlight">technology</span> to address broader questions about the <span class="wordHighlight hoverable">history</span> of culture within the Early Modern period.</p>
                 <button id="aboutMoreBtn" type="button" class="btn" data-toggle="modal" data-target="#aboutModal">
                 (more)
             </button>
@@ -104,7 +106,7 @@
             <div class="row">
                 <div class="col-12 ">
                     <div id="contactTitle" class="titleSection">
-                        CONTACT
+                        Contacts
                     </div>
                 </div>
             </div>
@@ -120,9 +122,9 @@
                                 <p>50014 Fiesole FI</p>
                             </div>
                             <div id="iconsContainer">
-                                <i class="fab fa-github"></i>
-                                <i class="fas fa-map-marker-alt"></i>
-                                <i class="fab fa-twitter"></i>
+                                <a><i class="fab fa-github"></i></a>
+                                <a><i class="fas fa-map-marker-alt"></i></a>
+                                <a><i class="fab fa-twitter"></i></a>
                             </div>
                         </div>
                         <div class="col-6">
@@ -162,7 +164,7 @@
 <!-- MODALS --->
 
 <!-- Project -->
-<div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalTitle" aria-hidden="true">
+<div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="projectModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body">
@@ -174,17 +176,17 @@
     </div>
 </div>
 
-<!-- Project -->
-<div class="modal fade" id="fellowModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalTitle" aria-hidden="true">
+<!-- Fellow -->
+<div class="modal fade" id="fellowModal" tabindex="-1" role="dialog" aria-labelledby="fellowModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-6 mx-auto my-auto text-center">
                             <img id="fellowModalImage">
                         </div>
-                        <div class="col-6">
+                        <div class="col-6 my-auto">
                             <h6 id="fellowModalName"></h6>
                             <p id="fellowModalTitle"></p>
                         </div>
@@ -195,7 +197,6 @@
         </div>
     </div>
 </div>
-
 
 
 
