@@ -102,6 +102,10 @@ body {
     padding-left: 0 !important;
 }
 
+.modal-header {
+    border-bottom: 0;
+}
+
 #aboutModal .modal-dialog {
     max-width: 70% !important;
 }
@@ -132,7 +136,7 @@ body {
 
 #projectModal .modal-content {
     min-height:70vh;
-    padding: 80px;
+    padding: 0 80px 80px 80px;
     border: 0;
     border-radius: 0;
 }
@@ -146,7 +150,10 @@ body {
 }
 
 #fellowModal .modal-content {
-    padding: 80px;
+    min-height:70vh;
+    padding: 0 80px 80px 80px;
+    border: 0;
+    border-radius: 0;
 }
 
 #fellowModalBio {
@@ -163,14 +170,19 @@ body {
 }
 
 .modal-dialog {
-    max-width: 70% !important;
+    max-width: 1000px !important;
 }
 
 .modal-body {
     padding-left: 0 !important;
 }
 
-
+.modal-header .close {
+    font-size: 50px;
+    font-weight: 100;
+    color: black !important;
+    margin-right: -80px;
+}
 
 .titleSection {
     border-bottom: 1px solid black;
