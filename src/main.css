@@ -91,9 +91,13 @@ body {
 
 #aboutModal .modal-content {
     min-height:70vh;
-    padding: 50px;
+    padding: 50px 80px 50px 80px;
     border: 0;
     border-radius: 0;
+}
+
+#aboutModal .close {
+    margin-right: 0px !important;
 }
 
 #aboutModal .modal-header {

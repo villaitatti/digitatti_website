@@ -79,13 +79,14 @@ $(document).ready(function(){
         path : 'assets/images/logoanimated1.json'
     };
     var anim = bodymovin.loadAnimation(animData);
+    var scroll = new LocomotiveScroll({
+        el: document.querySelector('[data-scroll-container]'),
+        smooth: true
+    });
 
-    (function () {
-        var scroll = new LocomotiveScroll({
-            el: document.querySelector('[data-scroll-container]'),
-            smooth: true
-        });
-    })();
+    $('#arrowContainer').click(function(){
+       scroll.scrollTo(document.querySelector('#aboutSection'));
+    });
 });
 
 
