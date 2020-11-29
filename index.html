@@ -11,10 +11,11 @@
     <link href="assets/libs/font-awesome/fa-all.css" rel="stylesheet"> <!--load all styles -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
+    <link href="assets/libs/locomotive-scroll.css" rel="stylesheet">
     <title>digiTatti</title>
 </head>
 <body>
-<div class="container-fluid">
+<div class="container-fluid" data-scroll-container>
     <img id="arc_small" src="assets/images/arc_small.png"><span id="menutitle">digiTatti</span>
     <div class="row" id="mainTitleContainer">
         <div class="col-12">
@@ -208,6 +209,15 @@
 <script src="src/data.js"></script>
 <script src="src/lottie.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+<script src="src/locomotive-scroll.min.js"></script>
 <script src="src/main.js"></script>
+<script>
+    (function () {
+        var scroll = new LocomotiveScroll({
+            el: document.querySelector('[data-scroll-container]'),
+            smooth: true
+        });
+    })();
+</script>
 </body>
 </html>
