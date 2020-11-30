@@ -206,7 +206,7 @@ body {
 
 .projectContainer {
     display: inline-block;
-    width: 50%;
+    width: 33%;
     padding: 1%;
     cursor:pointer;
 }
