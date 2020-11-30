@@ -333,3 +333,23 @@ body {
     display: inline-block;
     line-height: 1em;
 }
+
+#aboutSection {
+    position: relative;
+}
+
+#aboutBackground {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#aboutBackground > div {
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeYAAABoCAMAAAATgKPhAAAAA1BMVEX///+nxBvIAAAASElEQVR4nO3BMQEAAADCoPVPbQlPoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC+BsXYAAGDbdwQAAAAAElFTkSuQmCC");
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+    filter: blur(8px) brightness(0.8);
+}
