@@ -468,4 +468,7 @@ body {
         transform: translateY(-50%);
     }
 
+    .projectImage {
+        filter: grayscale(0%);
+    }
 }
