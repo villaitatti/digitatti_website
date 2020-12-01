@@ -163,6 +163,11 @@ body {
 #fellowModalBio {
     margin-top: 50px;
     font-family: 'Roboto', sans-serif;
+    text-align: justify;
+}
+
+#aboutModalDescription {
+    text-align: justify;
 }
 
 .fellowContainer {
@@ -365,4 +370,101 @@ body {
     height: 100%;
     width: 100%;
     filter: blur(8px) brightness(0.8);
+}
+
+
+/* MOBILE & RESPONSIVE */
+
+@media only screen and (max-width: 800px) {
+    .projectContainer {
+        width: 44%;
+        padding: 1%;
+        cursor:pointer;
+    }
+
+    .projectTitle {
+        font-size: 12px;
+    }
+
+    .fellowContainer {
+        width: 50%;
+    }
+
+    .fellowImage {
+        width: 30vw;
+        height: 30vw;
+    }
+
+    #aboutSection {
+        font-size: 13pt;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .letters {
+        font-size: 20pt !important;
+    }
+
+    #subtitle {
+        font-size: 8pt !Important;
+    }
+
+    #mainCol2 {
+        padding-left: 0 !important;
+    }
+
+    /* MODALS */
+    #fellowModal, #projectModal, #aboutModal {
+        width: 100vw;
+    }
+
+    .modal-content {
+        padding: 10px !important;
+    }
+
+    #fellowModalImage {
+        width: 60vw;
+        height: 60vw;
+        margin-bottom: 20px;
+    }
+
+    .modal-header .close {
+        margin-right: 0 !Important;
+    }
+
+    .modal-body {
+        padding: 10px !Important;
+    }
+
+    #aboutModal .modal-body {
+        padding: 10px !Important;
+    }
+
+
+    #aboutModal .modal-dialog {
+        max-width: 100% !important;
+    }
+
+    #aboutModalClaim {
+        font-size: 15pt;
+    }
+
+    #aboutModalDescription {
+        margin-top: 50px;
+    }
+
+    #aboutModal .modal-header {
+        position: relative;
+    }
+
+    #aboutModalTitle {
+        font-size: 15pt;
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
 }
