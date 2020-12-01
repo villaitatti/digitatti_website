@@ -210,6 +210,10 @@ body {
     cursor:pointer;
 }
 
+.projectTitle {
+    display: none;
+}
+
 #projectSection {
     padding-left:5%;
     padding-right:5%;

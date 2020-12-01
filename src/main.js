@@ -200,7 +200,27 @@ $(document).ready(function(){
         // options
         itemSelector: '.projectContainer'
     });
+
+    //Workaround for resize bug in locomotive js
+    window.dispatchEvent(new Event('resize'));
+
+    let userResized = true;
+    $( window ).resize(function() {
+        console.log("resized");
+        if(userResized){
+            userResized = false;
+            delayedResize();
+        } else {
+            userResized = true;
+        }
+    });
 });
+
+function delayedResize(){
+    window.setTimeout(function(){
+        window.dispatchEvent(new Event('resize'));
+    }, 1000);
+}
 
 
 function showProjects(){
