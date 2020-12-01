@@ -472,6 +472,18 @@ body {
         filter: grayscale(0%);
     }
 
+    #formBtn {
+        width: 100%;
+    }
+
+    #claimColumn {
+        margin-bottom: 50px;
+    }
+
+    .titleSection {
+        margin-left: 0 !Important;
+    }
+
     html, body {
         overflow-x: hidden;
     }
