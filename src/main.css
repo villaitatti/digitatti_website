@@ -391,8 +391,8 @@ body {
     }
 
     .fellowImage {
-        width: 30vw;
-        height: 30vw;
+        width: 40vw;
+        height: 40vw;
     }
 
     #aboutSection {
@@ -415,7 +415,8 @@ body {
 
     /* MODALS */
     #fellowModal, #projectModal, #aboutModal {
-        width: 100vw;
+        width: 96vw;
+        margin-left: 2vw;
     }
 
     .modal-content {
