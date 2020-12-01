@@ -372,6 +372,10 @@ body {
     filter: blur(8px) brightness(0.8);
 }
 
+#menuContainer {
+    display: none;
+}
+
 
 /* MOBILE & RESPONSIVE */
 
@@ -483,6 +487,10 @@ body {
     .titleSection {
         margin: 40px !important;
         margin-left: 0 !Important;
+    }
+
+    #footerTitle {
+        font-size: 13pt;
     }
 
     html, body {
