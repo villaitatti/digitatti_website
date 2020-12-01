@@ -481,6 +481,7 @@ body {
     }
 
     .titleSection {
+        margin: 40px !important;
         margin-left: 0 !Important;
     }
 
