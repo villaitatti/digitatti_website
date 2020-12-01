@@ -204,6 +204,8 @@ $(document).ready(function(){
     //Workaround for resize bug in locomotive js
     window.dispatchEvent(new Event('resize'));
 
+    window.setTimeout(delayedResize, 1000);
+
     let userResized = true;
     $( window ).resize(function() {
         console.log("resized");
