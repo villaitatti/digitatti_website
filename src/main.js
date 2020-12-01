@@ -187,6 +187,8 @@ $(document).ready(function(){
         path : 'assets/images/logoanimated1.json'
     };
     var anim = bodymovin.loadAnimation(animData);
+
+
     var scroll = new LocomotiveScroll({
         el: document.querySelector('[data-scroll-container]'),
         smooth: true
@@ -196,15 +198,21 @@ $(document).ready(function(){
        scroll.scrollTo(document.querySelector('#aboutSection'));
     });
 
-    $('#projectSection').masonry({
-        // options
-        itemSelector: '.projectContainer'
-    });
+    $('#container').imagesLoaded(
+        function(){
+            console.log("images loadedd");
+            setTimeout(function() {
+                $('#projectSection').masonry({
+                    // options
+                    itemSelector: '.projectContainer'
+                });
+            }, 1000)
+        }
+    );
+
 
     //Workaround for resize bug in locomotive js
-    window.dispatchEvent(new Event('resize'));
-
-    window.setTimeout(delayedResize, 1000);
+    window.setTimeout(delayedResize, 1500);
 
     let userResized = true;
     $( window ).resize(function() {
