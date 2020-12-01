@@ -205,15 +205,16 @@ body {
 }
 
 .projectContainer {
-    display: inline-block;
-    width: 33%;
+    width: 30%;
     padding: 1%;
     cursor:pointer;
 }
 
-#projectsContainer {
+#projectSection {
     padding-left:5%;
     padding-right:5%;
+    padding-bottom: 100px;
+    margin-bottom: 100px;
 }
 
 .fellowImage {
@@ -228,6 +229,17 @@ body {
     width: 25%;
     display: inline-block;
     text-align: center;
+}
+
+#fellowsSection {
+    margin-top: 100px;
+}
+
+.row-full {
+    width: 100vw;
+    position: relative;
+    margin-left: -50vw;
+    left: 50%;
 }
 
 #fellowsContainer {

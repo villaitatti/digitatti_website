@@ -97,9 +97,9 @@ $(document).ready(function(){
             const lastItem = array[i - 1]
 
             // fading stroke over time
-            const lineOpacity = Math.max(1 - (currentTime - thisItem.time) / 100, 0)
+            const lineOpacity = Math.max(1 - (currentTime - thisItem.time) / 200, 0)
             b.strokeStyle = `rgba(0,0,0,${lineOpacity})`
-            b.lineWidth = 200
+            b.lineWidth = 250
             b.beginPath()
             b.moveTo(lastItem.x, lastItem.y)
             b.lineTo(thisItem.x, thisItem.y)
@@ -194,6 +194,11 @@ $(document).ready(function(){
 
     $('#arrowContainer').click(function(){
        scroll.scrollTo(document.querySelector('#aboutSection'));
+    });
+
+    $('#projectSection').masonry({
+        // options
+        itemSelector: '.projectContainer'
     });
 });
 
