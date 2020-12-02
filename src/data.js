@@ -45,6 +45,11 @@ var projects = [
         "picture":"ner.jpg"
     },
     {
+        "title":"CIDOC-crm periodic table",
+        "description":"We developed this project for the community of digital humanists (including ourselves) as a tool that can could be useful in data modeling or working with cultural ontologies in general. It allows to quickly navigate in the rich and rigorous structure of the CIDOC-crm in an interactive and intuitive way.",
+        "picture":"cidocperiodictable.jpg"
+    },
+    {
         "title":"Berenson Art Collection Portal",
         "description":"The Berenson Online Portal to the Art Collection gathers drawings from The Bernard and Mary Berenson Collection of European Paintings and The Bernard Berenson collection of Oriental Art, as well as records from Hollis Images. The portal hosts an innovative means of navigation: an interactive map of the Berenson house which allows users to browse the objects starting from the position where they were placed by Berenson himself. The spatial visualization of the collection allows users to acquire focused information on specific objects, while also conveying how artworks interact visually with each other in Berenson’s historic display. On top of the spatial organization, the objects are also organized within the temporal domain, allowing users to intuitively trace certain trends and switches of taste through time.",
         "picture":"artcollection.jpg"
