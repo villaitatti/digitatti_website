@@ -239,6 +239,10 @@ function showProjects(){
         projecthtml += "<img class='projectImage' src='assets/images/projects/" + v.picture +"'>";
         projecthtml += "<p class='projectTitle'>" + v.title + "</p>";
         projecthtml += "<p class='projectDescription' style='display:none;'>" + v.description + "</p>";
+        //If the project is a personal project
+        if("fellow" in v){
+            projecthtml += "<p class='projectFellow' style='display:none;'>" + v.fellow + "</p>";
+        }
         projecthtml += "</div>";
 
         $('#projectsContainer').append(projecthtml);
@@ -264,10 +268,16 @@ function fillProjectModal(project){
     let image = $(project).find('.projectImage').attr("src");
     let title = $(project).find('.projectTitle').text();
     let desc = $(project).find('.projectDescription').text();
+    let fellow = $(project).find('.projectFellow').text();
 
     $('#projectModalImage').attr("src", image);
     $('#projectModalTitle').text(title);
     $('#projectModalDescription').text(desc);
+    if(fellow){
+        $('#projectModalFellow').text(fellow);
+    } else {
+        $('#projectModalFellow').text("");
+    }
 
     projectModal.modal('show');
 }

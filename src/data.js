@@ -52,37 +52,51 @@ var projects = [
     {
         "title":"Building Baroque Rome under Pope Innocent X Pamphilj",
         "description":"No one would deny that the artist-patron relationship between Gian Lorenzo Bernini and Pope Urban VIII Barberini was one of the most innovative in the history of art and architecture. But the emphasis on celebrities overlooks a crucial part of the story of urban renewal in early modern Rome. In addition, it has led to the misconception that the patronage of Pope Innocent X Pamphilj pales in comparison to other seventeenth-century popes. Leone proposes a new paradigm that de-emphasizes singular relationships and programmatic themes and, instead, stresses architectural production and the mechanics of patronage. This approach suits the practices of Innocent X and his relatives, who harnessed a stable of creative and skilled architects, artists, and artisans to realize multiple building projects across Rome: Villa Pamphilj, Palazzo Pamphilj in Piazza Navona, Bernini’s Four Rivers Fountain, Palazzo Nuovo on the Campidoglio, the nave decoration of St. Peter’s, the nave of San Giovanni in Laterano. To study how Innocent X accomplished so much building in so little time—from the start of his pontificate in late 1644 until the Holy Year of 1650—Leone employs traditional art historical practices, the methods of microhistorians, and network visualizations created through digital technology. This combination allows for both the recovery of previously overlooked individuals and the macroscopic perspective of relationship patterns and social context in Innocent X’s architectural network. As a digital humanities fellow at I Tatti in spring 2018, Leone focused on the data and network analysis. This work is the basis of the article that will be published in fall 2020: Stephanie C. Leone and Paul A. Vierthaler, “Innocent X Pamphilj’s Architectural Network in Rome,” Renaissance Quarterly 73.3 (2020).",
-        "picture":"personal/BuildingBaroqueRome2.jpg"
+        "picture":"personal/BuildingBaroqueRome2.jpg",
+        "fellow":"Stephanie Leone\n" +
+            "Kress Digital Humanities Fellow (2017-2018)"
     },
     {
         "title":"Gesture in Italian Early Renaissance Art: a Digital Perspective",
         "description":"In the last half-decade, convolutional neural networks have radically transformed the ways in which computers are able to understand images, including the precise deduction of human poses and hand gestures. This project attempts to transfer these techniques to art history and historical anthropology, exploring live and depicted gestural practices in fourteenth- and fifteenth-century Italy. In an \"operationalization\" of Michael Baxandall's famous comments on fifteenth-century Florentine annunciations, my project traces micro-gestural movements and temporalities in large collections of Christian iconography. Outputs from my project at I Tatti have included: “The Choreography of the Annunciation: Reverse Engineering Baxandall's Pictorial Plot” (conference paper with Peter Bell, at the Comité International d'Histoire de l’Art 2019); “Ikonographie und Interaktion. Computergestützte Analyse von Posen in Bildern der Heilsgeschichte” (journal article with Peter Bell, in Das Mittelalter 24:1, 2019) and \"Analyzing Gesture in Digital Art History\" (chapter in The Routledge Companion to Digital Humanities and Art History, ed. Kathryn Brown, 2020).",
-        "picture":"personal/GestureinItalianEarlyRenaissanceArt.jpg"
+        "picture":"personal/GestureinItalianEarlyRenaissanceArt.jpg",
+        "fellow":"Leonardo Impett\n" +
+            "Digital Humanities Fellow (2018-2019)"
     },
     {
         "title":"Mapping Sculture",
         "description":"The digital project Mapping Sculpture explores the relationship between art and nature during the early modern period. Mapping Sculpture traces the movement of the materials of sixteenth-century Italian sculpture from sources such as mountains, caves, and rivers to storage areas, artists' workshops, early modern installation sites and private collections, and to current museum locations. Through spatial analysis, this project draws attention to the removal of materials from the natural environment and to the movement of materials and completed artworks. GIS tools are used to analyze the displacement of materials (in terms of volume and distance), and the fragmentation, disappearance, and duration of these materials at the locations that they inhabited over time. In its first iteration, the map visualizes data from a small group of sculptures associated with gardens near Florence, Italy. For instance, the marble for Michelangelo’s Slaves was quarried near Carrara, and four of those blocks remained in the Boboli Gardens for more than three centuries; Ammannati’s multi-block Juno fountain, which was made of Campiglia marble, had constituent parts sent to various Medici villas during the same period. The interactive map will allow users to interrogate the relationships between geological and geographical origins and various subsequent locations, such as these gardens. By visualizing the spatial and material history of sculptures, the map encourages users to critically evaluate the environmental consequences of early modern artistic practices.",
-        "picture":"personal/mappingsculture.jpg"
+        "picture":"personal/mappingsculture.jpg",
+        "fellow":"Catherine Walsh\n" +
+            "Digital Humanities Mellon Fellow (2016-2017)"
     },
     {
         "title":"Mapping the Medieval Woman",
         "description":"Hamilton’s collaborative digital project, Mapping the Medieval Woman, reveals how women of the late medieval period perceived – and manipulated – the geo-political stage of Europe and the Mediterranean through their patronage of objects and buildings. This first phase of an interactive open source platform will utilize digital mapping and networking visualizations to provoke questions that disrupt modern conceptions of gender and place through these women’s material and spatial record. Motivating and anchoring this discussion is the work of cultural geographers who claim that culture is spatial, that space is ideological, and that we can discover issues of power, identity, and social regulation within landscape. Mapping the Medieval Woman will allow us to visualize how a woman could strategically situate herself and her commissions, move her objects in a deliberate design to build her identity, and, ultimately, create a lasting legacy for herself and her family. Through digital mapping we can recreate these women’s topographic relationships to the landscape by locating their domestic, urban, and beneficent architectural commissions such as residences, gates, bridges, hospitals, and chapels. In addition, we can trace the ceremonies and processions that provided a moving backdrop for the women and the larger populations of nations and court. Network visualization will also track the trajectories of the objects – gemstones, exotic materials, jewelry, tableware, reliquaries, small-scale sculpture, clothing, and manuscripts, to name a few – they commissioned, collected, and gave away across the larger landscape of Europe and the Mediterranean. Such networks suggest that elite women had a different type of territory, one not delineated just by borders but defined also by relationships.",
-        "picture":"personal/MappingtheMedievalWoman.jpg"
+        "picture":"personal/MappingtheMedievalWoman.jpg",
+        "fellow":"Tracy Chapman Hamilton\n" +
+            "Kress Digital Humanities Fellow (2016-2017)\n"
     },
     {
         "title":"SAPHIR (Semantic Augmentation of Photographic - Iconographical Representation)",
         "description":"The project investigates the visual interpretation of heritage objects and practices providing both a theoretical framework for understanding the process of perception and meaning-assignment and a formal ontology for grounding propositions about visual objects into a semantic constituent-based framework. The fellow investigated the process of recognition, classification and assignment of status of a visual representation, specifically focusing on the classification of instances vs types. The result of the theoretical investigation has been used to create a semantic informational framework which makes explicit, using a series of semantic patterns, the knowledge hidden in the photo archive database.",
-        "picture":"personal/saphir.jpg"
+        "picture":"personal/saphir.jpg",
+        "fellow":"Nicola Carboni\n" +
+            "Digital Humanities Fellow (2017-2018)"
     },
     {
         "title":"The Renaissance Afterlife of Catherine of Siena",
         "description":"Building on previous work that affirms Catherine of Siena as a writer through contextualizing her among the corpus of fourteenth-century Italian literature, The Renaissance Afterlife of Catherine of Siena will consider the material book history of her texts and the perception of her as an author by others in Italy through the seventeenth century. This research will consist of an investigation of the book historical record surrounding Catherine of Siena during the Italian Renaissance, the construction of her as a literary figure through hagiographers and other religious writers, and Catherine’s influence upon Italian Renaissance writers either as a heroic figure that fulfils the role of a protagonist in literary texts, or as a literary model for imitation by later Italian writers in both poetry and prose. Pairing archival research with computational analysis and other digital humanities methodologies, this project will strengthen Catherine’s status as an author through exploring the rich legacy of her reception in the early modern period.",
-        "picture":"personal/catherinaafterlife.jpg"
+        "picture":"personal/catherinaafterlife.jpg",
+        "fellow":"Lisa Tagliaferri\n" +
+            "Digital Humanities Fellow (2019-2020)"
     },
     {
         "title":"Towering over Late Medieval and Early Renaissance Rome: 3D Mapping the City's Network of Surveillance and Power",
         "description":"This project combines scholarly and computational methods to create a 3D map of twelfth- through sixteenth-century Rome’s most prominent vertical features: the towers, bell towers, repurposed ruins, and hills that dominated the skyline. The goal is to explore the interconnectedness of sight and sound, topography and movement in the city by analyzing acoustics, ballistics, and defensive systems. The web-based, GIS map will inform a monograph to be completed after the grant period. Together, these works will serve as proof of concept for a larger, multi-year project, Mapping Medieval Rome, which will recapture an urban network of surveillance and power and bring to virtual life buried histories of the Eternal City.",
-        "picture":"personal/3drome.jpg"
+        "picture":"personal/3drome.jpg",
+        "fellow":"Nicola Camerlenghi\n" +
+            "Digital Humanities Fellow (2020-2021)"
     }
 ];
 
