@@ -214,6 +214,8 @@ $(document).ready(function(){
     //Workaround for resize bug in locomotive js
     window.setTimeout(delayedResize, 1500);
 
+    startColorAnimation(200);
+
     let userResized = true;
     $( window ).resize(function() {
         console.log("resized");
@@ -247,6 +249,19 @@ function showProjects(){
 
         $('#projectsContainer').append(projecthtml);
     });
+}
+
+function startColorAnimation(timeout){
+    let projectsNumber = $('.projectImage').length;
+    window.setInterval(function(){
+        var randomNumber = Math.floor(Math.random() * (projectsNumber + 1));
+        console.log(randomNumber);
+        $('.projectImage').eq(randomNumber).addClass("coloredProject").removeClass("monochromeProject");
+
+        setTimeout(function(){
+            $('.projectImage').eq(randomNumber).removeClass("coloredProject").addClass("monochromeProject");
+            }, 2000);
+    }, timeout);
 }
 
 function showFellows(){

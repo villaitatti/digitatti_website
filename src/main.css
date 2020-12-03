@@ -199,6 +199,10 @@ body {
     font-size: 3.8em !important;
 }
 
+.projectTitle {
+    font-size: 8pt;
+}
+
 .projectImage {
     filter: grayscale(100%);
     width: 100%;
@@ -215,6 +219,15 @@ body {
     cursor:pointer;
 }
 
+.coloredProject {
+    filter: grayscale(0%) !important;
+    transition: all 2s ease !Important;
+}
+
+.monochromeProject {
+    filter: grayscale(100%) !important;
+    transition: all 2s ease !Important;
+}
 
 #projectSection {
     padding-left:5%;
