@@ -200,7 +200,7 @@ $(document).ready(function(){
 
     $('#container').imagesLoaded(
         function(){
-            console.log("images loadedd");
+            console.log("images loaded");
             setTimeout(function() {
                 $('#projectSection').masonry({
                     // options
@@ -255,7 +255,6 @@ function startColorAnimation(timeout){
     let projectsNumber = $('.projectImage').length;
     window.setInterval(function(){
         var randomNumber = Math.floor(Math.random() * (projectsNumber + 1));
-        console.log(randomNumber);
         $('.projectImage').eq(randomNumber).addClass("coloredProject").removeClass("monochromeProject");
 
         setTimeout(function(){
