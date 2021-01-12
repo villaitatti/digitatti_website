@@ -10,24 +10,31 @@ var projects = [
         "picture":"florentia_illustrata.jpg"
     },
     {
-        "title":"Bernard Berenson’s Drawings of the Florentine Painters",
+        "title":"The Drawings of the Florentine Painters",
         "description":"Bernard Berenson’s Drawings of the Florentine Painters is a digital resource based on Berenson’s publication of the same name. This research tool allows you to search for any of the drawings listed in the three editions (1903, 1938 in English; 1961, in Italian). Filters allow you to search Berenson’s information by artist, title (in English or Italian), location, and technique. Each entry includes key information from all three editions of Berenson’s text, as well as the current location, an image of the catalog page, and plates included in 1903; most entries also have links to museum webpages, including images. For information about how the data was prepared, how to use the site, and for background on Berenson’s scholarship, see the About page.",
-        "picture":"florentine_drawings.001.png"
+        "picture":"florentine_drawings.001.png",
+        "website":"http://florentinedrawings.itatti.harvard.edu",
+        "github":"https://github.com/lklic/florentinedrawings-rs"
     },
     {
-        "title":"PHAROS: an international consortium committed to creating an open and freely accessible digital research platform",
-        "description":"PHAROS is an international consortium of fourteen European and North American art historical photo archives committed to creating an open and freely accessible digital research platform allowing for comprehensive consolidated access to photo archive images and their associated scholarly documentation.  The PHAROS collections collectively contain an estimated 25 million images documenting works of art and architecture and the history of photography itself. The consortium is actively looking for funding and technology partners to advance this work.",
-        "picture":"pharos.jpg"
+        "title":"PHAROS: The International Consortium of Photo Archives",
+        "description":"I Tatti is a key partner within PHAROS, an international consortium of fourteen European and North American art historical photo archives committed to creating an open and freely accessible digital research platform allowing for comprehensive consolidated access to photo archive images and their associated scholarly documentation.  The PHAROS collections collectively contain an estimated 25 million images documenting works of art and architecture and the history of photography itself. The consortium is actively looking for funding and technology partners to advance this work.",
+        "picture":"pharos.jpg",
+        "website":"http://pharosartresearch.org/"
     },
     {
         "title":"Semantic Digital Publishing",
-        "description":"The Semantic Digital Publishing project links textual resources to data contained in both internal and external knowledge graphs, under the form of an annotation. If a chunk of text describes a person, place, event, or other kinds of entities, it can be manually linked to the URI of that entity, and vice versa. Other than pure textual annotations, the Semantic Digital Publishing allows users to also create complex annotations. Where the goal is the linkage between free text, RDF data, and images. In particular, this project links parts of two distinct documents, or to a region of an image that is displayed through an IIIF Viewer. ",
-        "picture":"semantic-publishing.001.png"
+        "description":"The Semantic Digital Publishing project links textual resources to data contained in both internal and external knowledge graphs, in the form of annotations. If a peice of text describes a person, place, event, or other kinds of entity, it can be manually linked to the URI of that entity, and vice versa. Other than pure textual annotations, the Semantic Digital Publishing allows users to also create complex annotations. The goal is to provide links between free text, RDF data, and images. This project also links between distinct documents, or to a region of an image that is displayed through an IIIF Viewer. ",
+        "picture":"semantic-publishing.001.png",
+        "documentation":"https://cordh.atlassian.net/wiki/spaces/SDP/overview"
+
     },
     {
-        "title":"CRIA (committee to rescue italian art): an online exhibition that explores the aftermath of a devastating flood in Florence, Italy in 1966",
+        "title":"CRIA - The Committee to Rescue Italian Art",
         "description":"Following the devastating flood of '66, Villa I Tatti became the Florentine Headquarters of CRIA (Committee to Rescue Italian Art), a task force made up of scholars anxious to preserve Florence's precious artistic heritage. Amidst the turmoil and with a deep sense of urgency, they organized both a vast fund-raising campaign and the shipment to Italy of emergency conservation materials along with a team of specialists to assess the situation and begin long-range planning for the recovery. Chaired by Jacqueline Kennedy, the Committee raised money through direct mail requests, ads, special exhibits of Italian art, fashion shows and cocktail parties, in addition to video appeals by famous figures such as Ted Kennedy and Elizabeth Taylor. This online exhibition explores the valiant efforts of CRIA during the aftermath of the flood, and examines I Tatti's central role in the recovery.",
-        "picture":"cria.jpg"
+        "picture":"cria.jpg",
+        "website":"https://cria.itatti.harvard.edu/"
+
     },
     {
         "title":"Semantic Vision: Linking Artworks for the Web of Data",
@@ -37,21 +44,26 @@ var projects = [
     {
         "title":"Yashiro and Berenson: Art History between Japan and Italy",
         "description":"This exhibition presents the extant correspondence--nearly all unpublished--between Bernard Berenson and Yukio Yashiro. At the height of their fame they were among the most influential art historians in the West and in Japan, respectively. Today Yashiro is little known outside of his native country except for his monograph on Botticelli, published in English in 1925, now available on this website. Yashiro described his goals for the book in a remarkable letter from 1922 to Laurence Binyon: “I shall make clear what I, a man brought up in an artistic atmosphere utterly different from that of Europe, feel of Botticelli, that side of Botticelli which, as I think, was never, or perhaps very little, appreciated by European connoisseurs.”",
-        "picture":"yashiro.jpg"
+        "picture":"yashiro.jpg",
+        "website":"https://yashiro.itatti.harvard.edu/"
     },
     {
         "title":"Named Entity Recognition for Digital Publishing",
         "description":"As part of a scholarly digital publishing initiative that provides a research infrastructure allowing for the integration of scholarly articles and historical documents, this project integrates Named Entity Recognition (NER) tools to extract various types of entities such as people, places, institutions, etc from textual documents. These entities are published as semantically enriched annotations allowing users to seamlessly navigate between documents and metadata. The toolset automates the process of textual annotations by leveraging several existing open-source NER tools, grouping them together in order to obtain more accurate results.",
-        "picture":"ner.jpg"
+        "picture":"ner.jpg",
+        "github":"https://github.com/villaitatti/REL_processer"
     },
     {
-        "title":"CIDOC-crm periodic table",
-        "description":"We developed this project for the community of digital humanists (including ourselves) as a tool that can could be useful in data modeling or working with cultural ontologies in general. It allows to quickly navigate in the rich and rigorous structure of the CIDOC-crm in an interactive and intuitive way.",
-        "picture":"cidocperiodictable.jpg"
+        "title":"CIDOC-CRM periodic table",
+        "description":"This project serves a community of digital humanists (including ourselves). The tool serves to assist the data modeling process for working with cultural heritage ontologies. It is built specifically for the CIDOC-CRM but can be reused with any ontology as it can dynamically load up RDF-based ontology. It allows to quickly navigate in the rich and rigorous structure of the CIDOC-CRM in an interactive and intuitive way.",
+        "picture":"cidocperiodictable.jpg",
+        "website":"https://remogrillo.github.io/cidoc-crm_periodic_table/",
+        "github":"https://github.com/RemoGrillo/cidoc-crm_periodic_table"
+
     },
     {
-        "title":"Berenson Art Collection Portal",
-        "description":"The Berenson Online Portal to the Art Collection gathers drawings from The Bernard and Mary Berenson Collection of European Paintings and The Bernard Berenson collection of Oriental Art, as well as records from Hollis Images. The portal hosts an innovative means of navigation: an interactive map of the Berenson house which allows users to browse the objects starting from the position where they were placed by Berenson himself. The spatial visualization of the collection allows users to acquire focused information on specific objects, while also conveying how artworks interact visually with each other in Berenson’s historic display. On top of the spatial organization, the objects are also organized within the temporal domain, allowing users to intuitively trace certain trends and switches of taste through time.",
+        "title":"Berenson Art Collection Online Portal",
+        "description":"The Online Portal to the Berenson Art Collection gathers images from The Bernard and Mary Berenson Collection of European Paintings and The Bernard Berenson collection of Oriental Art, as well as records from Hollis Images. The portal hosts an innovative means of navigation: an interactive map of the Berenson house which allows users to browse the objects starting from the position where they were placed by Berenson himself. The spatial visualization of the collection allows users to acquire focused information on specific objects, while also conveying how artworks interact visually with each other in Berenson’s historic display. On top of the spatial organization, the objects are also organized within the temporal domain, allowing users to intuitively trace certain trends and switches of taste through time.",
         "picture":"artcollection.jpg"
     },
     {
@@ -108,26 +120,29 @@ var projects = [
 var fellows = [
     {
         "name":"Lukas Klic",
-        "title":"Manager of Information Services & Digital Initiatives \n Digital Research Infrastructure for the Humanities",
-        "bio":"Lukas Klic is Manager of Information Services & Digital Initiatives at I Tatti. His research focuses on digital tools that facilitate the accessibility and interpretation of cultural heritage, leveraging Linked Open Data (LOD) to allow for the cross-pollination of research data. He was the co-principal investigator of the The Drawings of the Florentine Painters, a project that transformed and published Bernard Berenson’s work in a semantically enriched digital edition. He holds an MLIS from Simmons University, and a PhD in Computer Science from Ca’ Foscari University with a concentration in the Digital Humanities. At I Tatti he works on a number of research projects involving linked open data, computer vision, natural language processing, geospatial mapping, and digital publishing.",
-        "picture":"LukasKlic.JPG"
+        "title":"Head of Digital Humanities Research \n Manager of Information Services & Digital Initiatives",
+        "bio":"Lukas Klic is Head of Digital Humanities Research and Manager of Information Services & Digital Initiatives at I Tatti, the Harvard University Center for Italian Renaissance Studies. With a background in Art History, Library Science, and Digital Humanities, his research focuses on digital tools that facilitate the accessibility and interpretation of cultural heritage, leveraging Linked Open Data (LOD) to allow for the cross-pollination of research data. At I Tatti he leads a number of projects involving Linked Open Data, computer vision, natural language processing, geospatial mapping, and digital publishing. He is the Technical Architect of Pharos, the International Consortium of Photo Archives, a group of fourteen North American and European art historical photo archives currently building an open and freely accessible digital research platform for the history of art. He was the co-principal investigator of the Samuel H Kress Foundation sponsored project The Drawings of the Florentine Painters that transformed and published Bernard Berenson’s work in a semantically enriched digital edition. He has worked in the library system of Harvard University for over twenty years in various  capacities, and holds a Master’s of Library and Information Science from Simmons University and a PhD in Computer Science from Ca’ Foscari University in Venice with a concentration in Digital Humanities.",
+        "picture":"LukasKlic.JPG",
+        "github":"https://github.com/lklic"
     },
     {
         "name":"Ludovica Galeazzo",
         "title":"Digital Humanities Research Associate (2019-2021) \n Archipelago: Mapping the Islands of the Venetian Lagoon",
-        "bio":"Ludovica Galeazzo is an architectural and urban historian whose research focuses on Venetian architecture in the early modern period with a special interest in new technologies to demonstrate the process of city’s change over time. She was a Kress Digital Humanities Fellow at I Tatti in 2019, and currently holds an appointment as a Digital Humanities Research Associate. She received her PhD in Architectural History from the Graduate School Ca’ Foscari-Iuav in Venice and was later a Research Fellow at the Iuav University of Architecture in Venice (2014-2016) and a Postdoctoral Associate at Duke University (2016-2017). She worked as assistant curator on three international exhibitions on early modern Venetian history displayed at the Ducal Palace in Venice and the Nasher Museum of Art at Duke. Since 2011, she has been a member of the international research project Visualizing Venice/Visualizing Cities. She is author of Venezia e I margini urbani. L’insula dei Gesuiti in età moderna (2018) and co-editor of Acqua e cibo a Venezia. Storie della laguna e della città (2015).",
+        "bio":"Ludovica Galeazzo  is an architectural and urban historian whose research focuses on Venetian architecture in the early modern period with a special interest in new technologies (geographic information system, geo-spatial mapping techniques, and data management platforms) to demonstrate the process of city’s change over time. She was a Samuel H. Kress Fellow in Digital Humanities at I Tatti, the Harvard University Center for Italian Renaissance Studies starting in 2019, where she continues to hold an appointment in the DH Lab as a Digital Humanities Research Associate. She received her PhD in Architectural History from Ca’ Foscari-Iuav in Venice and was later a Research Fellow at the Iuav University of Architecture in Venice (2014-2016) and a Postdoctoral Associate at Duke University (2016-2017). Since 2011, she has been a member of the international research project Visualizing Venice/Visualizing Cities and she currently is on the editorial board of ‘Architectural Histories’, the open access journal of the EANH (European Architectural History Network). She is the principal investigator of the digital project Archipelago: Mapping the Islands of the Venetian Lagoon and serves as a project coordinator for the consortium Florentia Illustrata.",
         "picture":"LudovicaGaleazzo.jpg"
     },
     {
         "name":"Gianmarco Spinaci",
         "title":"Digital Humanities Research Associate (2019-2021) \n Digital Research Infrastructure for the Humanities",
-        "bio":"Gianmarco Spinaci is currently pursuing a Master’s degree in Digital Humanities and Digital Knowledge at the University of Bologna. He holds a Bachelor’s degree in Computer Science and Management. Since graduating, he has been a consultant in the Digital and Semantic Publishing Laboratory (DASPlab), working on the project called RAJE: RASH Javascript Editor. As an intern at the Centre for Science and Technology Studies (CWTS) in Leiden, The Netherlands, he worked on identifying Arts and Humanities publications within the main publication databases; he is further developing this work for his Master’s degree thesis.",
-        "picture":"GianmarcoSpinaci.jpg"
+        "bio":"Gianmarco holds a Master’s degree in Digital Humanities and Digital Knowledge, and a Bachelor’s degree in Computer Science and Management from the University of Bologna. He is passionate about various topics, from the knowledge extraction of textual resources to the interlinking of cultural heritage digital data. He has authored articles on structured text (XML and HTML) annotations and a Bibliometric analysis of the Digital Humanities publications. He recently worked as a consultant at the DASPlab, University of Bologna, in RAJE, a word processor for writing research articles in HTML. He contributes his know-how and experience in development, user interface and experience architecture, and semantic web technologies.",
+        "picture":"GianmarcoSpinaci.jpg",
+        "github":"https://github.com/gspinaci"
     },
     {
         "name":"Remo Grillo",
         "title":"Digital Humanities Research Associate (2019-2021) \n Digital Research Infrastructure for the Humanities",
-        "bio":"Remo Grillo holds a Master’s degree in Digital Humanities and Digital Knowledge with honors from the Alma Mater Studiorum - University of Bologna. His research focuses on knowledge representation and extraction through ontologies, as well as on natural language processing and algorithms applied to music, museum artifacts, and literature. He worked as a Full-stack Developer while attending the University of Naples Federico II and Ludwig Maximillian University of Munich, where he obtained a Bachelor’s degree with a thesis on Logic, applied to a digital critical edition of the Tractatus Logico-Philosophicus by Ludwig Wittgenstein.",
+        "bio":"Remo Grillo is a digital humanist with a background in software development and Philosophy. His research focuses on knowledge representation and extraction, as well as on natural language processing and algorithms applied to cultural objects, literature and music. He is currently a Digital Humanities Research Associate at I Tatti, the Harvard University Center for Italian Renaissance Studies, where he is involved in the design and the development of several international projects in the context of digital humanities. He holds a master’s degree in Digital Humanities and Digital Knowledge with honors from the Alma Mater Studiorum University of Bologna. He worked as a full-stack developer since attending the University of Naples Federico II and the Ludwig Maximilian University of Munich where he specialized in logic and philosophy of language.",
+        "github":"https://github.com/RemoGrillo",
         "picture":"RemoGrillo.jpg"
     },
     {
@@ -158,7 +173,8 @@ var fellows = [
         "name":"Nicola Carboni",
         "title":"Digital Humanities Fellow (2017-2018)\n SAPHIR (Semantic Augmentation of Photographic - Iconographical Representation)\n",
         "bio":"Nicola Carboni is a Research Fellow for the Swiss Art Research Infrastructure at the University of Zurich. He completed his PhD in Engineering, on the topic of Knowledge Representation and Visual Heritage, at the CNRS & NTUA where he was also previously appointed Marie Curie Fellow. His research focuses on the conceptualisation and semantic description of tangible/intangible aspects of the heritage. He was awarded a Digital Humanities Fellowship at Villa I Tatti - Harvard University, an Erasmus Mundus MA Scholarship in Digital Library and he holds a B.A. in Heritage Science from the University of Pisa. His interest lies in the multi-interpretation of the spectrum of visual representations, performative action semantic analysis, linked data and data architecture.\n",
-        "picture":"NicolaCarboni.jpg"
+        "picture":"NicolaCarboni.jpg",
+        "github":"https://github.com/ncarboni"
     },
     {
         "name":"Stephanie Leone",
