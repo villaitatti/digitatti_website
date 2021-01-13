@@ -200,7 +200,7 @@ $(document).ready(function(){
 
     $('#container').imagesLoaded(
         function(){
-            console.log("images loaded");
+            console.log("All images loaded");
             setTimeout(function() {
                 $('#projectSection').masonry({
                     // options
@@ -218,13 +218,20 @@ $(document).ready(function(){
 
     let userResized = true;
     $( window ).resize(function() {
-        console.log("resized");
         if(userResized){
             userResized = false;
             delayedResize();
         } else {
             userResized = true;
         }
+    });
+
+    if (window.location.hash !== "") {
+        $(window.location.hash).click();
+    }
+
+    $('#projectModal').on('hidden.bs.modal', function(){
+        window.location.hash = "";
     });
 });
 
@@ -237,7 +244,8 @@ function delayedResize(){
 
 function showProjects(){
     $.each(projects, function(k,v){
-        let projecthtml = "<div class='projectContainer'>";
+        let projectId = v.picture.split(".")[0].replace("personal/", "");
+        let projecthtml = "<div id='" + projectId +"' class='projectContainer'>";
         projecthtml += "<img class='projectImage' src='assets/images/projects/" + v.picture +"'>";
         projecthtml += "<p class='projectTitle'>" + v.title + "</p>";
         projecthtml += "<p class='projectDescription' style='display:none;'>" + v.description + "</p>";
@@ -296,6 +304,7 @@ function fillProjectModal(project){
     website !== "undefined"? $('#projectModalWebsite').attr('href', website).text("Website →") : $('#projectModalWebsite').text("");
     github !== "undefined"? $('#projectModalGithub').attr('href', github).text("Github →") : $('#projectModalGithub').text("");
 
+    window.location.hash = $(project).attr("id");
     projectModal.modal('show');
 }
 
