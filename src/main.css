@@ -145,6 +145,13 @@ body {
     border-radius: 0;
 }
 
+#projectModalGithub, #projectModalWebsite {
+    display: block;
+    font-weight: 600;
+    color: black;
+    text-align: right;
+}
+
 
 #fellowModalImage {
     border-radius: 250px !important;
@@ -512,4 +519,6 @@ body {
     body {
         position: relative
     }
+
+
 }
