@@ -173,6 +173,17 @@ body {
     text-align: justify;
 }
 
+#fellowModalBio:first-letter {
+    color: #000000;
+    float: left;
+    font-family: 'Baskerville', serif;
+    font-size: 75px;
+    line-height: 60px;
+    padding-top: 4px;
+    padding-right: 8px;
+    padding-left: 3px;
+}
+
 #aboutModalDescription {
     text-align: justify;
 }
@@ -183,6 +194,12 @@ body {
 
 #fellowModalName {
     font-size: 20pt;
+    font-family: Roboto, sans-serif;
+    font-size: bold;
+}
+
+#fellowModalTitle {
+    font-family: Roboto, sans-serif;
 }
 
 .modal-dialog {
