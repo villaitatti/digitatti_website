@@ -285,7 +285,7 @@ function showProjects(){
     for(const v of projects) {
 
         let projectId = v.picture.split(".")[0].replace("personal/", "");
-        let projecthtml = "<div id='" + projectId +"' class='grid-item "+v.size+"'>";
+        let projecthtml = "<div id='" + projectId +"' class='projectContainer grid-item "+v.size+"'>";
 
         projecthtml += "<img class='projectImage' src='assets/images/projects/" + v.picture +"'>";
         
