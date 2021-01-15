@@ -138,6 +138,10 @@ body {
     object-fit: cover;
 }
 
+#projectsContainer{
+    padding: 0!important;
+}
+
 #projectModal .modal-content {
     min-height:70vh;
     padding: 0 80px 80px 80px;
@@ -237,10 +241,70 @@ body {
     filter: grayscale(0%);
 }
 
-.projectContainer {
-    width: 30%;
-    padding: 1%;
-    cursor:pointer;
+/*Masonry*/
+
+.grid:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.grid{
+    margin-right: 100px;
+    margin-left: 100px;
+}
+
+.grid-sizer,
+.grid-item {
+  width: 20%;
+  padding: 20px;
+}
+
+.grid-item.big{
+    width: 40%;
+}
+
+@media (max-width: 575px) {
+  .grid-sizer,
+  .grid-item {
+    width: 100%;
+  }
+}
+@media (min-width: 576px) and (max-width: 767px) {
+  .grid-sizer,
+  .grid-item {
+    width: 50%;
+  }
+}
+
+/* To change the amount of columns on larger devices, uncomment the code below */
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .grid-sizer,
+  .grid-item {
+    width: 100%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  .grid-sizer,
+  .grid-item {
+    width: 50%;
+  }
+}
+@media (min-width: 1200px) {
+  .grid-sizer,
+  .grid-item {
+    width: 20%;
+  }
+}
+
+.grid-item {
+  float: left;
+}
+
+.grid-item img {
+  display: block;
+  max-width: 100%;
 }
 
 .coloredProject {
@@ -253,9 +317,7 @@ body {
     transition: all 2s ease !Important;
 }
 
-#projectSection {
-    padding-left:5%;
-    padding-right:5%;
+#projectSection{ 
     padding-bottom: 100px;
     margin-bottom: 100px;
 }

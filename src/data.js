@@ -2,7 +2,8 @@ var projects = [
     {
         "title":"Metapolis: semantic research infrastructure",
         "description":"In the early modern period, the network of islands encircling the Venetian lagoon served as capillary structures for the political, socio-economic, and cultural interests of the Serenissima. Scattered throughout the entire ‘gulf’ of Venice, these settlements were indispensable to the larger Venetian community as loci dedicated to the city’s food supply, spiritual places for religious communities, and centers for defense structures or public hospitals. The socio-political events that followed the fall of the Republic (1797) profoundly changed this understanding and totally altered the reading of the city as an organic entity that encompasses the watery ecosystem. In some cases, interventions significantly transformed the islands’ geographic configuration and functions. The Archipelago project aims to investigate the long-term history and transformation of the clusters of settlements scattered throughout Venice’s lagoon between the late fifteenth and seventeenth centuries through a systematic and geographic-based analysis. This combines historical and digital methods by employing a semantic research platform for mapping, visualizing, and exploring urban data over time.",
-        "picture":"metapolis.jpg"
+        "picture":"metapolis.jpg",
+        "size": "big"
     },
     {
         "title":"Archipelago: Mapping the Islands of the Venetian Lagoon",
@@ -25,7 +26,8 @@ var projects = [
         "title":"PHAROS: The International Consortium of Photo Archives",
         "description":"I Tatti is a key partner within PHAROS, an international consortium of fourteen European and North American art historical photo archives committed to creating an open and freely accessible digital research platform allowing for comprehensive consolidated access to photo archive images and their associated scholarly documentation.  The PHAROS collections collectively contain an estimated 25 million images documenting works of art and architecture and the history of photography itself. The consortium is actively looking for funding and technology partners to advance this work.",
         "picture":"pharos.jpg",
-        "website":"http://pharosartresearch.org/"
+        "website":"http://pharosartresearch.org/",
+        "size": "big"
     },
     {
         "title":"Semantic Digital Publishing",
@@ -50,7 +52,8 @@ var projects = [
         "title":"Yashiro and Berenson: Art History between Japan and Italy",
         "description":"This exhibition presents the extant correspondence--nearly all unpublished--between Bernard Berenson and Yukio Yashiro. At the height of their fame they were among the most influential art historians in the West and in Japan, respectively. Today Yashiro is little known outside of his native country except for his monograph on Botticelli, published in English in 1925, now available on this website. Yashiro described his goals for the book in a remarkable letter from 1922 to Laurence Binyon: “I shall make clear what I, a man brought up in an artistic atmosphere utterly different from that of Europe, feel of Botticelli, that side of Botticelli which, as I think, was never, or perhaps very little, appreciated by European connoisseurs.”",
         "picture":"yashiro.jpg",
-        "website":"https://yashiro.itatti.harvard.edu/"
+        "website":"https://yashiro.itatti.harvard.edu/",
+        "size": "big"
     },
     {
         "title":"Named Entity Recognition for Digital Publishing",

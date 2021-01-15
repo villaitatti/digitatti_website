@@ -1,4 +1,19 @@
 $(document).ready(function(){
+
+    showProjects();
+
+    // init Masonry
+    var $grid = $('.grid').masonry({
+        itemSelector: '.grid-item',
+        percentPosition: true,
+        columnWidth: '.grid-sizer'
+    });
+
+    // layout Masonry after each image loads
+    $grid.imagesLoaded().progress( function() {
+        $grid.masonry();
+    });
+
     $("a").on('click', function(event) {
         if (this.hash !== "") {
             // Prevent default anchor click behavior
@@ -11,9 +26,8 @@ $(document).ready(function(){
             });
         }
     });
-    showProjects();
-    showFellows();
 
+    showFellows();
 
     /* ABOUT CANVAS EFFECT */
 
@@ -206,17 +220,7 @@ $(document).ready(function(){
        scroll.scrollTo(document.querySelector('#aboutSection'));
     });
 
-    $('#container').imagesLoaded(
-        function(){
-            console.log("All images loaded");
-            setTimeout(function() {
-                $('#projectSection').masonry({
-                    // options
-                    itemSelector: '.projectContainer'
-                });
-            }, 1000)
-        }
-    );
+    
 
 
     //Workaround for resize bug in locomotive js
@@ -243,6 +247,11 @@ $(document).ready(function(){
     });
 });
 
+$(window).load(function(){
+
+    
+});
+
 function delayedResize(){
     window.setTimeout(function(){
         window.dispatchEvent(new Event('resize'));
@@ -251,10 +260,14 @@ function delayedResize(){
 
 
 function showProjects(){
-    $.each(projects, function(k,v){
+
+    for(const v of projects) {
+
         let projectId = v.picture.split(".")[0].replace("personal/", "");
-        let projecthtml = "<div id='" + projectId +"' class='projectContainer'>";
+        let projecthtml = "<div id='" + projectId +"' class='grid-item "+v.size+"'>";
+
         projecthtml += "<img class='projectImage' src='assets/images/projects/" + v.picture +"'>";
+        
         projecthtml += "<p class='projectTitle'>" + v.title + "</p>";
         projecthtml += "<p class='projectDescription' style='display:none;'>" + v.description + "</p>";
         projecthtml += "<p class='projectWebsite' style='display:none;'>" + v.website + "</p>";
@@ -265,8 +278,9 @@ function showProjects(){
         }
         projecthtml += "</div>";
 
-        $('#projectsContainer').append(projecthtml);
-    });
+        $('.grid').append(projecthtml);
+    }
+    
 }
 
 function startColorAnimation(timeout){
@@ -282,7 +296,8 @@ function startColorAnimation(timeout){
 }
 
 function showFellows(){
-    $.each(fellows, function(k,v){
+
+    for(const v of fellows){
         let fellowhtml = "<div class='fellowContainer justify-content-center'>";
         fellowhtml += `<img class='fellowImage mx-auto' src='assets/images/fellows/${v.picture}'>`;
         fellowhtml += "<p class='fellowName'>" + v.name + "</p>";
@@ -291,7 +306,7 @@ function showFellows(){
         fellowhtml += "</div>";
 
         $('#fellowsContainer').append(fellowhtml);
-    });
+    }
 }
 
 
