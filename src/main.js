@@ -283,9 +283,11 @@ function delayedResize(){
 function showProjects(){
 
     for(const v of projects) {
+        
+        const size = typeof v.size == 'undefined' ? 'default' : 'big';
 
         let projectId = v.picture.split(".")[0].replace("personal/", "");
-        let projecthtml = "<div id='" + projectId +"' class='projectContainer grid-item "+v.size+"'>";
+        let projecthtml = "<div id='" + projectId +"' class='projectContainer grid-item "+size+"'>";
 
         projecthtml += "<img class='projectImage' src='assets/images/projects/" + v.picture +"'>";
         

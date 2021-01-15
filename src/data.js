@@ -11,6 +11,13 @@ var projects = [
         "picture":"Archipelago.png"
     },
     {
+        "title":"Gesture in Italian Early Renaissance Art: a Digital Perspective",
+        "description":"In the last half-decade, convolutional neural networks have radically transformed the ways in which computers are able to understand images, including the precise deduction of human poses and hand gestures. This project attempts to transfer these techniques to art history and historical anthropology, exploring live and depicted gestural practices in fourteenth- and fifteenth-century Italy. In an \"operationalization\" of Michael Baxandall's famous comments on fifteenth-century Florentine annunciations, my project traces micro-gestural movements and temporalities in large collections of Christian iconography. Outputs from my project at I Tatti have included: “The Choreography of the Annunciation: Reverse Engineering Baxandall's Pictorial Plot” (conference paper with Peter Bell, at the Comité International d'Histoire de l’Art 2019); “Ikonographie und Interaktion. Computergestützte Analyse von Posen in Bildern der Heilsgeschichte” (journal article with Peter Bell, in Das Mittelalter 24:1, 2019) and \"Analyzing Gesture in Digital Art History\" (chapter in The Routledge Companion to Digital Humanities and Art History, ed. Kathryn Brown, 2020).",
+        "picture":"personal/GestureinItalianEarlyRenaissanceArt.jpg",
+        "fellow":"Leonardo Impett\n" +
+            "Digital Humanities Fellow (2018-2019)"
+    },
+    {
         "title":"Florentia illustrata: spatializing history & visualizing experience in the renaissance city",
         "description":"Florentia Illustrata was established in 2018 by common agreement among its founding members in recognition of the necessity to work together to create a research platform to provide consolidated access to digital projects on Renaissance Florence. Using the rich archival resources of the city, each of these approaches to reconstructing the past have been exploring the potential of digital tools to expand and innovate the methods used in humanistic historical research. Building on the long tradition of cutting-edge research techniques that have been brought to bear on Florence’s singular documentary and material legacy, they will create a shared digital platform that enables an intensive analysis of complex interrelated historical phenomena that characterized the early modern city. As such, they will lay the groundwork for innovative studies that will be able to embed experiments in urban planning, architectural design, and artistic representation within the concrete social structures, historical experiences, and spatial mentalities of the city’s inhabitants.",
         "picture":"florentia_illustrata.jpg"
@@ -80,13 +87,6 @@ var projects = [
         "picture":"personal/BuildingBaroqueRome2.jpg",
         "fellow":"Stephanie Leone\n" +
             "Kress Digital Humanities Fellow (2017-2018)"
-    },
-    {
-        "title":"Gesture in Italian Early Renaissance Art: a Digital Perspective",
-        "description":"In the last half-decade, convolutional neural networks have radically transformed the ways in which computers are able to understand images, including the precise deduction of human poses and hand gestures. This project attempts to transfer these techniques to art history and historical anthropology, exploring live and depicted gestural practices in fourteenth- and fifteenth-century Italy. In an \"operationalization\" of Michael Baxandall's famous comments on fifteenth-century Florentine annunciations, my project traces micro-gestural movements and temporalities in large collections of Christian iconography. Outputs from my project at I Tatti have included: “The Choreography of the Annunciation: Reverse Engineering Baxandall's Pictorial Plot” (conference paper with Peter Bell, at the Comité International d'Histoire de l’Art 2019); “Ikonographie und Interaktion. Computergestützte Analyse von Posen in Bildern der Heilsgeschichte” (journal article with Peter Bell, in Das Mittelalter 24:1, 2019) and \"Analyzing Gesture in Digital Art History\" (chapter in The Routledge Companion to Digital Humanities and Art History, ed. Kathryn Brown, 2020).",
-        "picture":"personal/GestureinItalianEarlyRenaissanceArt.jpg",
-        "fellow":"Leonardo Impett\n" +
-            "Digital Humanities Fellow (2018-2019)"
     },
     {
         "title":"Mapping Sculture",
