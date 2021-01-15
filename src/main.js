@@ -14,6 +14,11 @@ $(document).ready(function(){
     showProjects();
     showFellows();
 
+
+    /* ABOUT CANVAS EFFECT */
+
+
+    /*
 // defining variables
 // c and h are canvases, f and b are contexts
     let c, h, f, b, img, mouseX = null,
@@ -61,9 +66,10 @@ $(document).ready(function(){
             img = new Image
             // add listener before setting source so it will definitely capture the event
             $(img).one("load", onImageLoad)
-            $(img).attr("src", "assets/images/cartanauticabw.jpg")
+            $(img).attr("src", "assets/images/granaio.jpg")
         }
     }
+
 
     function onImageLoad() {
         let currentTime = Date.now()
@@ -97,7 +103,7 @@ $(document).ready(function(){
             const lastItem = array[i - 1]
 
             // fading stroke over time
-            const lineOpacity = Math.max(1 - (currentTime - thisItem.time) / 200, 0)
+            const lineOpacity = Math.max(1 - (currentTime - thisItem.time) / 1000, 0)
             b.strokeStyle = `rgba(0,0,0,${lineOpacity})`
             b.lineWidth = 250
             b.beginPath()
@@ -123,7 +129,9 @@ $(document).ready(function(){
         f.globalCompositeOperation = "source-over"
     }
 
-// Wrap every letter in a span
+    /!* ABOUT CANVAS EFFECT CLOSE *!/*/
+
+    // Wrap every letter in a span
     var textWrapper = document.querySelector('.ml11 .letters');
     textWrapper.innerHTML = textWrapper.textContent.replace(/([^\x00-\x80]|\w)/g, "<span class='letter'>$&</span>");
 
