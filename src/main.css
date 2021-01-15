@@ -238,7 +238,9 @@ body {
 }
 
 .projectImage:hover {
+    /*
     filter: grayscale(0%);
+     */
 }
 
 /*Masonry*/
@@ -464,8 +466,9 @@ body {
     left: 0;
 }
 #aboutBackground > div {
-    background-image: url("../assets/images/granaiobw2.jpg");
+    background-image: url("../assets/images/granaiobw3.jpg");
     background-size: cover;
+    background-position: center;
     height: 100%;
     width: 100%;
     filter: blur(0px) brightness(1);
@@ -474,7 +477,9 @@ body {
 #aboutText {
     padding: 25px;
     color: white !important;
-    background-color: rgba(33,33,33,0.2);
+    background-color: rgba(34, 34, 34, 0.27);
+    text-shadow: rgba(0, 0, 0, 0.40) 0px 0px 20px;
+    font-size: 17px;
 }
 
 #menuContainer {
