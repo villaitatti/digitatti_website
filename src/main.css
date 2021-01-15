@@ -234,7 +234,9 @@ body {
 }
 
 .projectImage:hover {
+    /*
     filter: grayscale(0%);
+     */
 }
 
 .projectContainer {

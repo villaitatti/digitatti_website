@@ -222,7 +222,25 @@ $(document).ready(function(){
     //Workaround for resize bug in locomotive js
     window.setTimeout(delayedResize, 1500);
 
-    startColorAnimation(200);
+    //startColorAnimation(200);
+
+    if(window.matchMedia("(max-width: 767px)").matches){
+        $('.projectImage').each(function(k, element){
+        $(element).css('filter', 'grayscale(0%)');
+        });
+    } else {
+        const distanceTreshold = 700;
+        $(document).mousemove(function(e){
+            $('.projectImage').each(function(k, element){
+                var distance = calculateDistance($(element), e.pageX, e.pageY);
+                if (distance < distanceTreshold){
+                    let scaled = scale(distance, 0 , distanceTreshold,0, 100);
+                    $(element).css('filter', 'grayscale('+scaled + 50 + '%)');
+
+                }
+            });
+        });
+    }
 
     let userResized = true;
     $( window ).resize(function() {
@@ -242,6 +260,14 @@ $(document).ready(function(){
         window.location.hash = "";
     });
 });
+
+function calculateDistance(elem, mouseX, mouseY) {
+    return Math.floor(Math.sqrt(Math.pow(mouseX - (elem.offset().left+(elem.width()/2)), 2) + Math.pow(mouseY - (elem.offset().top+(elem.height()/2)), 2)));
+}
+
+const scale = (num, in_min, in_max, out_min, out_max) => {
+    return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
 
 function delayedResize(){
     window.setTimeout(function(){
