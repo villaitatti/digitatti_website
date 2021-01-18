@@ -2,7 +2,7 @@ var projects = [
     {
         "title":"Metapolis: semantic research infrastructure",
         "description":"In the early modern period, the network of islands encircling the Venetian lagoon served as capillary structures for the political, socio-economic, and cultural interests of the Serenissima. Scattered throughout the entire ‘gulf’ of Venice, these settlements were indispensable to the larger Venetian community as loci dedicated to the city’s food supply, spiritual places for religious communities, and centers for defense structures or public hospitals. The socio-political events that followed the fall of the Republic (1797) profoundly changed this understanding and totally altered the reading of the city as an organic entity that encompasses the watery ecosystem. In some cases, interventions significantly transformed the islands’ geographic configuration and functions. The Archipelago project aims to investigate the long-term history and transformation of the clusters of settlements scattered throughout Venice’s lagoon between the late fifteenth and seventeenth centuries through a systematic and geographic-based analysis. This combines historical and digital methods by employing a semantic research platform for mapping, visualizing, and exploring urban data over time.",
-        "picture":"metapolis.jpg"
+        "picture":"Metapolis.jpg"
     },
     {
         "title":"Florentia illustrata: spatializing history & visualizing experience in the renaissance city",
