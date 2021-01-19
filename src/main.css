@@ -127,6 +127,7 @@ body {
 #projectModalDescription {
     font-size: 10pt;
     margin-top: 40px;
+    margin-bottom: 40px;
     font-family: 'Roboto', sans-serif;
     letter-spacing: 1px;
     line-height: 18pt;
@@ -156,6 +157,11 @@ body {
     text-align: right;
 }
 
+#projectModalStatusContainer {
+    font-size: 10pt;
+    color: #9c9c9c;
+    font-weight: lighter;
+}
 
 #fellowModalImage {
     border-radius: 250px !important;
@@ -466,7 +472,7 @@ body {
     left: 0;
 }
 #aboutBackground > div {
-    background-image: url("../assets/images/granaiobw3.jpg");
+    /* background-image: url("../assets/images/sfondogranaiowhite.jpg"); */
     background-size: cover;
     background-position: center;
     height: 100%;
@@ -475,11 +481,13 @@ body {
 }
 
 #aboutText {
+    /*
     padding: 25px;
     color: white !important;
     background-color: rgba(34, 34, 34, 0.27);
     text-shadow: rgba(0, 0, 0, 0.40) 0px 0px 20px;
     font-size: 17px;
+     */
 }
 
 #menuContainer {

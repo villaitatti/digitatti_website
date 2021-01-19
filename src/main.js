@@ -295,6 +295,7 @@ function showProjects(){
         projecthtml += "<p class='projectDescription' style='display:none;'>" + v.description + "</p>";
         projecthtml += "<p class='projectWebsite' style='display:none;'>" + v.website + "</p>";
         projecthtml += "<p class='projectGithub' style='display:none;'>" + v.github + "</p>";
+        projecthtml += "<p class='projectStatus' style='display:none;'>" + v.status + "</p>";
         //If the project is a personal project
         if("fellow" in v){
             projecthtml += "<p class='projectFellow' style='display:none;'>" + v.fellow + "</p>";
@@ -341,12 +342,14 @@ function fillProjectModal(project){
     let fellow = $(project).find('.projectFellow').text();
     let website = $(project).find('.projectWebsite').text();
     let github = $(project).find('.projectGithub').text();
+    let status = $(project).find('.projectStatus').text();
 
     $('#projectModalImage').attr("src", image);
     $('#projectModalTitle').text(title);
     $('#projectModalDescription').text(desc);
 
     fellow !== "undefined"? $('#projectModalFellow').text(fellow) : $('#projectModalFellow').text("");
+    status !== "undefined"? $('#projectModalStatus').text("Project status: " + status) : $('#projectModalStatus').text("");
     website !== "undefined"? $('#projectModalWebsite').attr('href', website).text("Website →") : $('#projectModalWebsite').text("");
     github !== "undefined"? $('#projectModalGithub').attr('href', github).text("Github →") : $('#projectModalGithub').text("");
 

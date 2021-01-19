@@ -8,7 +8,8 @@ var projects = [
         "title":"Florentia illustrata: spatializing history & visualizing experience in the renaissance city",
         "description":"Florentia Illustrata was established in 2018 by common agreement among its founding members in recognition of the necessity to work together to create a research platform to provide consolidated access to digital projects on Renaissance Florence. Using the rich archival resources of the city, each of these approaches to reconstructing the past have been exploring the potential of digital tools to expand and innovate the methods used in humanistic historical research. Building on the long tradition of cutting-edge research techniques that have been brought to bear on Florence’s singular documentary and material legacy, they will create a shared digital platform that enables an intensive analysis of complex interrelated historical phenomena that characterized the early modern city. As such, they will lay the groundwork for innovative studies that will be able to embed experiments in urban planning, architectural design, and artistic representation within the concrete social structures, historical experiences, and spatial mentalities of the city’s inhabitants.",
         "picture":"florentia_illustrata.jpg",
-        "size": "big"
+        "size": "big",
+        "status": "In development"
     },
     {
         "title":"Gesture in Italian Early Renaissance Art: a Digital Perspective",
@@ -76,7 +77,6 @@ var projects = [
         "picture":"cidocperiodictable.jpg",
         "website":"https://remogrillo.github.io/cidoc-crm_periodic_table/",
         "github":"https://github.com/RemoGrillo/cidoc-crm_periodic_table"
-
     },
     {
         "title":"Berenson Art Collection Online Portal",
