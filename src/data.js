@@ -55,7 +55,7 @@ var projects = [
     },
     {
         "title":"Semantic Vision: Linking Artworks for the Web of Data",
-        "description":"Leveraging cutting-edge computer vision tools, interns will collaborate on building a platform that allows for the exploration of artworks through visual search. Aggregating images and metadata from various open-access museum collections and archives, interns will use these images to build computer vision models to classify groups of images and identify features that are visually similar. The resulting tool will serve to programmatically match artworks across collections, archives, and libraries across the world, as well as assist scholars when conducting research on specific artworks or visual themes. Applicants should have some prior experience with machine learning/computer vision tools and have a declared major/minor in Computer Science.",
+        "description":"Leveraging computer vision tools together with the ResearchSpace infrastructure, this project focuses on building a platform that allows for the exploration of artworks through visual search. Aggregating images and metadata from various open-access museum collections and archives, users will be able to search for visually similar images and define their visual similarity. The data can then be used to build new computer vision models to classify groups of images and identify features that are visually similar. The resulting tool will serve to programmatically match artworks across collections, archives, and libraries across the world, as well as assist scholars when conducting research on specific artworks or visual themes.",
         "picture":"vision.jpg"
     },
     {
@@ -73,7 +73,7 @@ var projects = [
     },
     {
         "title":"CIDOC-CRM periodic table",
-        "description":"This project serves a community of digital humanists (including ourselves). The tool serves to assist the data modeling process for working with cultural heritage ontologies. It is built specifically for the CIDOC-CRM but can be reused with any ontology as it can dynamically load up RDF-based ontology. It allows to quickly navigate in the rich and rigorous structure of the CIDOC-CRM in an interactive and intuitive way.",
+        "description":"This project serves a community of digital humanists (including ourselves). The tool aims to assist the data modeling process for working with cultural heritage ontologies. It is built specifically for the CIDOC-CRM but can be reused with any ontology as it can dynamically load up RDF-based ontology. It allows to quickly navigate in the rich and rigorous structure of the CIDOC-CRM in an interactive and intuitive way.",
         "picture":"cidocperiodictable.jpg",
         "website":"https://remogrillo.github.io/cidoc-crm_periodic_table/",
         "github":"https://github.com/RemoGrillo/cidoc-crm_periodic_table"
