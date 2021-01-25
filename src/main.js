@@ -262,6 +262,10 @@ $(document).ready(function(){
     $('#projectModal').on('hidden.bs.modal', function(){
         window.location.hash = "";
     });
+
+    $('#fellowModal').on('hidden.bs.modal', function(){
+        window.location.hash = "";
+    });
 });
 
 function calculateDistance(elem, mouseX, mouseY) {
@@ -322,7 +326,8 @@ function startColorAnimation(timeout){
 function showFellows(){
 
     for(const v of fellows){
-        let fellowhtml = "<div class='fellowContainer justify-content-center'>";
+        let fellowId = v.name.replace(/\W/g, '');
+        let fellowhtml = "<div id='"+ fellowId +"' class='fellowContainer justify-content-center'>";
         fellowhtml += `<img class='fellowImage mx-auto' src='assets/images/fellows/${v.picture}'>`;
         fellowhtml += "<p class='fellowName'>" + v.name + "</p>";
         fellowhtml += "<p class='fellowTitle' style='display:none;'>" + v.title + "</p>";
@@ -372,5 +377,6 @@ function fillFellowModal(fellow){
     $('#fellowModalBio').html(bio);
     $('#fellowModalName').html(name);
 
+    window.location.hash = $(fellow).attr("id");
     fellowModal.modal('show');
 }
