@@ -6,7 +6,7 @@ var projects = [
         "status": "In development"
     },
     {
-        "title":"Florentia illustrata: spatializing history & visualizing experience in the renaissance city",
+        "title":"Florentia Illustrata: Spatializing History & Visualizing Experience in the Renaissance City",
         "description":"Florentia Illustrata was established in 2018 by common agreement among its founding members in recognition of the necessity to work together to create a research platform to provide consolidated access to digital projects on Renaissance Florence. Using the rich archival resources of the city, each of these approaches to reconstructing the past have been exploring the potential of digital tools to expand and innovate the methods used in humanistic historical research. Building on the long tradition of cutting-edge research techniques that have been brought to bear on Florence’s singular documentary and material legacy, they will create a shared digital platform that enables an intensive analysis of complex interrelated historical phenomena that characterized the early modern city. As such, they will lay the groundwork for innovative studies that will be able to embed experiments in urban planning, architectural design, and artistic representation within the concrete social structures, historical experiences, and spatial mentalities of the city’s inhabitants.",
         "picture":"florentia_illustrata.jpg",
         "size": "big",
@@ -61,10 +61,11 @@ var projects = [
 
     },
     {
-        "title":"Semantic Vision: Linking Artworks for the Web of Data",
+        "title":"Linked Open Images: Visual Similarity for the Semantic Web",
         "description":"Leveraging computer vision tools together with the ResearchSpace infrastructure, this project focuses on building a platform that allows for the exploration of artworks through visual search. Aggregating images and metadata from various open-access museum collections and archives, users will be able to search for visually similar images and define their visual similarity. The data can then be used to build new computer vision models to classify groups of images and identify features that are visually similar. The resulting tool will serve to programmatically match artworks across collections, archives, and libraries across the world, as well as assist scholars when conducting research on specific artworks or visual themes.",
         "picture":"vision.jpg",
-        "status": "In development"
+        "status": "In development",
+        "fellow":"Lukas Klic"
     },
     {
         "title":"Yashiro and Berenson: Art History between Japan and Italy",
