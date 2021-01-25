@@ -350,7 +350,7 @@ function fillProjectModal(project){
     $('#projectModalTitle').html(title);
     $('#projectModalDescription').html(desc);
 
-    fellow !== undefined? $('#projectModalFellow').html(fellow) : alert(fellow);
+    fellow !== undefined? $('#projectModalFellow').html(fellow) : $('#projectModalFellow').html("");
     status !== undefined? $('#projectModalStatus').html("Project status: " + status) : $('#projectModalStatus').html("");
     website !== undefined? $('#projectModalWebsite').attr('href', website).html("Website →") : $('#projectModalWebsite').html("");
     github !== undefined? $('#projectModalGithub').attr('href', github).html("Github →") : $('#projectModalGithub').html("");
