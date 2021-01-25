@@ -88,7 +88,8 @@ var projects = [
         "picture":"cidocperiodictable.jpg",
         "website":"https://remogrillo.github.io/cidoc-crm_periodic_table/",
         "github":"https://github.com/RemoGrillo/cidoc-crm_periodic_table",
-        "status": "Complete"
+        "status": "Complete",
+        "fellow":"Remo Grillo"
     },
     {
         "title":"Berenson Art Collection Online Portal",
