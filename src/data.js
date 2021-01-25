@@ -35,7 +35,7 @@ var projects = [
     },
     {
         "title":"PHAROS: The International Consortium of Photo Archives",
-        "description":"I Tatti is a key partner within PHAROS, an international consortium of fourteen European and North American art historical photo archives committed to creating an open and freely accessible digital research platform allowing for comprehensive consolidated access to photo archive images and their associated scholarly documentation.  The PHAROS collections collectively contain an estimated 25 million images documenting works of art and architecture and the history of photography itself. The consortium is actively looking for funding and technology partners to advance this work.",
+        "description":"I Tatti is a key partner within PHAROS, an international consortium of fourteen European and North American art historical photo archives committed to creating an open and freely accessible digital research platform allowing for comprehensive consolidated access to photo archive images and their associated scholarly documentation.  The PHAROS collections collectively contain an estimated 25 million images documenting works of art and architecture and the history of photography itself.",
         "picture":"pharos.jpg",
         "website":"http://pharosartresearch.org/",
     },
@@ -130,7 +130,7 @@ var projects = [
 var fellows = [
     {
         "name":"Lukas Klic",
-        "title":"Head of Digital Humanities Research <br> Manager of Information Services & Digital Initiatives",
+        "title":"Head of Digital Humanities Research \n Manager of Information Services & Digital Initiatives",
         "bio":"Lukas Klic is Head of Digital Humanities Research and Manager of Information Services & Digital Initiatives at I Tatti, the Harvard University Center for Italian Renaissance Studies. With a background in Art History, Library Science, and Digital Humanities, his research focuses on digital tools that facilitate the accessibility and interpretation of cultural heritage, leveraging Linked Open Data (LOD) to allow for the cross-pollination of research data. At I Tatti he leads a number of projects involving Linked Open Data, computer vision, natural language processing, geospatial mapping, and digital publishing. He is the Technical Architect of Pharos, the International Consortium of Photo Archives, a group of fourteen North American and European art historical photo archives currently building an open and freely accessible digital research platform for the history of art. He was the co-principal investigator of the Samuel H Kress Foundation sponsored project The Drawings of the Florentine Painters that transformed and published Bernard Berenson’s work in a semantically enriched digital edition. He has worked in the library system of Harvard University for over twenty years in various  capacities, and holds a Master’s of Library and Information Science from Simmons University and a PhD in Computer Science from Ca’ Foscari University in Venice with a concentration in Digital Humanities.",
         "picture":"LukasKlic.JPG",
         "github":"https://github.com/lklic"
