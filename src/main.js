@@ -31,7 +31,6 @@ $(document).ready(function(){
 
     /* ABOUT CANVAS EFFECT */
 
-
     /*
 // defining variables
 // c and h are canvases, f and b are contexts
@@ -295,6 +294,7 @@ function showProjects(){
         projecthtml += "<p class='projectDescription' style='display:none;'>" + v.description + "</p>";
         projecthtml += "<p class='projectWebsite' style='display:none;'>" + v.website + "</p>";
         projecthtml += "<p class='projectGithub' style='display:none;'>" + v.github + "</p>";
+        projecthtml += "<p class='projectDocumentation' style='display:none;'>" + v.documentation + "</p>";
         projecthtml += "<p class='projectStatus' style='display:none;'>" + v.status + "</p>";
         //If the project is a personal project
         if("fellow" in v){
@@ -337,21 +337,24 @@ function showFellows(){
 function fillProjectModal(project){
     let projectModal = $("#projectModal");
     let image = $(project).find('.projectImage').attr("src");
-    let title = $(project).find('.projectTitle').text();
-    let desc = $(project).find('.projectDescription').text();
-    let fellow = $(project).find('.projectFellow').text();
-    let website = $(project).find('.projectWebsite').text();
-    let github = $(project).find('.projectGithub').text();
-    let status = $(project).find('.projectStatus').text();
+    let title = $(project).find('.projectTitle').html();
+    let desc = $(project).find('.projectDescription').html();
+    let fellow = $(project).find('.projectFellow').html();
+    console.log(fellow);
+    let website = $(project).find('.projectWebsite').html();
+    let github = $(project).find('.projectGithub').html();
+    let documentation = $(project).find('.projectDocumentation').html();
+    let status = $(project).find('.projectStatus').html();
 
     $('#projectModalImage').attr("src", image);
-    $('#projectModalTitle').text(title);
-    $('#projectModalDescription').text(desc);
+    $('#projectModalTitle').html(title);
+    $('#projectModalDescription').html(desc);
 
-    fellow !== "undefined"? $('#projectModalFellow').text(fellow) : $('#projectModalFellow').text("");
-    status !== "undefined"? $('#projectModalStatus').text("Project status: " + status) : $('#projectModalStatus').text("");
-    website !== "undefined"? $('#projectModalWebsite').attr('href', website).text("Website →") : $('#projectModalWebsite').text("");
-    github !== "undefined"? $('#projectModalGithub').attr('href', github).text("Github →") : $('#projectModalGithub').text("");
+    fellow !== "undefined"? $('#projectModalFellow').html(fellow) : $('#projectModalFellow').text("");
+    status !== "undefined"? $('#projectModalStatus').html("Project status: " + status) : $('#projectModalStatus').text("");
+    website !== "undefined"? $('#projectModalWebsite').attr('href', website).html("Website →") : $('#projectModalWebsite').text("");
+    github !== "undefined"? $('#projectModalGithub').attr('href', github).html("Github →") : $('#projectModalGithub').text("");
+    documentation !== "undefined"? $('#projectModalDocumentation').attr('href', documentation).html("Documentation →") : $('#projectModalDocumentation').text("");
 
     window.location.hash = $(project).attr("id");
     projectModal.modal('show');
@@ -360,14 +363,14 @@ function fillProjectModal(project){
 function fillFellowModal(fellow){
     let fellowModal = $("#fellowModal");
     let image = $(fellow).find('.fellowImage').attr("src");
-    let title = $(fellow).find('.fellowTitle').text();
-    let name = $(fellow).find('.fellowName').text();
-    let bio = $(fellow).find('.fellowBio').text();
+    let title = $(fellow).find('.fellowTitle').html();
+    let name = $(fellow).find('.fellowName').html();
+    let bio = $(fellow).find('.fellowBio').html();
 
     $('#fellowModalImage').attr("src", image);
-    $('#fellowModalTitle').text(title);
-    $('#fellowModalBio').text(bio);
-    $('#fellowModalName').text(name);
+    $('#fellowModalTitle').html(title);
+    $('#fellowModalBio').html(bio);
+    $('#fellowModalName').html(name);
 
     fellowModal.modal('show');
 }

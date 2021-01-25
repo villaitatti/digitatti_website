@@ -150,7 +150,7 @@ body {
     border-radius: 0;
 }
 
-#projectModalGithub, #projectModalWebsite {
+#projectModalGithub, #projectModalWebsite, #projectModalDocumentation {
     display: block;
     font-weight: 600;
     color: black;
@@ -390,6 +390,12 @@ body {
     padding: 10px 40px 10px 40px;
     border: 1px solid black;
     border-radius: 1px;
+}
+
+#itattilogo {
+    width: 200px;
+    display: block;
+    margin-top: 30px;
 }
 
 #footer {
