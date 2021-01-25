@@ -56,7 +56,8 @@ var projects = [
         "description":"Following the devastating flood of '66, Villa I Tatti became the Florentine Headquarters of CRIA (Committee to Rescue Italian Art), a task force made up of scholars anxious to preserve Florence's precious artistic heritage. Amidst the turmoil and with a deep sense of urgency, they organized both a vast fund-raising campaign and the shipment to Italy of emergency conservation materials along with a team of specialists to assess the situation and begin long-range planning for the recovery. Chaired by Jacqueline Kennedy, the Committee raised money through direct mail requests, ads, special exhibits of Italian art, fashion shows and cocktail parties, in addition to video appeals by famous figures such as Ted Kennedy and Elizabeth Taylor. This online exhibition explores the valiant efforts of CRIA during the aftermath of the flood, and examines I Tatti's central role in the recovery.",
         "picture":"cria.jpg",
         "website":"https://cria.itatti.harvard.edu/",
-        "github":"https://github.com/villaitatti/cria"
+        "github":"https://github.com/villaitatti/cria",
+        "status": "Complete"
 
     },
     {
