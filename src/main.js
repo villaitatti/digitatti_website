@@ -324,7 +324,6 @@ function startColorAnimation(timeout){
 }
 
 function showFellows(){
-
     for(const v of fellows){
         let fellowId = v.name.replace(/\W/g, '');
         let fellowhtml = "<div id='"+ fellowId +"' class='fellowContainer justify-content-center'>";
