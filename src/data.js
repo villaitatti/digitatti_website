@@ -62,7 +62,7 @@ var projects = [
     },
     {
         "title":"Linked Open Images: Visual Similarity for the Semantic Web",
-        "description":"Leveraging computer vision tools together with the ResearchSpace infrastructure, this project focuses on building a platform that allows for the exploration of artworks through visual search. Aggregating images and metadata from various open-access museum collections and archives, users will be able to search for visually similar images and define their visual similarity. The data can then be used to build new computer vision models to classify groups of images and identify features that are visually similar. The resulting tool will serve to programmatically match artworks across collections, archives, and libraries across the world, as well as assist scholars when conducting research on specific artworks or visual themes.",
+        "description":"Leveraging computer vision tools together with the ResearchSpace infrastructure, this project focuses on building a platform that allows for the exploration of artworks through visual search. Aggregating images and metadata from various open-access museum collections and archives, users will be able to search for visually similar images and make various levels of assertions about their relationships. The data can then be used to build new computer vision models to classify groups of images and identify features that are visually similar. The resulting tool will serve to programmatically match artworks across collections, archives, and libraries across the world, as well as assist scholars when conducting research on specific artworks or visual themes.",
         "picture":"vision.jpg",
         "status": "In development",
         "fellow":"Lukas Klic"
