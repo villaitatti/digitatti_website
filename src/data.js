@@ -1,8 +1,9 @@
 var projects = [
     {
-        "title":"Metapolis: semantic research infrastructure",
-        "description":"In the early modern period, the network of islands encircling the Venetian lagoon served as capillary structures for the political, socio-economic, and cultural interests of the Serenissima. Scattered throughout the entire ‘gulf’ of Venice, these settlements were indispensable to the larger Venetian community as loci dedicated to the city’s food supply, spiritual places for religious communities, and centers for defense structures or public hospitals. The socio-political events that followed the fall of the Republic (1797) profoundly changed this understanding and totally altered the reading of the city as an organic entity that encompasses the watery ecosystem. In some cases, interventions significantly transformed the islands’ geographic configuration and functions. The Archipelago project aims to investigate the long-term history and transformation of the clusters of settlements scattered throughout Venice’s lagoon between the late fifteenth and seventeenth centuries through a systematic and geographic-based analysis. This combines historical and digital methods by employing a semantic research platform for mapping, visualizing, and exploring urban data over time.",
-        "picture":"Metapolis.jpg"
+        "title":"Metapolis: Spatializing Histories Through Archival Sources",
+        "description":"Metapolis aims to develop a digital research infrastructure to support scholarship in the humanities that seeks to geospatially reconstruct places throughout time. As an interactive map-based publication platform, it enables users to cross-pollinate archival, bibliographic and multimedia sources with interpretive research, allowing for their interlinking and visualization on a map. Built on top of ResearchSpace, an open-source Semantic Web research environment, it facilitates the reuse and publishing of Linked Open Data. A rich set of features support data enrichment with external knowledge bases such as VIAF, WikiData, Worldcat, and the Getty vocabularies. Designed both as a research and publication tool, the software allows groups of scholars from a wide range of humanistic disciplines to connect their research and augment each other's findings through the layering of historical maps, interlinking them to sources to allow users to build knowledge about the world and its history.",
+        "picture":"Metapolis.jpg",
+        "status": "In development"
     },
     {
         "title":"Florentia illustrata: spatializing history & visualizing experience in the renaissance city",
@@ -22,7 +23,8 @@ var projects = [
         "title":"Archipelago: Mapping the Islands of the Venetian Lagoon",
         "description":"In the early modern period, the network of islands encircling the Venetian lagoon served as capillary structures for the political, socio-economic, and cultural interests of the Serenissima. Scattered throughout the entire ‘gulf’ of Venice, these settlements were indispensable to the larger Venetian community as loci dedicated to the city’s food supply, spiritual places for religious communities, and centers for defense structures or public hospitals. The socio-political events that followed the fall of the Republic (1797) profoundly changed this understanding and totally altered the reading of the city as an organic entity that encompasses the watery ecosystem. In some cases, interventions significantly transformed the islands’ geographic configuration and functions. The Archipelago project aims to investigate the long-term history and transformation of the clusters of settlements scattered throughout Venice’s lagoon between the late fifteenth and seventeenth centuries through a systematic and geographic-based analysis. This combines historical and digital methods by employing a semantic research platform for mapping, visualizing, and exploring urban data over time.",
         "picture":"Archipelago.png",
-        "size": "big"
+        "size": "big",
+        "status": "In development"
     },
 
 
@@ -31,57 +33,66 @@ var projects = [
         "description":"Bernard Berenson’s Drawings of the Florentine Painters is a digital resource based on Berenson’s publication of the same name. This research tool allows you to search for any of the drawings listed in the three editions (1903, 1938 in English; 1961, in Italian). Filters allow you to search Berenson’s information by artist, title (in English or Italian), location, and technique. Each entry includes key information from all three editions of Berenson’s text, as well as the current location, an image of the catalog page, and plates included in 1903; most entries also have links to museum webpages, including images. For information about how the data was prepared, how to use the site, and for background on Berenson’s scholarship, see the About page.",
         "picture":"florentine_drawings.001.png",
         "website":"http://florentinedrawings.itatti.harvard.edu",
-        "github":"https://github.com/lklic/florentinedrawings-rs"
+        "github":"https://github.com/lklic/florentinedrawings-rs",
+        "status": "Complete"
     },
     {
         "title":"PHAROS: The International Consortium of Photo Archives",
         "description":"I Tatti is a key partner within PHAROS, an international consortium of fourteen European and North American art historical photo archives committed to creating an open and freely accessible digital research platform allowing for comprehensive consolidated access to photo archive images and their associated scholarly documentation.  The PHAROS collections collectively contain an estimated 25 million images documenting works of art and architecture and the history of photography itself. The consortium is actively looking for funding and technology partners to advance this work.",
         "picture":"pharos.jpg",
         "website":"http://pharosartresearch.org/",
+        "status": "In development"
     },
     {
         "title":"Semantic Digital Publishing",
         "description":"The Semantic Digital Publishing project links textual resources to data contained in both internal and external knowledge graphs, in the form of annotations. If a peice of text describes a person, place, event, or other kinds of entity, it can be manually linked to the URI of that entity, and vice versa. Other than pure textual annotations, the Semantic Digital Publishing allows users to also create complex annotations. The goal is to provide links between free text, RDF data, and images. This project also links between distinct documents, or to a region of an image that is displayed through an IIIF Viewer. ",
         "picture":"semantic-publishing.001.png",
-        "documentation":"https://cordh.atlassian.net/wiki/spaces/SDP/overview"
+        "documentation":"https://cordh.atlassian.net/wiki/spaces/SDP/overview",
+        "status": "Phase 2 development"
 
     },
     {
         "title":"CRIA - The Committee to Rescue Italian Art",
         "description":"Following the devastating flood of '66, Villa I Tatti became the Florentine Headquarters of CRIA (Committee to Rescue Italian Art), a task force made up of scholars anxious to preserve Florence's precious artistic heritage. Amidst the turmoil and with a deep sense of urgency, they organized both a vast fund-raising campaign and the shipment to Italy of emergency conservation materials along with a team of specialists to assess the situation and begin long-range planning for the recovery. Chaired by Jacqueline Kennedy, the Committee raised money through direct mail requests, ads, special exhibits of Italian art, fashion shows and cocktail parties, in addition to video appeals by famous figures such as Ted Kennedy and Elizabeth Taylor. This online exhibition explores the valiant efforts of CRIA during the aftermath of the flood, and examines I Tatti's central role in the recovery.",
         "picture":"cria.jpg",
-        "website":"https://cria.itatti.harvard.edu/"
+        "website":"https://cria.itatti.harvard.edu/",
+        "github":"https://github.com/villaitatti/cria"
 
     },
     {
         "title":"Semantic Vision: Linking Artworks for the Web of Data",
-        "description":"Leveraging cutting-edge computer vision tools, interns will collaborate on building a platform that allows for the exploration of artworks through visual search. Aggregating images and metadata from various open-access museum collections and archives, interns will use these images to build computer vision models to classify groups of images and identify features that are visually similar. The resulting tool will serve to programmatically match artworks across collections, archives, and libraries across the world, as well as assist scholars when conducting research on specific artworks or visual themes. Applicants should have some prior experience with machine learning/computer vision tools and have a declared major/minor in Computer Science.",
-        "picture":"vision.jpg"
+        "description":"Leveraging computer vision tools together with the ResearchSpace infrastructure, this project focuses on building a platform that allows for the exploration of artworks through visual search. Aggregating images and metadata from various open-access museum collections and archives, users will be able to search for visually similar images and define their visual similarity. The data can then be used to build new computer vision models to classify groups of images and identify features that are visually similar. The resulting tool will serve to programmatically match artworks across collections, archives, and libraries across the world, as well as assist scholars when conducting research on specific artworks or visual themes.",
+        "picture":"vision.jpg",
+        "status": "In development"
     },
     {
         "title":"Yashiro and Berenson: Art History between Japan and Italy",
         "description":"This exhibition presents the extant correspondence--nearly all unpublished--between Bernard Berenson and Yukio Yashiro. At the height of their fame they were among the most influential art historians in the West and in Japan, respectively. Today Yashiro is little known outside of his native country except for his monograph on Botticelli, published in English in 1925, now available on this website. Yashiro described his goals for the book in a remarkable letter from 1922 to Laurence Binyon: “I shall make clear what I, a man brought up in an artistic atmosphere utterly different from that of Europe, feel of Botticelli, that side of Botticelli which, as I think, was never, or perhaps very little, appreciated by European connoisseurs.”",
         "picture":"yashiro.jpg",
         "website":"https://yashiro.itatti.harvard.edu/",
-        "size": "big"
+        "size": "big",
+        "status": "Complete"
     },
     {
         "title":"Named Entity Recognition for Digital Publishing",
         "description":"As part of a scholarly digital publishing initiative that provides a research infrastructure allowing for the integration of scholarly articles and historical documents, this project integrates Named Entity Recognition (NER) tools to extract various types of entities such as people, places, institutions, etc from textual documents. These entities are published as semantically enriched annotations allowing users to seamlessly navigate between documents and metadata. The toolset automates the process of textual annotations by leveraging several existing open-source NER tools, grouping them together in order to obtain more accurate results.",
         "picture":"ner.jpg",
-        "github":"https://github.com/villaitatti/REL_processer"
+        "github":"https://github.com/villaitatti/REL_processer",
+        "status": "Phase 2 Development"
     },
     {
         "title":"CIDOC-CRM periodic table",
         "description":"This project serves a community of digital humanists (including ourselves). The tool serves to assist the data modeling process for working with cultural heritage ontologies. It is built specifically for the CIDOC-CRM but can be reused with any ontology as it can dynamically load up RDF-based ontology. It allows to quickly navigate in the rich and rigorous structure of the CIDOC-CRM in an interactive and intuitive way.",
         "picture":"cidocperiodictable.jpg",
         "website":"https://remogrillo.github.io/cidoc-crm_periodic_table/",
-        "github":"https://github.com/RemoGrillo/cidoc-crm_periodic_table"
+        "github":"https://github.com/RemoGrillo/cidoc-crm_periodic_table",
+        "status": "Complete"
     },
     {
         "title":"Berenson Art Collection Online Portal",
         "description":"The Online Portal to the Berenson Art Collection gathers images from The Bernard and Mary Berenson Collection of European Paintings and The Bernard Berenson collection of Oriental Art, as well as records from Hollis Images. The portal hosts an innovative means of navigation: an interactive map of the Berenson house which allows users to browse the objects starting from the position where they were placed by Berenson himself. The spatial visualization of the collection allows users to acquire focused information on specific objects, while also conveying how artworks interact visually with each other in Berenson’s historic display. On top of the spatial organization, the objects are also organized within the temporal domain, allowing users to intuitively trace certain trends and switches of taste through time.",
-        "picture":"artcollection.jpg"
+        "picture":"artcollection.jpg",
+        "status": "In development"
     },
     {
         "title":"Building Baroque Rome under Pope Innocent X Pamphilj",
