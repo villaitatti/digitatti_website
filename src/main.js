@@ -350,11 +350,11 @@ function fillProjectModal(project){
     $('#projectModalTitle').html(title);
     $('#projectModalDescription').html(desc);
 
-    fellow !== "undefined"? $('#projectModalFellow').html(fellow) : $('#projectModalFellow').text("");
-    status !== "undefined"? $('#projectModalStatus').html("Project status: " + status) : $('#projectModalStatus').text("");
-    website !== "undefined"? $('#projectModalWebsite').attr('href', website).html("Website →") : $('#projectModalWebsite').text("");
-    github !== "undefined"? $('#projectModalGithub').attr('href', github).html("Github →") : $('#projectModalGithub').text("");
-    documentation !== "undefined"? $('#projectModalDocumentation').attr('href', documentation).html("Documentation →") : $('#projectModalDocumentation').text("");
+    fellow !== undefined? $('#projectModalFellow').html(fellow) : alert(fellow);
+    status !== undefined? $('#projectModalStatus').html("Project status: " + status) : $('#projectModalStatus').html("");
+    website !== undefined? $('#projectModalWebsite').attr('href', website).html("Website →") : $('#projectModalWebsite').html("");
+    github !== undefined? $('#projectModalGithub').attr('href', github).html("Github →") : $('#projectModalGithub').html("");
+    documentation !== undefined? $('#projectModalDocumentation').attr('href', documentation).html("Documentation →") : $('#projectModalDocumentation').html("");
 
     window.location.hash = $(project).attr("id");
     projectModal.modal('show');
