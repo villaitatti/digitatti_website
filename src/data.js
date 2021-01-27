@@ -77,7 +77,7 @@ var projects = [
     },
     {
         "title":"Named Entity Recognition for Digital Publishing",
-        "description":"As part of a scholarly digital publishing initiative that provides a research infrastructure allowing for the integration of scholarly articles and historical documents, this project integrates Named Entity Recognition (NER) tools to extract various types of entities such as people, places, institutions, etc from textual documents. These entities are published as semantically enriched annotations allowing users to seamlessly navigate between documents and metadata. The toolset automates the process of textual annotations by leveraging several existing open-source NER tools, grouping them together in order to obtain more accurate results.",
+        "description":"As part of a scholarly digital publishing initiative that provides a research infrastructure to publish annotated scholarly articles and historical documents, this project integrates Named Entity Recognition (NER) tools to extract various types of entities such as people, places, institutions, etc from these textual documents. These entities are published as semantically enriched annotations allowing users to seamlessly navigate between documents and metadata. The project automates the process of textual annotations by leveraging several existing open-source NER tools, grouping them together in order to obtain more accurate results.",
         "picture":"ner.jpg",
         "github":"https://github.com/villaitatti/REL_processer",
         "status": "Phase 2 Development"
