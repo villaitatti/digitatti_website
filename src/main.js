@@ -207,7 +207,7 @@ $(document).ready(function(){
         loop: false,
         path : 'assets/images/logoanimated1.json'
     };
-    var anim = bodymovin.loadAnimation(animData);
+    bodymovin.loadAnimation(animData);
 
 
     var scroll = new LocomotiveScroll({
