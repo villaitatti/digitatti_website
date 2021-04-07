@@ -84,7 +84,7 @@ var projects = [
     },
     {
         "title":"CIDOC-CRM periodic table",
-        "description":"This project serves a community of digital humanists (including ourselves). The tool serves to assist the data modeling process for working with cultural heritage ontologies. It is built specifically for the CIDOC-CRM but can be reused with any ontology as it can dynamically load up RDF-based ontology. It allows to quickly navigate in the rich and rigorous structure of the CIDOC-CRM in an interactive and intuitive way.",
+        "description":"This project serves a community of digital humanists (including ourselves) to assist the data modeling process for working with cultural heritage ontologies. It is built specifically for the CIDOC-CRM but can be reused with any ontology, as it can dynamically load up RDF-based ontologies. It allows to quickly navigate the rich and rigorous structure of the CIDOC-CRM in an interactive and intuitive way.",
         "picture":"cidocperiodictable.jpg",
         "website":"https://remogrillo.github.io/cidoc-crm_periodic_table/",
         "github":"https://github.com/RemoGrillo/cidoc-crm_periodic_table",
