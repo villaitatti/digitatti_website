@@ -135,7 +135,7 @@ var projects = [
     {
         "title":"Towering over Late Medieval and Early Renaissance Rome: 3D Mapping the City's Network of Surveillance and Power",
         "description":"This project combines scholarly and computational methods to create a 3D map of twelfth- through sixteenth-century Rome’s most prominent vertical features: the towers, bell towers, repurposed ruins, and hills that dominated the skyline. The goal is to explore the interconnectedness of sight and sound, topography and movement in the city by analyzing acoustics, ballistics, and defensive systems. The web-based, GIS map will inform a monograph to be completed after the grant period. Together, these works will serve as proof of concept for a larger, multi-year project, Mapping Medieval Rome, which will recapture an urban network of surveillance and power and bring to virtual life buried histories of the Eternal City.",
-        "picture":"personal/3drome.jpg",
+        "picture":"personal/toweringrome.jpg",
         "fellow":"Nicola Camerlenghi<br>" +
             "Digital Humanities Fellow (2020-2021)"
     }
