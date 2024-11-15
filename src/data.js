@@ -237,6 +237,12 @@ var fellows = [
         "picture": "DanielSavoy.jpg"
     },
     {
+        "name": "Benjamin Ory",
+        "title": "Digital Humanities Fellow (2024-2025) <br> Pinpointing an Aesthetic Shift in Renaissance Music",
+        "bio": "Benjamin Ory received his Ph.D. in musicology from Stanford University in 2022, where he is a postdoctoral fellow in music and the digital humanities. He has since served as visiting assistant professor in musicology at Williams College. His research examines the origins of mid sixteenth-century musical style and its twentieth-century reception. He is editing a volume of motets for the Adrian Willaert collected-works edition with the American Institute of Musicology and is preparing several articles for publication on the early history of Renaissance musicology. ",
+        "picture": "BenjaminOry.jpg"
+    },
+    {
         "name": "Erica Andreose",
         "title": "Intern (2024) <br> Florentia Illustrata: Urban History of Florence",
         "bio": "Erica Andreose is a graduating student in Digital Humanities and Digital Knowledge at the University of Bologna. She holds a master's degree in Visual Arts, with a thesis on the history of medieval illuminated manuscripts. Her research interests include long-term data preservation and the integration of AI technologies in the digitization of cultural heritage. She is currently a research fellow for the National Edition of Aldo Moro's Works at the University of Bologna. Erica is writing her thesis in Digital Humanities in collaboration with I Tatti - The Harvard University Center for Italian Renaissance Studies, focusing on the spatialization of urban histories through knowledge graphs and image annotation.",
