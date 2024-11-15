@@ -246,6 +246,6 @@ var fellows = [
         "name": "Giorgia Crosilla",
         "title": "Intern (2024) <br> ",
         "bio": "In 2022, she obtained a BA in Cultural Heritage from the University of Udine. Currently, she is enrolled in a MA program in Digital Humanities and Digital Knowledge at the University of Bologna. Between 2023 and 2024, she collaborated with the Bibliotheca Hertziana on developing a website for the digital edition of Heinrich Wölfflin’s works. During her thesis research internship at I Tatti, she conducted research on large language models (LLMs) for deciphering handwritten text, focusing on benchmarking multimodal LLMs for handwritten text recognition (HTR) with multilingual datasets, including the Belle Greene dataset. Additionally, she used LLMs to extract entities from Mary Berenson’s diaries, integrating this information into RDF following OA schema.",
-        "picture", "GiorgiaCrosilla.jpg"
+        "picture": "GiorgiaCrosilla.jpg"
     }
 ];
