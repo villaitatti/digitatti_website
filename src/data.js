@@ -13,22 +13,29 @@ var projects = [
         "status": "In development"
     },
     {
-        "title":"Gesture in Italian Early Renaissance Art: a Digital Perspective",
-        "description":"In the last half-decade, convolutional neural networks have radically transformed the ways in which computers are able to understand images, including the precise deduction of human poses and hand gestures. This project attempts to transfer these techniques to art history and historical anthropology, exploring live and depicted gestural practices in fourteenth- and fifteenth-century Italy. In an \"operationalization\" of Michael Baxandall's famous comments on fifteenth-century Florentine annunciations, my project traces micro-gestural movements and temporalities in large collections of Christian iconography. Outputs from my project at I Tatti have included: “The Choreography of the Annunciation: Reverse Engineering Baxandall's Pictorial Plot” (conference paper with Peter Bell, at the Comité International d'Histoire de l’Art 2019); “Ikonographie und Interaktion. Computergestützte Analyse von Posen in Bildern der Heilsgeschichte” (journal article with Peter Bell, in Das Mittelalter 24:1, 2019) and \"Analyzing Gesture in Digital Art History\" (chapter in The Routledge Companion to Digital Humanities and Art History, ed. Kathryn Brown, 2020).",
-        "picture":"personal/GestureinItalianEarlyRenaissanceArt.jpg",
-        "fellow":"Leonardo Impett<br>" +
-            "Digital Humanities Fellow (2018-2019)"
+        "title":"The Letters of Belle da Costa Greene to Bernard Berenson",
+        "description":"The new website, developed at I Tatti, features high-resolution images and transcriptions of Greene’s nearly six-hundred letters to Berenson, along with rich metadata documenting the names, places, and subjects mentioned in her writing. The letters capture Greene’s vibrant wit and voice over four decades of correspondence with Berenson, whose letters were destroyed by Greene before her death. Because Berenson asked Greene to include as much detail as possible in her communications, they offer a unique window onto her life and career while illuminating numerous other topics, including art historical scholarship and connoisseurship, the history of collecting, libraries and museums in the early twentieth century, and life during the two world wars. Heidi Ardizzone’s biography of Greene, An Illuminated Life: Belle da Costa Greene’s Journey from Prejudice to Privilege (W. W. Norton & Company, 2007), as well as Deborah Parker’s recently published Becoming Belle da Costa Greene: A Visionary Librarian Through Her Letters (I Tatti Berenson Green series - Officina Libraria, 2024), both draw heavily on Greene’s letters to Berenson.",
+        "picture":"bellegreene.png",
+        "size": "default",
+        "status": "Completed",
+        "website":"https://bellegreene.itatti.harvard.edu/"
     },
     {
         "title":"VeNiss: Reframing the Lagoon City as an Archipelago",
         "description":"In the early modern period, the network of islands encircling the Venetian lagoon served as capillary structures for the political, socio-economic, and cultural interests of the Serenissima. Scattered throughout the entire ‘gulf’ of Venice, these settlements were indispensable to the larger Venetian community as loci dedicated to the city’s food supply, spiritual places for religious communities, and centers for defense structures or public hospitals. The socio-political events that followed the fall of the Republic (1797) profoundly changed this understanding and totally altered the reading of the city as an organic entity that encompasses the watery ecosystem. In some cases, interventions significantly transformed the islands’ geographic configuration and functions. VeNiss project aims to investigate the long-term history and transformation of the clusters of settlements scattered throughout Venice’s lagoon between the late fifteenth and seventeenth centuries through a systematic and geographic-based analysis. This combines historical and digital methods by employing a semantic research platform for mapping, visualizing, and exploring urban data over time.",
         "picture":"Archipelago.png",
         "size": "big",
-        "status": "In development",
+        "status": "in development",
         "website":"https://veniss.eu/"
     },
-
-
+    {
+        "title":"REPIM: Repertorio della Poesia Italiana in Musica, 1500-1700",
+        "description":"The project aims to publish the “Repertorio della Poesia Italiana in Musica, 1500-1700” (RePIM) as Linked Open Data (LOD) dataset. The RePIM is a reference repertoire for research on Italian secular music from the sixteenth and seventeenth centuries. The current content of the repository is: a bibliography of literary sources of 1,500 titles; the incipit of over 66,000 musical compositions; a bibliography of circa 3,500 musical sources of secular and spiritual music; an authority file with circa 1,400 musicians and 3,200 poets; and digital reproductions of about 50% of the musical sources. The RePIM, edited by Lorenzo Bianconi, Antonio Vassalli and Angelo Pompilio at the University of Bologna since late 1970s, was conceived as a tool to support scholars in identifying authors of poetic writings used by musicians in the profane and spiritual vocal production of the sixteenth and seventeenth centuries centuries. The project will migrate contents to RDF (Resource Description Format) using reference ontologies such as the Library Reference Model and the CIDOC Conceptual Reference Model. The result will be a knowledge base relying on a set of open and well-established formal ontologies and then fully interoperable within the Linked Data ecosystem.",
+        "picture":"repim.png",
+        "size": "default",
+        "status": "completed",
+        "website":"https://repim.itatti.harvard.edu/resource/repim:formSearch"
+    },
     {
         "title":"The Drawings of the Florentine Painters",
         "description":"Bernard Berenson’s Drawings of the Florentine Painters is a digital resource based on Berenson’s publication of the same name. This research tool allows you to search for any of the drawings listed in the three editions (1903, 1938 in English; 1961, in Italian). Filters allow you to search Berenson’s information by artist, title (in English or Italian), location, and technique. Each entry includes key information from all three editions of Berenson’s text, as well as the current location, an image of the catalog page, and plates included in 1903; most entries also have links to museum webpages, including images. For information about how the data was prepared, how to use the site, and for background on Berenson’s scholarship, see the About page.",
@@ -43,6 +50,13 @@ var projects = [
         "picture":"pharos.jpg",
         "website":"http://pharosartresearch.org/",
         "status": "In development"
+    },
+    {
+        "title":"Gesture in Italian Early Renaissance Art: a Digital Perspective",
+        "description":"In the last half-decade, convolutional neural networks have radically transformed the ways in which computers are able to understand images, including the precise deduction of human poses and hand gestures. This project attempts to transfer these techniques to art history and historical anthropology, exploring live and depicted gestural practices in fourteenth- and fifteenth-century Italy. In an \"operationalization\" of Michael Baxandall's famous comments on fifteenth-century Florentine annunciations, my project traces micro-gestural movements and temporalities in large collections of Christian iconography. Outputs from my project at I Tatti have included: “The Choreography of the Annunciation: Reverse Engineering Baxandall's Pictorial Plot” (conference paper with Peter Bell, at the Comité International d'Histoire de l’Art 2019); “Ikonographie und Interaktion. Computergestützte Analyse von Posen in Bildern der Heilsgeschichte” (journal article with Peter Bell, in Das Mittelalter 24:1, 2019) and \"Analyzing Gesture in Digital Art History\" (chapter in The Routledge Companion to Digital Humanities and Art History, ed. Kathryn Brown, 2020).",
+        "picture":"personal/GestureinItalianEarlyRenaissanceArt.jpg",
+        "fellow":"Leonardo Impett<br>" +
+            "Digital Humanities Fellow (2018-2019)"
     },
     {
         "title":"Semantic Digital Publishing",

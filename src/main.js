@@ -283,25 +283,22 @@ function delayedResize(){
 }
 
 
-function showProjects(){
-
-    for(const v of projects) {
-        
-        const size = typeof v.size == 'undefined' ? 'default' : 'big';
+function showProjects() {
+    for (const v of projects) {
+        const size = typeof v.size === 'undefined' ? 'default' : v.size;
 
         let projectId = v.picture.split(".")[0].replace("personal/", "");
-        let projecthtml = "<div id='" + projectId +"' class='projectContainer grid-item "+size+"'>";
+        let projecthtml = "<div id='" + projectId + "' class='projectContainer grid-item " + size + "'>";
 
-        projecthtml += "<img class='projectImage' src='assets/images/projects/" + v.picture +"'>";
-        
+        projecthtml += "<img class='projectImage' src='assets/images/projects/" + v.picture + "'>";
         projecthtml += "<p class='projectTitle'>" + v.title + "</p>";
         projecthtml += "<p class='projectDescription' style='display:none;'>" + v.description + "</p>";
         projecthtml += "<p class='projectWebsite' style='display:none;'>" + v.website + "</p>";
         projecthtml += "<p class='projectGithub' style='display:none;'>" + v.github + "</p>";
         projecthtml += "<p class='projectDocumentation' style='display:none;'>" + v.documentation + "</p>";
         projecthtml += "<p class='projectStatus' style='display:none;'>" + v.status + "</p>";
-        //If the project is a personal project
-        if("fellow" in v){
+
+        if ("fellow" in v) {
             projecthtml += "<p class='projectFellow' style='display:none;'>" + v.fellow + "</p>";
         }
         projecthtml += "</div>";

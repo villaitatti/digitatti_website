@@ -272,6 +272,10 @@ body {
     width: 30%!important;
 }
 
+.grid-item.small{
+    width: 20%!important;
+}
+
 @media (max-width: 575px) {
   .grid-sizer,
   .grid-item {
