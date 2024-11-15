@@ -235,5 +235,17 @@ var fellows = [
         "title": "Kress Digital Humanities Fellow (2023-2024) <br> Modeling Architecture, the Body, and the Soul in Renaissance Italy",
         "bio": "Daniel Savoy is Professor of Art History and Digital Media Art at Manhattan College. He is the author of the award-winning book, Venice from the Water: Architecture and Myth in an Early Modern City (Yale, 2012), and the edited volume, The Globalization of Renaissance Art: A Critical Review (Brill, 2017). His articles have appeared in The Journal of the Society of Architectural Historians, The Renaissance Quarterly, and World Art among other journals. In addition to serving as Department Chair (since 2016), he is the Director of his institution’s Venice Study Abroad Program as well as the international digital initiative, Virtual Venice (virtualvenice.org). ",
         "picture": "DanielSavoy.jpg"
+    },
+    {
+        "name": "Erica Andreose",
+        "title": "Intern (2024) <br> Florentia Illustrata: Urban History of Florence",
+        "bio": "Erica Andreose is a graduating student in Digital Humanities and Digital Knowledge at the University of Bologna. She holds a master's degree in Visual Arts, with a thesis on the history of medieval illuminated manuscripts. Her research interests include long-term data preservation and the integration of AI technologies in the digitization of cultural heritage. She is currently a research fellow for the National Edition of Aldo Moro's Works at the University of Bologna. Erica is writing her thesis in Digital Humanities in collaboration with I Tatti - The Harvard University Center for Italian Renaissance Studies, focusing on the spatialization of urban histories through knowledge graphs and image annotation.",
+        "picture": "EricaAndreose.png"
+    },
+    {
+        "name": "Giorgia Crosilla",
+        "title": "Intern (2024) <br> ",
+        "bio": "In 2022, she obtained a BA in Cultural Heritage from the University of Udine. Currently, she is enrolled in a MA program in Digital Humanities and Digital Knowledge at the University of Bologna. Between 2023 and 2024, she collaborated with the Bibliotheca Hertziana on developing a website for the digital edition of Heinrich Wölfflin’s works. During her thesis research internship at I Tatti, she conducted research on large language models (LLMs) for deciphering handwritten text, focusing on benchmarking multimodal LLMs for handwritten text recognition (HTR) with multilingual datasets, including the Belle Greene dataset. Additionally, she used LLMs to extract entities from Mary Berenson’s diaries, integrating this information into RDF following OA schema.",
+        "picture", "GiorgiaCrosilla.jpg"
     }
 ];
