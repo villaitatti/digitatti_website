@@ -215,7 +215,7 @@ var fellows = [
     {
         "name": "Paolo Bonora",
         "title": "Digital Humanities Fellow (2021-2022)<br> RePIM in LOD: The Repertoire of Italian Poetry in Music as Linked Open Dataset",
-        "bio": "Paolo Bonora graduated in Performing Arts from the University of Bologna and received his Master’s degree in Digital Humanities from the University of Florence. From 2016 to 2020, he attended the doctoral program in Cultural Heritage Studies at the University of Bologna where he wrote his dissertation on the adoption of Semantic Web technologies and Linked Data principles to manage historical information about opera. Since 2005, he has collaborated with the Corago project, the Italian Melodramma Digital Archive, supporting conceptual modelling and software development. He is currently based at the Department of Classical Philology and Italian Studies at University of Bologna."
+        "bio": "Paolo Bonora graduated in Performing Arts from the University of Bologna and received his Master’s degree in Digital Humanities from the University of Florence. From 2016 to 2020, he attended the doctoral program in Cultural Heritage Studies at the University of Bologna where he wrote his dissertation on the adoption of Semantic Web technologies and Linked Data principles to manage historical information about opera. Since 2005, he has collaborated with the Corago project, the Italian Melodramma Digital Archive, supporting conceptual modelling and software development. He is currently based at the Department of Classical Philology and Italian Studies at University of Bologna.",
         "picture": "PaoloBonora.jpg"
     },
     {
@@ -227,7 +227,7 @@ var fellows = [
     {
         "name": "Antonia Karaisl",
         "title": "Kress Digital Humanities Fellow (2022-2023) <br> Plume de nom: An Experimental Approach to Scribal Hand Identification using OCR Technology",
-        "bio": "Antonia Karaisl completed her PhD at the Warburg Institute in 2020; her thesis on Enlightenment philosopher Christian Wolff’s pre-modern welfare state model was published as a monograph with De Gruyter in 2021. More recently, she has been working on the transcription and translation of the astronomical books of the Fons Memorabilium, an encyclopaedia compiled by humanist Domenico Bandini. In 2016, she co-founded Rescribe, a small not-for-profit company developing bespoke Optical Character Recognition (OCR) solutions for historic books and medieval manuscripts. With the aim of making OCR technology more accessible, Rescribe provides open source software and disseminates new research by publishing in journals and attending conferences."
+        "bio": "Antonia Karaisl completed her PhD at the Warburg Institute in 2020; her thesis on Enlightenment philosopher Christian Wolff’s pre-modern welfare state model was published as a monograph with De Gruyter in 2021. More recently, she has been working on the transcription and translation of the astronomical books of the Fons Memorabilium, an encyclopaedia compiled by humanist Domenico Bandini. In 2016, she co-founded Rescribe, a small not-for-profit company developing bespoke Optical Character Recognition (OCR) solutions for historic books and medieval manuscripts. With the aim of making OCR technology more accessible, Rescribe provides open source software and disseminates new research by publishing in journals and attending conferences.",
         "picture": "AntoniaKaraisl.jpg"
     },
     {
