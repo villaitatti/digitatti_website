@@ -164,7 +164,7 @@ var fellows = [
     },
     {
         "name":"Remo Grillo",
-        "title":"Digital Humanities Research Associate (2019-2021) <br> Digital Research Infrastructure for the Humanities",
+        "title":"Digital Humanities Research Associate (2019-2021) <br> Digital Humanities Research and Software Engineer (2022-current) <br> Digital Research Infrastructure for the Humanities",
         "bio":"Remo Grillo is a digital humanist with a background in software development and Philosophy. His research focuses on knowledge representation and extraction, as well as on natural language processing and algorithms applied to cultural objects, literature and music. He is currently a Digital Humanities Research Associate at I Tatti, the Harvard University Center for Italian Renaissance Studies, where he is involved in the design and the development of several international projects in the context of digital humanities. He holds a master’s degree in Digital Humanities and Digital Knowledge with honors from the Alma Mater Studiorum University of Bologna. He worked as a full-stack developer since attending the University of Naples Federico II and the Ludwig Maximilian University of Munich where he specialized in logic and philosophy of language.",
         "github":"https://github.com/RemoGrillo",
         "picture":"RemoGrillo.jpg"
