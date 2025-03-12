@@ -1,5 +1,11 @@
 var projects = [
     {
+        "title":"AI-Libris: from books to data",
+        "description":"AI-Libris defines a methodology for the automatic extraction of structured data from semi-structured information in printed books, leveraging state of the art AI vision capabilities and interpretation of text. The pilot project revolved around Bernard Berenson's catalogue \"Italian Painters of the Renaissance\", consisting of various editions of four books, including artworks, artists, attribution, geographical information, and pictures. The process resulted into an interactive website where data is explorable and can be queried to answer complex research questions.",
+        "picture":"ailibris.jpg",
+        "status": "In development"
+    },
+    {
         "title":"Metapolis: Spatializing Histories Through Archival Sources",
         "description":"Metapolis aims to develop a digital research infrastructure to support scholarship in the humanities that seeks to geospatially reconstruct places throughout time. As an interactive map-based publication platform, it enables users to cross-pollinate archival, bibliographic and multimedia sources with interpretive research, allowing for their interlinking and visualization on a map. Built on top of ResearchSpace, an open-source Semantic Web research environment, it facilitates the reuse and publishing of Linked Open Data. A rich set of features support data enrichment with external knowledge bases such as VIAF, WikiData, Worldcat, and the Getty vocabularies. Designed both as a research and publication tool, the software allows groups of scholars from a wide range of humanistic disciplines to connect their research and augment each other's findings through the layering of historical maps, interlinking them to sources to allow users to build knowledge about the world and its history.",
         "picture":"Metapolis.jpg",
