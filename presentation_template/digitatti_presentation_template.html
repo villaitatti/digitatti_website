@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>digiTatti · Presentation template</title>
+<!--
+  digiTatti presentation template
+  ================================
+  One self-contained HTML file; logos and images live in ./assets.
+  Keys: → / space next · ← back · N speaker notes · F fullscreen · Home / End.
+  Every slide's <aside class="notes"> explains how that slide type works: press N to read it.
+
+  Slide types (copy a <section>, change the text):
+    .slide                 white statement / opening (the .fit text is sized to fill the box)
+    .slide.dark            statement on black
+    .slide.red             chapter interlude on crimson (.lab.part + .fit)
+    .slide.c               content: .lab + h2.h + .body (columns of .pts, .code, .tb, .fig …)
+    [data-at="n"]          step-through fragments: revealed one by one with →
+    [data-count="n"]       numbers that count up when the slide opens
+    data-w="pipe"          animated pipeline; stages are written in the HTML
+    data-w="calc"          interactive widget (slider + buttons)
+    .slide.duo             split slide: black half / crimson half
+    .slide.demo            live demo: a web page in an iframe (data-src, loaded one slide ahead)
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,800;0,900;1,400;1,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --ink:#0d0d0d; --muted:#7a7a7a; --faint:#c9c9c9;
+  --accent:#a51c30;   /* Harvard crimson */
+  --wash:#f3f2ef; --wash2:#e7e5e0; --soft:rgba(165,28,48,.12);
+  --sans:"Inter Tight","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --pad:4.5vmin;
+  --t:2.5vmin;      /* body text */
+  --tm:1.65vmin;    /* mono labels */
+  --tc:1.9vmin;     /* code */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink)}
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased}
+
+.slide{
+  position:absolute;inset:0;display:flex;flex-direction:column;gap:3vmin;padding:var(--pad);
+  opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s;background:var(--bg);color:var(--ink)
+}
+.slide.active{opacity:1;visibility:visible}
+/* on black the crimson is lifted, so accents stay readable */
+.slide.dark{background:var(--ink);color:#fff;--muted:#8d8d8d;--faint:#3a3a3a;--wash:#1a1a1a;--wash2:#262626;--accent:#d6324a;--soft:rgba(214,50,74,.24)}
+.slide.red{background:var(--accent);color:#fff;--muted:rgba(255,255,255,.72);--faint:rgba(255,255,255,.38)}
+
+/* fit: the box grows to fill the slide; JS sizes the type to fill the box */
+.fit{flex:1 1 auto;min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;
+  font-weight:800;line-height:.95;letter-spacing:-.035em;font-size:40px;padding-bottom:.12em}
+.fit.top{justify-content:flex-start}
+.fit>*{flex-shrink:0}
+.fit p{margin:0}
+.fit .reg{font-weight:400}
+.fit .semi{font-weight:600}
+
+.lab{font-family:var(--mono);font-size:clamp(11px,1.7vmin,17px);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:2em;flex:0 0 auto}
+.src{font-family:var(--mono);font-size:clamp(11px,1.6vmin,16px);color:var(--muted);flex:0 0 auto}
+.acc{color:var(--accent)}
+.red .acc{color:var(--ink)}
+.dim{color:var(--faint)}
+.mut{color:var(--muted)}
+i,em{font-style:italic}
+.q{font-weight:400;letter-spacing:-.02em;line-height:1.08}
+.q .mark{color:var(--accent);font-weight:800}
+.q b{font-weight:800}
+
+.notes{display:none}
+body.show-notes .slide.active .notes{
+  display:block;position:fixed;left:0;right:0;bottom:0;max-height:34vh;overflow:auto;
+  background:rgba(13,13,13,.95);color:#eee;font-family:var(--sans);font-size:16px;line-height:1.5;
+  padding:18px 22px;z-index:5
+}
+.lab.part{font-size:clamp(18px,3.6vmin,36px);color:inherit;letter-spacing:.02em}
+#track{position:fixed;left:0;right:0;bottom:0;height:7px;background:rgba(0,0,0,.08);z-index:6}
+#bar{position:absolute;left:0;top:0;bottom:0;background:var(--accent);width:0;transition:width .3s ease}
+#pn{position:fixed;right:var(--pad);bottom:calc(var(--pad) - .2em);font-family:var(--mono);font-size:clamp(12px,1.8vmin,18px);color:var(--muted);z-index:6;letter-spacing:.04em}
+body.bg-dark #track{background:rgba(255,255,255,.14)}
+body.bg-dark #bar{background:#d6324a}
+body.bg-dark #pn{color:#8d8d8d}
+body.bg-red #track{background:rgba(0,0,0,.18)}
+body.bg-red #bar{background:#fff}
+body.bg-red #pn{color:rgba(255,255,255,.75)}
+body.first #pn{display:none}
+
+/* ---------- title slide: logos + presenters ---------- */
+.logos{display:flex;align-items:center;gap:3.4vmin;flex:0 0 auto;height:9vmin}
+.logos img{display:block;width:auto}
+.logos .lg-it{height:9vmin}
+.logos .lg-hv{height:6.6vmin}
+.logos .sep{align-self:stretch;width:1.5px;background:var(--faint);font-style:normal}
+.dt{display:flex;align-items:center;gap:1.5vmin;height:7.2vmin;color:var(--ink)}
+.dark .dt{color:#fff}
+.dt svg{height:100%;width:auto;display:block;overflow:visible}
+.dt span{font-weight:500;font-size:4.9vmin;letter-spacing:-.025em;line-height:1}
+.who{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5vmin;flex:0 0 auto}
+.who div{border-top:1.5px solid var(--faint);padding-top:1.1vmin;display:flex;flex-direction:column;gap:.4vmin}
+.who b{font-weight:800;font-size:3.2vmin;letter-spacing:-.025em;line-height:1.05}
+.who span{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+
+/* ---------- dense content slides ---------- */
+.c{padding-bottom:calc(var(--pad) + 2.6vmin)}
+.h{font-weight:800;font-size:5.3vmin;line-height:1.02;letter-spacing:-.035em;flex:0 0 auto}
+.h .dim{color:var(--faint)}
+.h.s{font-size:4.4vmin}
+.body{flex:1 1 auto;min-height:0;display:flex;gap:4.5vmin;align-items:stretch}
+.body.v{flex-direction:column;gap:2.6vmin}
+.col{display:flex;flex-direction:column;gap:2.4vmin;min-width:0}
+.g1{flex:1 1 0}.g2{flex:2 1 0}.g3{flex:3 1 0}.g15{flex:1.5 1 0}
+.mid{justify-content:center}
+.end{justify-content:flex-end}
+.fig{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
+.fig>svg{width:100%;height:100%;display:block;overflow:visible}
+.fig>img{width:100%;height:100%;object-fit:contain;display:block}
+.fig.g1{flex:1 1 0;min-width:0}.fig.g15{flex:1.5 1 0;min-width:0}.fig.g2{flex:2 1 0;min-width:0}.fig.g3{flex:3 1 0;min-width:0}
+.pts.lg{gap:3vmin}.pts.lg .pt p{font-size:3.1vmin;max-width:36ch}.pts.lg .pt b{font-size:1.85vmin;margin-bottom:.8vmin}
+.body.v.mid{justify-content:center}
+
+.pts{display:flex;flex-direction:column;gap:2.1vmin}
+.pt{border-top:1.5px solid var(--faint);padding-top:1.1vmin}
+.pt b{display:block;font-family:var(--mono);font-weight:500;font-size:var(--tm);letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin-bottom:.5vmin}
+.pt p{font-size:var(--t);line-height:1.22;max-width:40ch}
+.pt p strong{font-weight:700}
+.pt.k b{color:var(--muted)}
+.red .pt b{color:#fff}
+
+.row{display:flex;gap:3.5vmin;min-height:0}
+.row>*{flex:1 1 0;min-width:0}
+
+.code{font-family:var(--mono);font-size:var(--tc);line-height:1.5;background:var(--wash);padding:1.8vmin 2.4vmin;white-space:pre;overflow:hidden;border-left:3px solid var(--accent);color:var(--ink)}
+.dark .code{color:#eee}
+.code .k{color:var(--accent)}
+.code .cm{color:var(--muted)}
+.code .b{font-weight:500;background:var(--soft)}
+.code.sm{font-size:1.65vmin}
+.mono{font-family:var(--mono)}
+code{font-family:var(--mono);font-size:.86em;background:var(--wash);padding:.05em .3em}
+
+.tb{border-collapse:collapse;font-size:var(--t);width:100%}
+.tb th{font-family:var(--mono);font-weight:400;font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;padding:.7vmin 1.2vmin;border-bottom:1.5px solid currentColor;white-space:nowrap}
+.tb td{padding:.85vmin 1.2vmin;border-bottom:1px solid var(--faint);vertical-align:baseline}
+.tb td.n,.tb th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tb tr.hl td{font-weight:700}
+.tb.sm{font-size:2.15vmin}
+
+.stat{font-weight:900;letter-spacing:-.045em;line-height:.88;font-size:14vmin;font-variant-numeric:tabular-nums}
+.stat small{display:block;font-family:var(--mono);font-weight:400;font-size:var(--tm);letter-spacing:.03em;line-height:1.35;color:var(--muted);margin-top:1.4vmin;text-transform:uppercase}
+
+.tag{display:inline-block;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;padding:.35vmin .9vmin;border:1.5px solid currentColor;line-height:1.2}
+.tag.f{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tag.a{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* step-through fragments: elements with data-at="n" appear at step n */
+[data-at]{opacity:0;transform:translateY(1.2vmin);transition:opacity .45s ease,transform .45s ease}
+[data-at].on{opacity:1;transform:none}
+svg [data-at]{transform:none}
+[data-at].ghost{opacity:.18}
+
+/* interactive widgets */
+.ctl{display:flex;align-items:center;gap:1.6vmin;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--muted);flex-wrap:wrap}
+.ctl output,.ctl .v{color:var(--ink);font-size:2.6vmin;font-weight:500;min-width:5ch;text-transform:none}
+.dark .ctl output,.dark .ctl .v{color:#fff}
+input[type=range]{-webkit-appearance:none;appearance:none;width:26vmin;height:3vmin;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:.45vmin;background:var(--faint)}
+input[type=range]::-moz-range-track{height:.45vmin;background:var(--faint)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:2.4vmin;height:2.4vmin;border-radius:50%;background:var(--accent);margin-top:-1vmin;border:0}
+input[type=range]::-moz-range-thumb{width:2.4vmin;height:2.4vmin;border-radius:50%;background:var(--accent);border:0}
+.btn{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;padding:.5vmin 1.1vmin;background:transparent;color:inherit;border:1.5px solid var(--faint);cursor:pointer}
+.btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.dark .btn.on{background:#fff;color:var(--ink);border-color:#fff}
+
+/* svg helpers */
+svg text{font-family:var(--sans);fill:currentColor}
+svg .m{font-family:var(--mono)}
+svg .mu{fill:var(--muted)}
+svg .ac{fill:var(--accent)}
+svg .st{stroke:currentColor;fill:none}
+svg .sa{stroke:var(--accent);fill:none}
+svg .sf{stroke:var(--faint);fill:none}
+svg .bxw{fill:var(--wash)}
+svg .bxa{fill:var(--accent)}
+svg .bxi{fill:currentColor}
+svg .wt{fill:#fff}
+.dark svg .wt{fill:var(--ink)}
+
+/* marching edges */
+.flow{stroke-dasharray:1.2 7;stroke-linecap:round;animation:march 1s linear infinite}
+@keyframes march{to{stroke-dashoffset:-8.2}}
+@keyframes pop{from{opacity:0;transform:translateY(1vmin)}}
+
+/* agenda */
+.agenda{display:flex;width:100%;height:100%;align-items:stretch;gap:.5vmin}
+.agenda>div{display:flex;flex-direction:column;justify-content:flex-end;gap:1.2vmin;min-width:0;position:relative}
+.agenda .blk{height:0;background:var(--ink);transition:height .8s cubic-bezier(.2,.8,.2,1)}
+.agenda .blk.a{background:var(--accent)}
+.agenda .blk.w{background:var(--wash2)}
+.slide.active .agenda .blk{height:var(--h)}
+.agenda .nm{font-weight:700;font-size:2.3vmin;line-height:1.1;letter-spacing:-.01em}
+.agenda .tm{font-family:var(--mono);font-size:var(--tm);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+
+.day{flex:1 1 0;min-height:0;display:flex;gap:2.4vmin;align-items:stretch}
+.day .agenda{flex:1 1 auto;height:auto}
+.dh{flex:0 0 17vmin;display:flex;flex-direction:column;justify-content:flex-end;gap:.4vmin;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.dh b{font-family:var(--sans);font-weight:800;font-size:4vmin;letter-spacing:-.03em;text-transform:none;color:var(--ink)}
+
+/* cards, appearing one after the other */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:2vmin;flex:0 0 auto;margin:auto 0;align-items:stretch}
+.cd{background:var(--wash);padding:2.2vmin;display:flex;flex-direction:column;gap:1.5vmin;min-height:44vmin;opacity:0;transform:translateY(1.5vmin)}
+.slide.active .cd{animation:cdin .5s ease forwards;animation-delay:var(--d)}
+@keyframes cdin{to{opacity:1;transform:none}}
+.cd>b{font-family:var(--mono);font-weight:500;font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;color:var(--accent)}
+.cd h5{font-weight:800;font-size:3.4vmin;letter-spacing:-.025em;line-height:1.05}
+.cd p{font-size:2.3vmin;line-height:1.28}
+.cd .ft{margin-top:auto;display:flex;gap:1vmin;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:1.6vmin;color:var(--muted)}
+.cd.a{background:var(--accent);color:#fff}
+.cd.a>b,.cd.a .ft{color:rgba(255,255,255,.8)}
+
+/* big numbers */
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:4vmin;flex:1 1 auto;min-height:0;align-items:stretch;align-content:center}
+.nums>div{display:flex;flex-direction:column;gap:2vmin;border-top:5px solid var(--ink);padding-top:2vmin}
+.nums>div.a{border-top-color:var(--accent)}
+.nums>div.a .stat{color:var(--accent)}
+.nums .stat{font-size:17vmin}
+.nums p{font-size:var(--t);line-height:1.25;max-width:30ch}
+
+/* big letters */
+.big3{display:flex;gap:4vmin;align-items:flex-end}
+.letter{font-weight:900;font-size:34vmin;line-height:.78;letter-spacing:-.05em}
+.lt{display:flex;flex-direction:column;gap:2vmin;flex:1 1 0;min-width:0}
+.lt p{font-size:3vmin;line-height:1.22;max-width:30ch}
+.lt b{font-family:var(--mono);font-weight:500;font-size:var(--tm);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+
+/* animated pipeline: stages from the HTML, a packet travels through them */
+.pipe{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4vmin;flex:0 0 auto;position:relative}
+.ps{position:relative;background:var(--wash);padding:1.5vmin 1.8vmin 1.7vmin;display:flex;flex-direction:column;gap:.5vmin;border-top:4px solid var(--faint);transition:background .35s,color .35s,border-color .35s}
+.ps em{font-style:normal;font-family:var(--mono);font-size:var(--tm);color:var(--muted)}
+.ps b{font-weight:800;font-size:3.2vmin;letter-spacing:-.025em;line-height:1.05}
+.ps span{font-family:var(--mono);font-size:var(--tm);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.ps.done{border-top-color:var(--ink)}
+.ps.on{background:var(--ink);color:#fff;border-top-color:var(--accent)}
+.ps.on em,.ps.on span{color:#aaa}
+.ps:not(:last-child)::after{content:"";position:absolute;left:100%;top:50%;width:4vmin;height:2px;background:repeating-linear-gradient(90deg,var(--faint) 0 .6vmin,transparent .6vmin 1.2vmin)}
+.ps.done::after{background:repeating-linear-gradient(90deg,var(--accent) 0 .6vmin,transparent .6vmin 1.2vmin);animation:dash .5s linear infinite}
+@keyframes dash{from{background-position:0 0}to{background-position:1.2vmin 0}}
+.pp-lane{position:relative;flex:1 1 auto;min-height:22vmin}
+.pk{position:absolute;top:4vmin;left:0;width:30vmin;margin-left:-15vmin;display:flex;flex-direction:column;align-items:center;gap:1vmin;transition:left .8s cubic-bezier(.4,0,.2,1)}
+.pk.jump{transition:none}
+.pk::before{content:"";position:absolute;left:50%;top:-4vmin;height:3.2vmin;border-left:2px solid var(--accent)}
+.pk svg{width:100%;height:18vmin;display:block;overflow:visible;animation:pop .4s ease}
+.pk i{font-style:normal;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--accent);white-space:nowrap}
+
+/* graph built step by step */
+#kg text{paint-order:stroke;stroke:var(--bg);stroke-width:6px;stroke-linejoin:round}
+#kg .nl{font-weight:700;font-size:18px;stroke:none}
+#kg .el{font-family:var(--mono);font-size:13px;fill:var(--muted)}
+#kg .ge{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .8s ease .15s}
+#kg [data-at].on .ge{stroke-dashoffset:0}
+
+/* split slide: black half / crimson half */
+.slide.duo{flex-direction:row;gap:0;padding:0}
+.duo .half{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:3vmin;padding:var(--pad);padding-bottom:calc(var(--pad) + 2.6vmin)}
+.duo .half.hd{background:var(--ink);color:#fff;--muted:#8d8d8d;--faint:#3a3a3a;--wash:#1a1a1a;--wash2:#262626;--accent:#d6324a}
+.duo .half.hd .acc{color:var(--accent)}
+.duo .half .h{font-size:4.6vmin}
+.wrows{flex:1 1 auto;display:flex;flex-direction:column;min-height:0}
+.wr{flex:1 1 0;display:grid;grid-template-columns:14vmin 1fr 4vmin;align-items:center;gap:1.6vmin;border-top:1.5px solid rgba(255,255,255,.3);font-size:2.4vmin;line-height:1.2}
+.hd .wr{border-top-color:#3a3a3a}
+.wk{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.75)}
+.wr p{font-weight:500}
+.wr p small{display:block;font-family:var(--mono);font-weight:400;font-size:1.6vmin;opacity:.75;margin-top:.3vmin}
+.hd .wk{color:#8d8d8d}
+.wv{font-style:normal;font-weight:900;font-size:3.4vmin;text-align:right;color:#fff}
+.hd .wv{color:var(--accent)}
+
+/* milestones / takeaways */
+.ms{display:flex;flex-direction:column;flex:1 1 auto;justify-content:center}
+.msr{display:grid;grid-template-columns:10vmin 34vmin 1fr;gap:2vmin;align-items:baseline;border-top:1.5px solid var(--faint);padding:1.5vmin 0}
+.msr .mt{font-family:var(--mono);font-size:2.2vmin;color:var(--accent)}
+.msr b{font-weight:800;font-size:3.2vmin;letter-spacing:-.02em}
+.msr p{font-size:var(--t);line-height:1.25}
+.msr.acc b{color:var(--accent)}
+
+/* live demo: a web page inside the slide */
+.dwin{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;border:2px solid var(--ink);background:var(--bg);outline:3px solid transparent;outline-offset:3px;transition:outline-color .2s}
+body.in-frame .slide.active .dwin{outline-color:var(--accent)}
+.dbar{display:flex;align-items:center;gap:1vmin;padding:.8vmin 1.2vmin;background:var(--ink);color:#bbb;font-family:var(--mono);font-size:var(--tm);flex:0 0 auto}
+.dbar>i{width:1.2vmin;height:1.2vmin;border-radius:50%;background:#555;flex:none}
+.dbar>i:first-child{background:#d6324a;animation:blink 1.4s steps(1) infinite}
+@keyframes blink{50%{opacity:.25}}
+.durl{margin-left:1vmin;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 auto}
+.dhint{color:#8d8d8d;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;margin-right:1vmin}
+.dhint .in,body.in-frame .dhint .out{display:none}
+body.in-frame .dhint .in{display:inline;color:#d6324a}
+.dbar .btn{color:#ddd;border-color:#444;padding:.3vmin .9vmin;text-decoration:none;white-space:nowrap}
+.dbar .btn.on{background:#fff;color:var(--ink);border-color:#fff}
+.dbar .sep{width:1px;align-self:stretch;background:#444;margin:0 .4vmin;font-style:normal}
+.dview{position:relative;flex:1 1 auto;min-height:0;overflow:hidden;background:var(--wash)}
+.dview iframe{position:absolute;left:0;top:0;width:100%;height:100%;border:0;transform-origin:0 0}
+.dfall{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vmin;text-align:center;padding:4vmin;color:var(--muted)}
+.dfall b{font-weight:800;font-size:3.4vmin;letter-spacing:-.025em;color:var(--ink)}
+.dfall p{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;max-width:60ch;line-height:1.5}
+.dwin.max{position:fixed;inset:0;z-index:30;border:0;outline:0}
+
+/* modal */
+.why{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;padding:.2vmin .9vmin;margin-left:.6vmin;background:var(--accent);color:#fff;border:0;cursor:pointer;vertical-align:.2vmin}
+.modal{position:fixed;inset:0;z-index:20;background:rgba(13,13,13,.55);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.modal.open{opacity:1;visibility:visible}
+.mbox{position:relative;background:var(--bg);color:var(--ink);width:min(150vmin,92vw);max-height:88vh;overflow:auto;padding:4vmin 4.5vmin;border-top:6px solid var(--accent);display:flex;flex-direction:column;gap:2.4vmin}
+.mbox h3{font-weight:800;font-size:4.2vmin;line-height:1.05;letter-spacing:-.03em}
+.mrows{display:grid;grid-template-columns:1fr 1fr;gap:2.4vmin 4vmin}
+.mclose{position:absolute;right:2vmin;top:1.4vmin;background:none;border:0;font-size:5vmin;line-height:1;cursor:pointer;color:var(--muted)}
+@media (max-aspect-ratio:1/1){.mrows{grid-template-columns:1fr}}
+
+/* misc */
+.legend{display:flex;gap:2.4vmin;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--muted);flex-wrap:wrap;align-items:center}
+.legend i{display:inline-block;width:1.8vmin;height:1.8vmin;vertical-align:-.25vmin;margin-right:.7vmin;font-style:normal}
+.sw-a{background:var(--accent)}.sw-i{background:var(--ink)}.sw-w{background:var(--wash2)}.sw-f{background:var(--faint)}
+.dark .sw-i{background:#fff}
+@media (max-aspect-ratio:3/2){.code{font-size:1.68vmin}.code.sm{font-size:1.5vmin}}
+@media (max-aspect-ratio:1/1){.body{flex-direction:column}.cards,.nums,.who{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0d0d0d"/></marker>
+    <marker id="aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#a51c30"/></marker>
+    <marker id="ahw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#fff"/></marker>
+    <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#9a9a9a"/></marker>
+    <!-- digiTatti arc, drawn in currentColor so it works on any background -->
+    <symbol id="dt-arc" viewBox="0 0 220 224"><path fill="none" stroke="currentColor" stroke-width="1.3" vector-effect="non-scaling-stroke" d="M0 223L146 223M1.2 200.2L146.4 215.4M4.8 177.6L147.6 207.9M10.7 155.5L149.5 200.6M18.9 134.1L152.3 193.5M29.3 113.8L155.7 186.8M41.7 94.6L159.8 180.4M56.1 76.8L164.6 174.5M72.3 60.6L170 169.1M90.1 46.2L175.9 164.3M109.2 33.8L182.2 160.2M129.6 23.4L189 156.8M151 15.2L196.1 154M173.1 9.3L203.4 152.1M195.7 5.7L210.9 150.9M218.5 4.5L218.5 150.5M64.5 223L65.3 206.9M67.9 191L72 175.4M77.8 160.4L85.1 146M93.9 132.5L104.1 120M115.5 108.6L128 98.4M141.5 89.6L155.9 82.3M170.9 76.5L186.5 72.4M202.4 69.8L218.5 69"/></symbol>
+  </defs>
+</svg>
+
+<!-- ================= OPENING ================= -->
+<section class="slide">
+  <div class="logos">
+    <img class="lg-it" src="assets/itatti_logo.png" alt="I Tatti, The Harvard University Center for Italian Renaissance Studies">
+    <i class="sep"></i>
+    <img class="lg-hv" src="assets/harvard_logo.svg" alt="Harvard University">
+    <i class="sep"></i>
+    <span class="dt" role="img" aria-label="digiTatti"><svg viewBox="0 0 220 224"><use href="#dt-arc"/></svg><span>digiTatti</span></span>
+  </div>
+  <div class="fit"><p>From the archive <span class="acc">to the graph</span>. <span class="dim">Linked data for Renaissance studies.</span></p></div>
+  <div class="who">
+    <div><b>Lukas Klic</b><span>Head of Digital Humanities Research</span></div>
+    <div><b>Remo Grillo</b><span>DH Research &amp; Software Engineer</span></div>
+    <div><b>Gianmarco Spinaci</b><span>DH Research Software Engineer</span></div>
+  </div>
+  <div class="lab"><span>Event name · Villa I Tatti, Florence</span><span>20 October 2026</span></div>
+  <aside class="notes">Title slide. The title is a .fit block: whatever you write is sized to fill the space, so short titles get big. Use span.acc for the crimson part and span.dim for the grey subtitle. Logos sit in .logos; remove a presenter by deleting its div in .who. Keys: → next, ← back, N notes, F fullscreen, Home / End. Clicking the right two thirds of the screen goes forward, the left third goes back.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>today</span><span>talk + workshop</span></div>
+  <h2 class="h">The plan.</h2>
+  <div class="body v">
+    <div class="day">
+      <div class="dh"><b>Talk</b><span>14:00 – 15:00</span></div>
+      <div class="agenda">
+        <div style="flex:20"><div class="nm">I · The lab</div><div class="blk" style="--h:70%;transition-delay:.05s"></div></div>
+        <div style="flex:34"><div class="nm">II · Linked data</div><div class="blk" style="--h:70%;transition-delay:.1s"></div></div>
+        <div style="flex:8"><div class="nm mut">Break</div><div class="blk w" style="--h:70%;transition-delay:.15s"></div></div>
+        <div style="flex:24"><div class="nm acc">III · Live demo</div><div class="blk a" style="--h:70%;transition-delay:.2s"></div></div>
+        <div style="flex:14"><div class="nm">Questions</div><div class="blk" style="--h:70%;transition-delay:.25s"></div></div>
+      </div>
+    </div>
+    <div class="day">
+      <div class="dh"><b>Workshop</b><span>15:15 – 16:45</span></div>
+      <div class="agenda">
+        <div style="flex:16"><div class="nm">Setup</div><div class="blk" style="--h:70%;transition-delay:.4s"></div></div>
+        <div style="flex:38"><div class="nm acc">Hands-on · your records</div><div class="blk a" style="--h:70%;transition-delay:.47s"></div></div>
+        <div style="flex:8"><div class="nm mut">Break</div><div class="blk w" style="--h:70%;transition-delay:.54s"></div></div>
+        <div style="flex:38"><div class="nm acc">Hands-on · your graph</div><div class="blk a" style="--h:70%;transition-delay:.61s"></div></div>
+      </div>
+    </div>
+    <div class="legend"><span><i class="sw-i"></i>talk — concepts and examples</span><span><i class="sw-a"></i>do — live demo, hands-on</span><span><i class="sw-w"></i>break</span></div>
+  </div>
+  <aside class="notes">Agenda. Each .day is one row; each block's flex value is its share of the row (use minutes), so the widths are proportional to time. Classes on .blk: none = black (talk), .a = crimson (doing), .w = grey (break). The bars grow in when the slide opens; transition-delay staggers them. Delete the second .day for a single-session agenda.</aside>
+</section>
+
+<!-- ================= PART I ================= -->
+<section class="slide red">
+  <div class="lab part"><span>part one</span><span>I / III</span></div>
+  <div class="fit" style="font-weight:900"><p>the lab</p></div>
+  <aside class="notes">Chapter interlude, full crimson. Top line: chapter name and number. A couple of words in the .fit, lower case, weight 900. Text is white; span.acc turns black here.</aside>
+</section>
+
+<section class="slide dark">
+  <div class="lab"><span>digiTatti</span><span>dh.itatti.harvard.edu</span></div>
+  <div class="fit"><p>An incubator of new ideas and methods <span class="acc">for the history of culture in the early modern period.</span></p></div>
+  <aside class="notes">Statement slide on black: one idea, as large as it fits. On black the crimson is automatically lifted to a lighter tone, so span.acc stays readable on a projector.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>the lab · 01</span><span>two columns of points</span></div>
+  <h2 class="h">What the lab <span class="acc">does</span>.</h2>
+  <div class="body">
+    <div class="col g15 pts lg mid">
+      <div class="pt"><b>research infrastructure</b><p>Platforms built on <strong>ResearchSpace</strong>, an open-source Semantic Web research environment.</p></div>
+      <div class="pt"><b>linked open data</b><p>Collections described with <strong>CIDOC-CRM</strong> and linked to VIAF, Wikidata and the Getty vocabularies.</p></div>
+      <div class="pt"><b>AI for the humanities</b><p>Handwritten text recognition, named entity recognition, visual similarity.</p></div>
+    </div>
+    <div class="col g1 pts mid">
+      <div class="pt k"><b>fellowships</b><p>Digital humanities fellows since 2016, many with the support of the <strong>Kress Foundation</strong>.</p></div>
+      <div class="pt k"><b>digital publishing</b><p>Semantic editions and online exhibitions, from Berenson's <em>Drawings of the Florentine Painters</em> to <em>Yashiro and Berenson</em>.</p></div>
+      <div class="pt k"><b>partnerships</b><p>Consortia such as <strong>PHAROS</strong> and Florentia Illustrata.</p></div>
+    </div>
+  </div>
+  <aside class="notes">The workhorse content slide. .lab at the top (section · number on the left, topic on the right), a heading with one crimson phrase, then .body with columns. A .pt is a mono label plus one or two lines; .pt.k makes the label grey for secondary points; .pts.lg makes the text bigger. Column widths: g1, g15, g2, g3.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>the lab · 02</span><span>big numbers</span></div>
+  <h2 class="h">The lab, <span class="acc">in numbers</span>.</h2>
+  <div class="nums">
+    <div><div class="stat"><span data-count="22">22</span><small>projects</small></div><p>Listed on the lab's website, from digital editions to research platforms.</p></div>
+    <div><div class="stat"><span data-count="14">14</span><small>photo archives</small></div><p>European and North American members of the PHAROS consortium.</p></div>
+    <div class="a"><div class="stat"><span data-count="25">25</span>M<small>images, estimated</small></div><p>Works of art, architecture and the history of photography across PHAROS collections.</p></div>
+  </div>
+  <div class="src">Source: project pages on dh.itatti.harvard.edu.</div>
+  <aside class="notes">Big numbers. Put the value in a span with data-count="…" and it counts up from zero every time the slide opens (decimals work too: data-count="2.5"). The .a column gets the crimson rule and number. Keep a source line at the bottom.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>the lab · 03</span><span>cards</span></div>
+  <h2 class="h">Four projects, <span class="acc">one approach</span>.</h2>
+  <div class="cards">
+    <div class="cd" style="--d:.1s"><b>01 · photo archives</b><h5>PHAROS</h5>
+      <p>An international consortium of fourteen art-historical photo archives, building one open research platform.</p>
+      <div class="ft"><span class="tag">consortium</span>pharosartresearch.org</div></div>
+    <div class="cd a" style="--d:.35s"><b>02 · urban history</b><h5>Florentia Illustrata</h5>
+      <p>A shared platform that gives consolidated access to digital projects on Renaissance Florence, founded in 2018.</p>
+      <div class="ft"><span class="tag">platform</span>live demo in part III</div></div>
+    <div class="cd" style="--d:.6s"><b>03 · spatial history</b><h5>Metapolis</h5>
+      <p>A map-based publication platform, built on ResearchSpace, to reconstruct places through time.</p>
+      <div class="ft"><span class="tag">NEH</span>linked open data</div></div>
+    <div class="cd" style="--d:.85s"><b>04 · digital edition</b><h5>Drawings of the Florentine Painters</h5>
+      <p>Berenson's catalogue as a searchable resource, across the 1903, 1938 and 1961 editions.</p>
+      <div class="ft"><span class="tag">Kress</span>semantic edition</div></div>
+  </div>
+  <aside class="notes">Cards. Four .cd in a row that slide in one after the other (the --d custom property is each card's delay). .cd.a is the crimson card: use it for the one you will talk about most. Three cards also work: change grid-template-columns in .cards, or leave one out and the row reflows.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>the lab · 04</span><span>image + points</span></div>
+  <h2 class="h">Florentia Illustrata: <span class="acc">one city, many projects</span>.</h2>
+  <div class="body">
+    <figure class="fig g2"><img src="assets/example_florence.jpg" alt="Painted bird's-eye view of Florence inscribed “Firenze verso l'anno 1490”"></figure>
+    <div class="col g1 pts mid">
+      <div class="pt"><b>since 2018</b><p>Founded by common agreement among its members, as one research platform for Renaissance Florence.</p></div>
+      <div class="pt"><b>the archives</b><p>Each project starts from the city's rich archival record.</p></div>
+      <div class="pt k"><b>see it live</b><p>Part III opens the platform inside this presentation.</p></div>
+    </div>
+  </div>
+  <div class="src">“Firenze verso l'anno 1490”, painted view after the Carta della Catena · image from the lab's project page.</div>
+  <aside class="notes">Image slide. The figure keeps the image's proportions and fits it in its column (g2 = two thirds). Put image files in the assets folder next to this HTML. For a full-width image, delete the .pts column.</aside>
+</section>
+
+<section class="slide">
+  <div class="lab"><span>Yashiro and Berenson</span><span>quote</span></div>
+  <div class="fit q"><p>“I shall make clear what I, a man brought up in an artistic atmosphere utterly different from that of Europe, feel of Botticelli, <span class="mark">that side of Botticelli which, as I think, was never, or perhaps very little, appreciated by European connoisseurs.</span>”</p></div>
+  <div class="lab"><span>Yukio Yashiro to Laurence Binyon, 1922 · from the online exhibition</span></div>
+  <aside class="notes">Quote slide: .fit with the .q class, regular weight, with the key passage in span.mark (bold crimson). The source goes in the bottom line.</aside>
+</section>
+
+<!-- ================= PART II ================= -->
+<section class="slide red">
+  <div class="lab part"><span>part two</span><span>II / III</span></div>
+  <div class="fit" style="font-weight:900"><p>linked data</p></div>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>linked data · 01</span><span>big letters</span></div>
+  <div class="big3" style="flex:1 1 auto;align-items:flex-end">
+    <div class="lt"><span class="letter">L</span><b>linked</b><p>Every person, place and object has an identifier others can point to.</p></div>
+    <div class="lt"><span class="letter">O</span><b>open</b><p>Published under open licences, in open standards.</p></div>
+    <div class="lt"><span class="letter acc">D</span><b>data</b><p>Statements a machine can read, query and combine.</p></div>
+  </div>
+  <div class="src">The acronym slide: three letters, one line each.</div>
+  <aside class="notes">Big letters, for an acronym or three key words. The last letter is crimson. No heading: the letters are the heading.</aside>
+</section>
+
+<section class="slide c" data-w="pipe">
+  <div class="lab"><span>linked data · 02</span><span>animated diagram</span></div>
+  <h2 class="h">From the archive <span class="acc">to the graph</span>.</h2>
+  <div class="body v" style="gap:2.2vmin">
+    <div class="ctl"><span class="v pp-say" style="font-size:2.3vmin">&nbsp;</span></div>
+    <div class="pipe">
+      <div class="ps" data-g="page" data-p="a scanned page" data-say="A letter is digitised: for now it is only an image."><b>archive</b><span>scans · PDFs</span></div>
+      <div class="ps" data-g="text" data-p="text" data-say="Its text is transcribed, by hand or with handwritten text recognition."><b>transcribe</b><span>HTR · OCR · by hand</span></div>
+      <div class="ps" data-g="tags" data-p="entities" data-say="People, places and dates are recognised and matched to authority records."><b>extract</b><span>people · places · dates</span></div>
+      <div class="ps" data-g="triple" data-p="triples" data-say="Each statement becomes a triple, modelled with CIDOC-CRM."><b>model</b><span>CIDOC-CRM</span></div>
+      <div class="ps" data-g="graph" data-p="a graph" data-say="The graph is published: people can browse it, query it and cite it."><b>publish</b><span>ResearchSpace</span></div>
+    </div>
+    <div class="pp-lane"><div class="pk"></div></div>
+    <div class="row" style="flex:0 0 auto">
+      <div class="pt k"><b>a loop, not a line</b><p>Published records are corrected, enriched and published again.</p></div>
+      <div class="pt"><b>keep the trace</b><p>Every statement keeps a link back to its source.</p></div>
+    </div>
+  </div>
+  <aside class="notes">Animated pipeline, written entirely in HTML: each .ps is a stage. data-g picks the glyph the travelling packet shows (page, text, tags, triple, graph), data-p is the packet's label, data-say is the caption shown above. Add or remove stages freely; the animation loops while the slide is open.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>linked data · 03</span><span>step through with →</span></div>
+  <h2 class="h">A letter, <span class="acc">as a graph</span>.</h2>
+  <div class="body">
+    <div class="fig g15">
+      <svg viewBox="0 0 820 470" id="kg">
+        <g data-at="1">
+          <path class="ge st" pathLength="1" d="M352 192 L232 104" stroke-width="2" marker-end="url(#ah)"/>
+          <text class="el" x="270" y="160" text-anchor="end">written by</text>
+          <rect class="bxw" x="20" y="44" width="230" height="56"/><text class="nl" x="135" y="79" text-anchor="middle">Bernard Berenson</text>
+        </g>
+        <g data-at="2">
+          <path class="ge st" pathLength="1" d="M468 192 L588 104" stroke-width="2" marker-end="url(#ah)"/>
+          <text class="el" x="550" y="160">addressed to</text>
+          <rect class="bxw" x="570" y="44" width="230" height="56"/><text class="nl" x="685" y="79" text-anchor="middle">Yukio Yashiro</text>
+        </g>
+        <g data-at="3">
+          <path class="ge st" pathLength="1" d="M492 232 L566 298" stroke-width="2" marker-end="url(#ah)"/>
+          <text class="el" x="540" y="258">mentions</text>
+          <rect class="bxw" x="570" y="276" width="230" height="56"/><text class="nl" x="685" y="311" text-anchor="middle">Sandro Botticelli</text>
+        </g>
+        <g data-at="4">
+          <path class="ge sa" pathLength="1" d="M135 102 L135 362" stroke-width="2" marker-end="url(#aha)"/>
+          <text class="el" x="146" y="236" style="fill:var(--accent)">lived at</text>
+          <rect class="bxw" x="20" y="366" width="230" height="56"/><text class="nl" x="135" y="401" text-anchor="middle">Villa I Tatti</text>
+          <path class="ge sa" pathLength="1" d="M685 334 L685 384" stroke-width="2" marker-end="url(#aha)"/>
+          <text class="el" x="674" y="364" text-anchor="end" style="fill:var(--accent)">same as</text>
+          <rect class="sa" x="571" y="389" width="228" height="54" stroke-width="2" stroke-dasharray="6 5"/><text class="nl" x="685" y="423" text-anchor="middle" style="fill:var(--accent)">Wikidata · ULAN</text>
+        </g>
+        <rect class="bxa" x="330" y="190" width="160" height="58"/><text class="nl wt" x="410" y="226" text-anchor="middle" style="fill:#fff">a letter</text>
+      </svg>
+    </div>
+    <div class="col g1 pts mid">
+      <div class="pt k"><b>start</b><p>One object: <strong>a letter</strong>. Press → to add statements.</p></div>
+      <div class="pt" data-at="1"><b>1 · who wrote it</b><p>letter → <em>written by</em> → Bernard Berenson</p></div>
+      <div class="pt" data-at="2"><b>2 · to whom</b><p>letter → <em>addressed to</em> → Yukio Yashiro</p></div>
+      <div class="pt" data-at="3"><b>3 · what it is about</b><p>letter → <em>mentions</em> → Sandro Botticelli</p></div>
+      <div class="pt" data-at="4"><b>4 · linking out</b><p>Each new statement connects the letter to <strong>everything else we know</strong>.</p></div>
+    </div>
+  </div>
+  <div class="src">Illustrative and simplified: in CIDOC-CRM each arrow is a path through an event (a creation, a residence).</div>
+  <aside class="notes">Step-through fragments. Any element with data-at="n" appears at step n: → reveals the next one before moving to the next slide, ← hides it again. It works on HTML and on SVG groups; in this SVG the edges also draw themselves (class "ge" with pathLength="1"). Coming back from the next slide shows all steps at once.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>linked data · 04</span><span>code + table</span></div>
+  <h2 class="h">Ask the graph <span class="acc">a question</span>.</h2>
+  <div class="body">
+    <div class="col g15 mid">
+<div class="code"><span class="cm"># who was born where? (CIDOC-CRM)</span>
+<span class="k">PREFIX</span> crm: &lt;http://www.cidoc-crm.org/cidoc-crm/&gt;
+
+<span class="k">SELECT</span> ?name ?place <span class="k">WHERE</span> {
+  ?person a crm:E21_Person ;
+    crm:P1_is_identified_by/crm:P190_has_symbolic_content ?name ;
+    <span class="b">crm:P98i_was_born/crm:P7_took_place_at ?birthplace</span> .
+  ?birthplace crm:P1_is_identified_by/crm:P190_has_symbolic_content ?place .
+}
+<span class="k">ORDER BY</span> ?name <span class="k">LIMIT</span> 4</div>
+      <div class="src">The highlighted line is the path: a person, a birth event, a place.</div>
+    </div>
+    <div class="col g1 mid">
+      <table class="tb">
+        <tr><th>?name</th><th>?place</th></tr>
+        <tr><td>Andrea del Verrocchio</td><td>Florence</td></tr>
+        <tr><td>Giorgio Vasari</td><td>Arezzo</td></tr>
+        <tr class="hl"><td>Leonardo da Vinci</td><td class="acc">Vinci</td></tr>
+        <tr><td>Sandro Botticelli</td><td>Florence</td></tr>
+      </table>
+    </div>
+  </div>
+  <aside class="notes">Code and a table side by side. Code goes in a div.code with white-space preserved: write it flush left. Inside it, span.k = crimson keyword, span.cm = grey comment, span.b = highlighted line. In tables, tr.hl makes a row bold and td.n right-aligns numbers.</aside>
+</section>
+
+<section class="slide c" data-w="calc">
+  <div class="lab"><span>linked data · 05</span><span>interactive</span></div>
+  <h2 class="h">How big is <span class="acc">your graph</span>? <button class="why" data-modal="m-calc">why?</button></h2>
+  <div class="body">
+    <div class="col g1 mid" style="gap:3.6vmin">
+      <div class="ctl ia"><span style="width:26ch">records</span><input type="range" id="c-rec" min="0" max="12" step="1" value="6"><output id="c-rec-v">&nbsp;</output></div>
+      <div class="ctl ia" data-g="st"><span style="width:26ch">statements per record</span><button class="btn" data-v="10">10</button><button class="btn on" data-v="25">25</button><button class="btn" data-v="50">50</button><button class="btn" data-v="100">100</button></div>
+      <div class="pts">
+        <div class="pt"><b>one statement, one triple</b><p>Subject, predicate, object. A well-described letter easily makes 25.</p></div>
+        <div class="pt k"><b>an estimate</b><p>About 120 bytes per triple, written out as N-Triples.</p></div>
+      </div>
+    </div>
+    <div class="col g1 mid" style="gap:5vmin">
+      <div class="stat"><span id="c-tr">0</span><small>triples</small></div>
+      <div class="stat acc" style="font-size:9vmin"><span id="c-mb">0</span><small>as N-Triples, uncompressed</small></div>
+    </div>
+  </div>
+  <aside class="notes">Interactive widget: a slider and a button group drive two numbers. Its code is W.calc in the script at the bottom: init() wires the controls, upd() recomputes. Controls inside an element with class "ia" do not advance the slides when clicked. The "why?" button opens a modal: any button with data-modal="id" opens the .modal with that id; Esc or a click outside closes it.</aside>
+</section>
+
+<section class="slide duo red">
+  <div class="half hd">
+    <div class="lab"><span>linked data · 06</span><span>before</span></div>
+    <h2 class="h">A catalogue <span class="acc">record</span>.</h2>
+    <div class="wrows">
+      <div class="wr"><span class="wk">author</span><p>“Botticelli, Sandro”<small>a string</small></p><i class="wv">×</i></div>
+      <div class="wr"><span class="wk">place</span><p>“Firenze”<small>spelled one way, in one language</small></p><i class="wv">×</i></div>
+      <div class="wr"><span class="wk">date</span><p>“ca. 1480”<small>readable by people only</small></p><i class="wv">×</i></div>
+      <div class="wr"><span class="wk">links</span><p>none<small>the record ends here</small></p><i class="wv">×</i></div>
+    </div>
+  </div>
+  <div class="half">
+    <div class="lab"><span>&nbsp;</span><span>after</span></div>
+    <h2 class="h">A linked <span class="acc">record</span>.</h2>
+    <div class="wrows">
+      <div class="wr"><span class="wk">author</span><p>a person<small>one identifier, shared with ULAN and Wikidata</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">place</span><p>a place<small>Florence, Firenze, Florentia: one entity, with coordinates</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">date</span><p>a time-span<small>earliest and latest, machine-readable</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">links</span><p>everything else<small>every record that shares an entity</small></p><i class="wv">✓</i></div>
+    </div>
+  </div>
+  <aside class="notes">Split slide: the left .half.hd is black, the right half takes the slide's colour (crimson here: class "red" on the section; remove it for white). Rows are .wr: a mono key, a line of text with an optional small, and a big glyph on the right. Good for before / after or two options.</aside>
+</section>
+
+<section class="slide red">
+  <div class="lab part"><span>break</span><span>then: live demo</span></div>
+  <div class="fit" style="font-weight:900"><p>break<span class="acc">.</span></p></div>
+  <aside class="notes">Break slide: same layout as the chapter interludes.</aside>
+</section>
+
+<!-- ================= PART III ================= -->
+<section class="slide red">
+  <div class="lab part"><span>part three</span><span>III / III</span></div>
+  <div class="fit" style="font-weight:900"><p>live demo</p></div>
+  <div class="lab" style="color:#fff"><span>florentiaillustrata.net</span></div>
+</section>
+
+<section class="slide c demo" data-w="demo">
+  <div class="lab"><span>live demo · 01</span><span>florentia illustrata</span></div>
+  <div class="dwin">
+    <div class="dbar">
+      <i></i><i></i><i></i>
+      <span class="durl">florentiaillustrata.net/resource/:test</span>
+      <span class="dhint"><span class="out">click the page to use it</span><span class="in">keys go to the page · click outside it, then →</span></span>
+      <button class="btn" data-z=".8">80%</button><button class="btn on" data-z="1">100%</button><button class="btn" data-z="1.25">125%</button><button class="btn" data-z="1.5">150%</button>
+      <i class="sep"></i>
+      <button class="btn" data-act="reset" title="Reload the starting page">↺ reset</button>
+      <a class="btn" href="https://florentiaillustrata.net/resource/:test" target="_blank" rel="noopener">new tab ↗</a>
+      <button class="btn" data-act="max" title="Fill the screen (Esc to exit)">⤢ expand</button>
+    </div>
+    <div class="dview">
+      <div class="dfall"><b>Loading the live page…</b><p>If it stays blank or asks you to log in, use “new tab ↗”: the site may not keep you logged in inside another page.</p></div>
+      <iframe data-src="https://florentiaillustrata.net/resource/:test" title="Florentia Illustrata, live demo" allow="fullscreen; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+  </div>
+  <aside class="notes">Live demo slide: a real web page inside the presentation. Set the address in the iframe's data-src (and in the "new tab" link). The page starts loading when you reach the slide before this one, so it is ready when you arrive. Click into the page to use it: from then on the keyboard belongs to the page and the frame gets a crimson outline. To continue, click anywhere outside the frame (clicks on this slide never change slide), then press →. Zoom buttons enlarge the page for the back of the room; "reset" reloads the starting address; "expand" fills the screen (Esc to exit). If the site needs a login, check it before the talk: browsers often do not send login cookies to a page embedded in another site.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>to take away</span><span>five rows</span></div>
+  <h2 class="h">Five things <span class="acc">to remember</span>.</h2>
+  <div class="ms">
+    <div class="msr"><span class="mt">01</span><b>start from the sources</b><p>Digitise and transcribe, and keep the link to the original.</p></div>
+    <div class="msr"><span class="mt">02</span><b>model the statements</b><p>People, places and dates become entities; claims become triples.</p></div>
+    <div class="msr"><span class="mt">03</span><b>link out</b><p>Authority records make your data meet everyone else's.</p></div>
+    <div class="msr"><span class="mt">04</span><b>publish for people</b><p>A platform to browse, query and cite, not a file on a server.</p></div>
+    <div class="msr acc"><span class="mt">05</span><b>show it live</b><p>A demo slide puts the platform inside the talk.</p></div>
+  </div>
+  <aside class="notes">Numbered rows, for takeaways, checkpoints or next steps. .msr.acc makes the last row crimson.</aside>
+</section>
+
+<section class="slide dark">
+  <div class="logos">
+    <img class="lg-it" src="assets/itatti_logo_white.png" alt="I Tatti, The Harvard University Center for Italian Renaissance Studies">
+    <i class="sep"></i>
+    <img class="lg-hv" src="assets/harvard_logo_white.svg" alt="Harvard University">
+    <i class="sep"></i>
+    <span class="dt" role="img" aria-label="digiTatti"><svg viewBox="0 0 220 224"><use href="#dt-arc"/></svg><span>digiTatti</span></span>
+  </div>
+  <div class="fit" style="font-weight:900"><p>thank you<span class="acc">.</span></p></div>
+  <div class="lab"><span>Lukas Klic · Remo Grillo · Gianmarco Spinaci — dh.itatti.harvard.edu</span></div>
+  <aside class="notes">Closing slide on black, with the white versions of the logos.</aside>
+</section>
+
+<div class="modal" id="m-calc" role="dialog" aria-modal="true" aria-labelledby="m-calc-h">
+  <div class="mbox">
+    <button class="mclose" aria-label="Close">×</button>
+    <div class="lab"><span>how big is your graph · the estimate</span></div>
+    <h3 id="m-calc-h">Why about 120 bytes per triple?</h3>
+    <div class="mrows">
+      <div class="pt"><b>1 · full addresses</b><p>N-Triples writes every IRI in full, e.g. <code>&lt;http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by&gt;</code>, on every line.</p></div>
+      <div class="pt"><b>2 · one line per triple</b><p>No prefixes, no shortcuts: easy to stream and split, but verbose.</p></div>
+      <div class="pt k"><b>3 · compression</b><p>Such repetitive text compresses very well with gzip.</p></div>
+      <div class="pt k"><b>4 · in a triplestore</b><p>Indexes add space; the real size depends on the engine.</p></div>
+    </div>
+  </div>
+</div>
+
+<div id="track"><div id="bar"></div></div>
+<div id="pn"></div>
+
+<script>
+(function(){
+  /* ============ helpers ============ */
+  var W = {};
+  function $(s, sel){ return s.querySelector(sel); }
+  function $$(s, sel){ return [].slice.call(s.querySelectorAll(sel)); }
+  function later(s, fn, ms){ var t = setTimeout(fn, ms); (s._t = s._t || []).push(t); return t; }
+  function every(s, fn, ms){ var t = setInterval(fn, ms); (s._i = s._i || []).push(t); return t; }
+  function clearTimers(s){ (s._t||[]).forEach(clearTimeout); (s._i||[]).forEach(clearInterval); s._t = []; s._i = []; }
+  function short(n){
+    var u = [[1e9,' B'],[1e6,' M'],[1e3,' k']];
+    for (var j = 0; j < u.length; j++) if (n >= u[j][0]){ var v = n / u[j][0]; return +v.toFixed(v < 10 ? 1 : 0) + u[j][1]; }
+    return String(n);
+  }
+  function bytes(b){
+    var u = [[1e9,' GB'],[1e6,' MB'],[1e3,' KB']];
+    for (var j = 0; j < u.length; j++) if (b >= u[j][0]){ var v = b / u[j][0]; return +v.toFixed(v < 10 ? 1 : 0) + u[j][1]; }
+    return b + ' B';
+  }
+
+  // numbers with data-count count up from zero when their slide opens
+  function countUp(s){
+    $$(s, '[data-count]').forEach(function(e){
+      var to = +e.dataset.count, dec = (e.dataset.count.split('.')[1] || '').length, t0 = null;
+      e.textContent = (0).toFixed(dec);
+      function f(t){
+        if (!s.classList.contains('active')) return;
+        if (t0 === null) t0 = t;
+        var p = Math.min(1, (t - t0) / 1300);
+        e.textContent = (to * (1 - Math.pow(1 - p, 3))).toFixed(dec);
+        if (p < 1) requestAnimationFrame(f);
+      }
+      requestAnimationFrame(f);
+    });
+  }
+
+  /* ============ widgets ============ */
+  // --- animated pipeline: stages are .ps in the HTML; a packet travels through them
+  W.pipe = {
+    G: {
+      page: '<svg viewBox="0 0 160 90"><rect x="56" y="6" width="48" height="66" style="fill:var(--bg)" stroke="currentColor" stroke-width="3"/><path d="M66 22h28M66 32h28M66 42h18M66 52h26" stroke="currentColor" stroke-width="3"/></svg>',
+      text: '<svg viewBox="0 0 160 90"><path d="M36 16h88M36 32h72M36 48h88M36 64h52" stroke="currentColor" stroke-width="7"/></svg>',
+      tags: '<svg viewBox="0 0 160 90"><path d="M36 16h18M90 16h34M36 32h72M36 48h26M104 48h20M36 64h52" stroke="currentColor" stroke-width="7"/><rect x="56" y="9" width="32" height="14" style="fill:var(--accent)"/><rect x="64" y="41" width="38" height="14" style="fill:var(--accent)"/></svg>',
+      triple: '<svg viewBox="0 0 160 90"><circle cx="30" cy="40" r="16" fill="currentColor"/><path d="M48 40h56" stroke="currentColor" stroke-width="4"/><path d="M102 31l14 9-14 9z" fill="currentColor"/><circle cx="132" cy="40" r="16" style="fill:var(--accent)"/></svg>',
+      graph: '<svg viewBox="0 0 160 90"><path d="M80 44L30 18M80 44L84 8M80 44L134 24M80 44L42 74M80 44L122 72M30 18L84 8M134 24L122 72" stroke="currentColor" stroke-width="2.5"/><circle cx="30" cy="18" r="8" fill="currentColor"/><circle cx="84" cy="8" r="7" fill="currentColor"/><circle cx="134" cy="24" r="8" fill="currentColor"/><circle cx="42" cy="74" r="8" fill="currentColor"/><circle cx="122" cy="72" r="7" fill="currentColor"/><circle cx="80" cy="44" r="13" style="fill:var(--accent)"/></svg>'
+    },
+    init: function(s){
+      $$(s, '.ps').forEach(function(p, j){ p.insertAdjacentHTML('afterbegin', '<em>' + (j < 9 ? '0' : '') + (j + 1) + '</em>'); });
+    },
+    enter: function(s){
+      var self = this, st = $$(s, '.ps'), pk = $(s, '.pk'), say = $(s, '.pp-say'), n = st.length, T = 0;
+      function show(j){
+        var p = st[j];
+        st.forEach(function(x, m){ x.classList.toggle('on', m === j); x.classList.toggle('done', m < j); });
+        pk.classList.toggle('jump', j === 0);
+        pk.style.left = (p.offsetLeft + p.offsetWidth / 2) + 'px';
+        pk.innerHTML = (self.G[p.dataset.g] || '') + '<i>' + (p.dataset.p || '') + '</i>';
+        say.innerHTML = '<b class="acc">' + (j + 1) + ' / ' + n + '</b> · ' + p.dataset.say;
+      }
+      st.forEach(function(p, j){ later(s, function(){ show(j); }, T); T += j === n - 1 ? 3800 : 2200; });
+      later(s, function(){ self.enter(s); }, T);
+    }
+  };
+
+  // --- interactive: records × statements per record → triples and file size
+  W.calc = {
+    R: [100, 250, 500, 1e3, 2500, 5e3, 1e4, 25e3, 5e4, 1e5, 25e4, 5e5, 1e6],
+    BYTES: 120,
+    init: function(s){
+      var self = this, bs = $$(s, '[data-g="st"] .btn');
+      $(s, '#c-rec').addEventListener('input', function(){ self.upd(s); });
+      bs.forEach(function(b){ b.addEventListener('click', function(){ bs.forEach(function(x){ x.classList.toggle('on', x === b); }); self.upd(s); }); });
+      this.upd(s);
+    },
+    upd: function(s){
+      var n = this.R[+$(s, '#c-rec').value], k = +$(s, '[data-g="st"] .btn.on').dataset.v;
+      $(s, '#c-rec-v').textContent = short(n);
+      $(s, '#c-tr').textContent = short(n * k);
+      $(s, '#c-mb').textContent = bytes(n * k * this.BYTES);
+    }
+  };
+
+  // --- live demo: zoom, reset, expand
+  W.demo = {
+    init: function(s){
+      var win = $(s, '.dwin'), fr = $(s, 'iframe'), zs = $$(s, '[data-z]');
+      zs.forEach(function(b){ b.addEventListener('click', function(){
+        var z = +b.dataset.z;
+        zs.forEach(function(x){ x.classList.toggle('on', x === b); });
+        fr.style.width = fr.style.height = (100 / z) + '%';
+        fr.style.transform = z === 1 ? '' : 'scale(' + z + ')';
+      }); });
+      // once the page is in, hide the loading note (it would show through a transparent page)
+      fr.addEventListener('load', function(){ if (fr.getAttribute('src')) $(s, '.dfall').style.visibility = 'hidden'; });
+      $(s, '[data-act="reset"]').addEventListener('click', function(){ if (fr.getAttribute('src')) fr.src = fr.getAttribute('src'); });
+      $(s, '[data-act="max"]').addEventListener('click', function(){ win.classList.toggle('max'); });
+    },
+    leave: function(s){ $(s, '.dwin').classList.remove('max'); }
+  };
+
+  /* ============ engine ============ */
+  var slides = [].slice.call(document.querySelectorAll('.slide'));
+  var bar = document.getElementById('bar'), pn = document.getElementById('pn'), i = -1, k = 0;
+
+  slides.forEach(function(s){ var w = W[s.dataset.w]; if (w && w.init) w.init(s); });
+
+  function maxStep(s){
+    if (s._max != null) return s._max;
+    var m = +(s.dataset.steps || 0);
+    $$(s, '[data-at]').forEach(function(e){ m = Math.max(m, +e.dataset.at); });
+    return (s._max = m);
+  }
+  function applyStep(s, kk){
+    $$(s, '[data-at]').forEach(function(e){ e.classList.toggle('on', kk >= +e.dataset.at); });
+    s.dataset.k = kk;
+    var w = W[s.dataset.w]; if (w && w.step) w.step(s, kk);
+  }
+
+  // size the type so the text fills its box as much as possible
+  function fit(el){
+    if (getComputedStyle(el).display === 'none') return;
+    var lo = 8, hi = Math.max(40, Math.min(el.clientHeight, el.clientWidth) * 1.2 | 0);
+    function ok(){ return el.scrollHeight <= el.clientHeight + 1 && el.scrollWidth <= el.clientWidth + 1; }
+    el.style.justifyContent = 'flex-start';
+    while (hi - lo > 1){ var m = (lo + hi) >> 1; el.style.fontSize = m + 'px'; if (ok()) lo = m; else hi = m; }
+    el.style.fontSize = lo + 'px';
+    el.style.justifyContent = '';
+  }
+  function fitAll(){ document.querySelectorAll('.fit').forEach(fit); }
+
+  // iframes load from data-src one slide ahead, then stay loaded
+  function preload(s){
+    if (s) $$(s, 'iframe[data-src]').forEach(function(f){ f.src = f.dataset.src; f.removeAttribute('data-src'); });
+  }
+
+  function go(n, atEnd){
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    if (n === i) return;
+    closeModal && closeModal();
+    if (i >= 0){ var old = slides[i]; old.classList.remove('active'); clearTimers(old); var wo = W[old.dataset.w]; if (wo && wo.leave) wo.leave(old); }
+    i = n; var s = slides[i];
+    s.classList.add('active');
+    k = atEnd ? maxStep(s) : 0;
+    applyStep(s, k);
+    bar.style.width = (slides.length > 1 ? i / (slides.length - 1) * 100 : 0) + '%';
+    var c = s.classList, b = document.body.classList;
+    b.toggle('bg-dark', c.contains('dark')); b.toggle('bg-red', c.contains('red')); b.toggle('first', i === 0);
+    pn.textContent = (i + 1) + ' / ' + slides.length;
+    history.replaceState(null, '', '#' + (i + 1));
+    s.querySelectorAll('.fit').forEach(fit);
+    countUp(s);
+    preload(s); preload(slides[i + 1]);
+    var w = W[s.dataset.w]; if (w && w.enter) w.enter(s);
+  }
+  function next(){ var s = slides[i]; if (k < maxStep(s)){ k++; applyStep(s, k); } else go(i + 1); }
+  function prev(){ var s = slides[i]; if (k > 0){ k--; applyStep(s, k); } else go(i - 1, true); }
+
+  var h = parseInt(location.hash.slice(1), 10);
+  go(isNaN(h) ? 0 : h - 1);
+
+  fitAll();
+  if (document.fonts){ document.fonts.ready.then(fitAll); document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', fitAll); }
+  setTimeout(fitAll, 400);
+  window.addEventListener('load', fitAll);
+  var lastW = 0, lastH = 0;
+  function onSize(){ if (innerWidth === lastW && innerHeight === lastH) return; lastW = innerWidth; lastH = innerHeight; fitAll(); }
+  window.addEventListener('resize', onSize);
+  if (window.ResizeObserver) new ResizeObserver(onSize).observe(document.documentElement);
+
+  // modals: buttons with data-modal open the matching .modal
+  function openModal(){ return document.querySelector('.modal.open'); }
+  function closeModal(){ var m = openModal(); if (m) m.classList.remove('open'); }
+  document.querySelectorAll('[data-modal]').forEach(function(b){
+    b.addEventListener('click', function(){ var m = document.getElementById(b.dataset.modal); if (m) m.classList.add('open'); });
+  });
+  document.querySelectorAll('.modal').forEach(function(m){
+    m.addEventListener('click', function(e){ if (e.target === m || e.target.closest('.mclose')) closeModal(); });
+  });
+
+  // a click inside an iframe moves the keyboard there: mark it, so it is clear why → does nothing
+  window.addEventListener('blur', function(){ setTimeout(function(){ var a = document.activeElement; document.body.classList.toggle('in-frame', !!a && a.tagName === 'IFRAME'); }); });
+  window.addEventListener('focus', function(){ document.body.classList.remove('in-frame'); });
+
+  document.addEventListener('keydown', function(e){
+    var key = e.key;
+    if (openModal()){ if (key === 'Escape' || key === 'Backspace'){ e.preventDefault(); closeModal(); } return; }
+    var mx = document.querySelector('.dwin.max');
+    if (mx && key === 'Escape'){ e.preventDefault(); mx.classList.remove('max'); return; }
+    if (['ArrowRight','ArrowDown','PageDown',' ','Enter'].indexOf(key) > -1){ e.preventDefault(); next(); }
+    else if (['ArrowLeft','ArrowUp','PageUp','Backspace'].indexOf(key) > -1){ e.preventDefault(); prev(); }
+    else if (key === 'Home') go(0);
+    else if (key === 'End') go(slides.length - 1);
+    else if (key === 'n' || key === 'N') document.body.classList.toggle('show-notes');
+    else if (key === 'f' || key === 'F'){
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+  document.addEventListener('click', function(e){
+    if (e.target.closest('.notes, .ia, .modal, .demo, button, input, a, label, select')) return;
+    if (e.clientX < innerWidth / 3) prev(); else next();
+  });
+  var x0 = null;
+  document.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, {passive: true});
+  document.addEventListener('touchend', function(e){
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40){ if (dx < 0) next(); else prev(); } x0 = null;
+  });
+})();
+</script>
+</body>
+</html>
