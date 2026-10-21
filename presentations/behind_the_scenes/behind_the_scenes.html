@@ -235,6 +235,8 @@ svg .wt{fill:#fff}
 .ps em{font-style:normal;font-family:var(--mono);font-size:var(--tm);color:var(--muted)}
 .ps b{font-weight:800;font-size:3.2vmin;letter-spacing:-.025em;line-height:1.05}
 .ps span{font-family:var(--mono);font-size:var(--tm);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.ps small{margin-top:auto;padding-top:.8vmin;border-top:1px dashed var(--faint);font-family:var(--mono);font-size:var(--tm);letter-spacing:.04em;color:var(--muted)}
+.ps.on small{color:#aaa;border-top-color:#555}
 .ps.done{border-top-color:var(--ink)}
 .ps.on{background:var(--ink);color:#fff;border-top-color:var(--accent)}
 .ps.on em,.ps.on span{color:#aaa}
@@ -418,6 +420,12 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
 /* a place as a network: out-of-period nodes fade, footprints of other phases disappear */
 .pl .pn.off{opacity:.12}
 .pl .ph.off{opacity:0}
+.pl .pl-hand{transition:transform .8s ease}
+/* one hero figure, two supporting ones */
+.nums.bal{grid-template-columns:1.35fr 1fr;grid-template-rows:1fr 1fr;gap:3vmin 6vmin}
+.nums.bal>div:first-child{grid-row:span 2;justify-content:center}
+.nums.bal .stat{font-size:11vmin}
+.nums.bal>div.a .stat{font-size:26vmin}
 
 @media (max-aspect-ratio:3/2){.code{font-size:1.68vmin}.code.sm{font-size:1.5vmin}}
 @media (max-aspect-ratio:1/1){.body{flex-direction:column}.cards,.nums,.who{grid-template-columns:1fr 1fr}}
@@ -479,7 +487,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
   <div class="fit" style="font-weight:900"><p>why we need it</p></div>
 </section>
 
-<section class="slide c bg" data-w="place">
+<section class="slide c bg" data-w="place" data-steps="6">
   <div class="bgimg light" style="background-image:url(assets/img/florence.jpg)"></div>
   <div class="lab"><span>why · 01</span><span>step through with →</span></div>
   <h2 class="h">A place is <span class="acc">a network</span>, through time.</h2>
@@ -488,18 +496,20 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
       <text class="pl-year" x="500" y="30" text-anchor="middle" style="font-size:34px;font-weight:900;fill:var(--accent)"></text>
       <g data-at="1">
         <text class="el" x="150" y="44" text-anchor="middle">PEOPLE</text>
-        <g class="pn" data-from="1420" data-to="1480"><path class="st" d="M170 92 L430 180" stroke-width="1.5"/><circle cx="170" cy="92" r="11" class="bxi"/><text x="148" y="98" text-anchor="end" style="font-size:17px">a patron</text></g>
-        <g class="pn" data-from="1590" data-to="1835"><path class="st" d="M150 202 L415 205" stroke-width="1.5"/><circle cx="150" cy="202" r="11" class="bxi"/><text x="128" y="208" text-anchor="end" style="font-size:17px">a family</text></g>
+        <g class="pn" data-from="1420" data-to="1589"><path class="st" d="M170 92 L430 180" stroke-width="1.5"/><circle cx="170" cy="92" r="11" class="bxi"/><text x="148" y="98" text-anchor="end" style="font-size:17px">a patron</text></g>
+        <g class="pn" data-from="1590" data-to="1834"><path class="st" d="M150 202 L415 205" stroke-width="1.5"/><circle cx="150" cy="202" r="11" class="bxi"/><text x="128" y="208" text-anchor="end" style="font-size:17px">a family</text></g>
         <g class="pn" data-from="1835" data-to="2026"><path class="st" d="M170 312 L430 262" stroke-width="1.5"/><circle cx="170" cy="312" r="11" class="bxi"/><text x="148" y="318" text-anchor="end" style="font-size:17px">its owners</text></g>
       </g>
       <g data-at="2">
         <text class="el" x="850" y="44" text-anchor="middle">EVENTS</text>
-        <g class="pn" data-from="1420" data-to="1470"><path class="sa" d="M830 92 L570 180" stroke-width="1.5"/><rect x="819" y="81" width="22" height="22" transform="rotate(45 830 92)" class="bxa"/><text x="854" y="98" style="font-size:17px">construction</text></g>
-        <g class="pn" data-from="1700" data-to="1750"><path class="sa" d="M850 202 L585 205" stroke-width="1.5"/><rect x="839" y="191" width="22" height="22" transform="rotate(45 850 202)" class="bxa"/><text x="874" y="208" style="font-size:17px">a new wing</text></g>
-        <g class="pn" data-from="1950" data-to="2000"><path class="sa" d="M830 312 L570 262" stroke-width="1.5"/><rect x="819" y="301" width="22" height="22" transform="rotate(45 830 312)" class="bxa"/><text x="854" y="318" style="font-size:17px">demolition</text></g>
+        <g class="pn" data-from="1420" data-to="2026"><path class="sa" d="M830 92 L570 180" stroke-width="1.5"/><rect x="819" y="81" width="22" height="22" transform="rotate(45 830 92)" class="bxa"/><text x="854" y="98" style="font-size:17px">construction</text></g>
+        <g class="pn" data-from="1700" data-to="2026"><path class="sa" d="M850 202 L585 205" stroke-width="1.5"/><rect x="839" y="191" width="22" height="22" transform="rotate(45 850 202)" class="bxa"/><text x="874" y="208" style="font-size:17px">a new wing</text></g>
+        <g class="pn" data-from="1950" data-to="2026"><path class="sa" d="M830 312 L570 262" stroke-width="1.5"/><rect x="819" y="301" width="22" height="22" transform="rotate(45 830 312)" class="bxa"/><text x="854" y="318" style="font-size:17px">demolition</text></g>
+        <g class="pn" data-from="1420" data-to="1589"><path class="sa" d="M181 86 C350 30 650 30 819 86" stroke-width="1.2" stroke-dasharray="3 5"/></g>
+        <g class="pn" data-from="1950" data-to="2026"><path class="sa" d="M181 318 C350 340 650 340 819 318" stroke-width="1.2" stroke-dasharray="3 5"/></g>
       </g>
       <g data-at="3">
-        <text class="el" x="500" y="368" text-anchor="middle">SOURCES</text>
+        <text class="el" x="850" y="402" text-anchor="middle">SOURCES</text>
         <g class="pn" data-from="1430" data-to="2026"><path class="st" d="M330 386 L460 292" stroke-width="1.5" stroke-dasharray="4 4"/><rect x="319" y="386" width="22" height="28" style="fill:var(--bg)" stroke="currentColor" stroke-width="2"/><text x="330" y="436" text-anchor="middle" style="font-size:16px">a deed</text></g>
         <g class="pn" data-from="1710" data-to="2026"><path class="st" d="M500 386 L500 292" stroke-width="1.5" stroke-dasharray="4 4"/><rect x="489" y="386" width="22" height="28" style="fill:var(--bg)" stroke="currentColor" stroke-width="2"/><text x="500" y="436" text-anchor="middle" style="font-size:16px">a drawing</text></g>
         <g class="pn" data-from="1835" data-to="2026"><path class="st" d="M670 386 L560 292" stroke-width="1.5" stroke-dasharray="4 4"/><rect x="659" y="386" width="22" height="28" style="fill:var(--bg)" stroke="currentColor" stroke-width="2"/><text x="670" y="436" text-anchor="middle" style="font-size:16px">the cadastre</text></g>
@@ -518,7 +528,13 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
       </g>
     </svg>
   </div>
-  <aside class="notes">A place is not just its shape. It is buildings, people, events and sources, and all of them change over time. Press → four times: people, events, sources, then the clock runs through the years: people come and go, events happen, sources accumulate, the footprint changes. Spoken line: "A city is not a set of shapes on a map… our tools mostly see only the shapes."</aside>
+  <div class="row" style="flex:0 0 auto">
+    <div class="pt" data-at="1"><b>people</b><p>Patrons, families, owners: they come and go.</p></div>
+    <div class="pt" data-at="2"><b>events</b><p>Construction, extension, demolition: the building changes.</p></div>
+    <div class="pt" data-at="3"><b>sources</b><p>Deeds, drawings, cadastres: the traces it leaves.</p></div>
+    <div class="pt" data-at="4"><b>time</b><p>1450, 1750, 2000: the network around the same building is never the same.</p></div>
+  </div>
+  <aside class="notes">A place is not just its shape. It is buildings, people, events and sources, all linked to each other, and the links change over time. Press → three times to build the network around one building: people, events, sources. Press → again: the clock stops at 1450, 1750 and 2000, and the network around the same building is different each time: a patron, then a family, then its owners; a new wing is built, another is demolished; deeds, drawings and cadastres accumulate. Spoken line: "A city is not a set of shapes on a map… our tools mostly see only the shapes."</aside>
 </section>
 
 <section class="slide dark">
@@ -528,7 +544,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
 
 <section class="slide c">
   <div class="lab"><span>why · 03</span><span>how Archipelago and VeNiss started · step through with →</span></div>
-  <h2 class="h">Three tools, <span class="acc">no connection</span>.</h2>
+  <h2 class="h">Three people, three outputs, <span class="acc">no connection</span>.</h2>
   <div class="fig">
     <svg viewBox="0 30 1000 330" class="kgs">
       <g data-at="3">
@@ -538,11 +554,11 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
         <text class="el" x="500" y="112" text-anchor="middle">a change, its event, its people?</text>
       </g>
       <rect x="40" y="150" width="220" height="140" class="bxw"/>
-      <text class="el" x="62" y="182">SOURCES</text><text class="nl" x="62" y="226" style="font-size:30px">FileMaker</text><text class="el" x="62" y="266">records · documents</text>
+      <text class="el" x="62" y="182">THE HISTORIAN</text><text class="nl" x="62" y="226" style="font-size:30px">A database</text><text class="el" x="62" y="266">records · documents</text>
       <rect x="390" y="150" width="220" height="140" class="bxw"/>
-      <text class="el" x="412" y="182">GEOMETRIES</text><text class="nl" x="412" y="226" style="font-size:30px">QGIS</text><text class="el" x="412" y="266">footprints · maps</text>
+      <text class="el" x="412" y="182">THE GIS SPECIALIST</text><text class="nl" x="412" y="226" style="font-size:30px">A map</text><text class="el" x="412" y="266">footprints · geometries</text>
       <rect x="740" y="150" width="220" height="140" class="bxw"/>
-      <text class="el" x="762" y="182">NARRATIVE</text><text class="nl" x="762" y="226" style="font-size:30px">Word · print</text><text class="el" x="762" y="266">the argument</text>
+      <text class="el" x="762" y="182">THE AUTHOR</text><text class="nl" x="762" y="226" style="font-size:30px">A text</text><text class="el" x="762" y="266">the argument · print</text>
       <g data-at="1">
         <path class="ge sa" pathLength="1" d="M262 220 H312" stroke-width="3"/><path class="ge sa" pathLength="1" d="M388 220 H338" stroke-width="3"/>
         <text x="325" y="232" text-anchor="middle" style="font-size:34px;font-weight:900;fill:var(--accent);stroke:none">×</text>
@@ -555,8 +571,8 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
       </g>
     </svg>
   </div>
-  <div class="src">Archipelago, 2020: 131 sources, 147 events and 174 people in a FileMaker database; the geometries in QGIS; the narrative in a text file.</div>
-  <aside class="notes">Sources go into a relational database, FileMaker; geometries into a desktop GIS, ArcGIS or QGIS; the narrative into Word and a print publication. Nothing connects them. This is literally how Archipelago and then VeNiss started: a FileMaker database for the sources, QGIS for the geometries, and nothing linking the two. You could not show a document next to the building it describes, or link a change in the urban fabric to the event and the people who caused it. Press → three times: each attempted link breaks.</aside>
+  <div class="src">Each output is part of the research; none solves the whole problem. Archipelago, 2020: 131 sources, 147 events and 174 people in one database; the geometries in a separate map; the narrative in a text file.</div>
+  <aside class="notes">Three people, three outputs. The historian collects sources into a database; the GIS specialist draws geometries on a map; the author writes the argument, for print. Each output is a real part of the research, and each solves only a part of the problem. Nothing connects them. This is literally how Archipelago and then VeNiss started: a database for the sources, a map for the geometries, and nothing linking the two. You could not show a document next to the building it describes, or link a change in the urban fabric to the event and the people who caused it. Press → three times: each attempted link breaks.</aside>
 </section>
 
 <section class="slide c">
@@ -565,8 +581,8 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
   <div class="body v mid">
     <table class="tb">
       <tr><th>tool</th><th>good at</th><th class="acc">missing</th></tr>
-      <tr data-at="1"><td><strong>ArcGIS · QGIS</strong></td><td>spatial analysis, drawing</td><td class="acc">web publishing · links to sources · time beyond “layers”</td></tr>
-      <tr data-at="2"><td><strong>Omeka + Neatline</strong></td><td>web exhibits</td><td class="acc">only points · no geospatial search</td></tr>
+      <tr data-at="1"><td><strong>Desktop GIS</strong></td><td>spatial analysis, drawing</td><td class="acc">web publishing · links to sources · time beyond “layers”</td></tr>
+      <tr data-at="2"><td><strong>Web exhibit tools</strong></td><td>web exhibits</td><td class="acc">only points · no geospatial search</td></tr>
       <tr data-at="3"><td><strong>Story maps</strong></td><td>polished visualizations</td><td class="acc">the author's view only · no data management</td></tr>
     </table>
     <div class="src" data-at="4">None covers the whole cycle: collect sources → draw → interpret → publish → let others search and reinterpret.</div>
@@ -602,7 +618,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
 <section class="slide red">
   <div class="lab part"><span>part two</span><span>II / III</span></div>
   <div class="fit" style="font-weight:900"><p>metapolis</p></div>
-  <div class="lab" style="color:#fff"><span>NEH Digital Humanities Advancement Grant · built on ResearchSpace</span></div>
+  <div class="lab" style="color:#fff"><span>NEH Digital Humanities Advancement Grant · built on an open-source platform</span></div>
 </section>
 
 <section class="slide c">
@@ -630,11 +646,11 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
     <svg viewBox="0 0 1000 390" class="kgs brg">
       <text class="el" x="210" y="62" text-anchor="middle">KEEP</text>
       <rect x="40" y="80" width="340" height="220" class="bxi"/>
-      <text x="210" y="184" text-anchor="middle" style="font-size:48px;font-weight:800;fill:#fff;stroke:none">QGIS</text>
+      <text x="210" y="184" text-anchor="middle" style="font-size:36px;font-weight:800;fill:#fff;stroke:none">Geographic tools</text>
       <text class="el" x="210" y="224" text-anchor="middle" style="fill:#aaa;stroke:none">draw · georeference · edit</text>
       <text class="el" x="790" y="62" text-anchor="middle">REUSE</text>
       <rect x="620" y="80" width="340" height="220" class="bxw"/>
-      <text class="nl" x="790" y="184" text-anchor="middle" style="font-size:38px">ResearchSpace</text>
+      <text class="nl" x="790" y="184" text-anchor="middle" style="font-size:36px">The platform</text>
       <text class="el" x="790" y="224" text-anchor="middle">graph · forms · search · publishing</text>
       <g data-at="1" class="bridge">
         <text class="el" x="500" y="62" text-anchor="middle" style="fill:var(--accent)">ADD</text>
@@ -644,46 +660,45 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
       </g>
       <g data-at="2">
         <path class="flow sa" d="M210 304 V336 H790 V304" stroke-width="3"/>
-        <text class="el" x="500" y="368" text-anchor="middle">a polygon drawn in QGIS becomes a building in the graph</text>
+        <text class="el" x="500" y="368" text-anchor="middle">a footprint drawn on a map becomes a building in the graph</text>
       </g>
     </svg>
   </div>
-  <div class="src">ResearchSpace: open source, created at the British Museum, now maintained by the ResearchSpace team and community.</div>
-  <aside class="notes">Drawing and georeferencing stay in QGIS. Data, enrichment, search, authoring and publishing come from ResearchSpace, open source, created at the British Museum. Metapolis adds the geospatial layer that joins them. We decided early not to rebuild QGIS in a browser: it would never be as good. Instead we built on ResearchSpace, which already handles knowledge graphs, forms, search and publishing, and added what was missing: maps, geometries, time, and the bridge to GIS.</aside>
+  <div class="src">The platform is open source: created at the British Museum, now maintained by its team and community.</div>
+  <aside class="notes">Drawing and georeferencing stay in the geographic tools GIS people already use. Data, enrichment, search, authoring and publishing come from an existing open-source platform, created at the British Museum. Metapolis adds the geospatial layer that joins them. We decided early not to rebuild a desktop GIS in a browser: it would never be as good. Instead we built on a platform that already handles knowledge graphs, forms, search and publishing, and added what was missing: maps, geometries, time, and the bridge to GIS.</aside>
 </section>
 
 <section class="slide c" data-w="pipe">
   <div class="lab"><span>metapolis · 03</span><span>architecture</span></div>
-  <h2 class="h">Drawn in QGIS, <span class="acc">live on the web map</span>.</h2>
+  <h2 class="h">Drawn on a map, <span class="acc">live on the web</span>.</h2>
   <div class="body v" style="gap:2.2vmin">
     <div class="ctl"><span class="v pp-say" style="font-size:2.3vmin">&nbsp;</span></div>
     <div class="pipe">
-      <div class="ps" data-g="polygon" data-p="a footprint" data-say="A GIS specialist draws a footprint in QGIS and gives it start and end years."><b>QGIS</b><span>draws</span></div>
-      <div class="ps" data-g="db" data-p="a geometry" data-say="The geometry is saved in PostGIS, where GIS people already work."><b>PostGIS</b><span>geometries</span></div>
-      <div class="ps" data-g="sql" data-p="live query" data-say="ResearchSpace queries PostGIS live, through SQL Sail: nothing is exported or copied."><b>SQL Sail</b><span>live queries</span></div>
-      <div class="ps" data-g="graph" data-p="a building" data-say="In the knowledge graph the footprint is a Building, linked to its events, people and sources."><b>graph</b><span>RDF · Linked Open Data</span></div>
-      <div class="ps" data-g="map" data-p="on the map" data-say="On the web map the building appears in its years, one click away from its evidence."><b>map</b><span>web</span></div>
+      <div class="ps" data-g="polygon" data-p="a footprint" data-say="A GIS specialist draws a footprint and gives it start and end years."><b>Draw</b><span>footprints</span><small>QGIS</small></div>
+      <div class="ps" data-g="db" data-p="a geometry" data-say="The geometry is saved in a spatial database, where GIS people already work."><b>Store</b><span>geometries</span><small>PostGIS</small></div>
+      <div class="ps" data-g="sql" data-p="live query" data-say="The platform queries the database live: nothing is exported or copied."><b>Connect</b><span>live queries</span><small>SQL Sail</small></div>
+      <div class="ps" data-g="graph" data-p="a building" data-say="In the knowledge graph the footprint is a Building, linked to its events, people and sources."><b>Link</b><span>knowledge graph</span><small>Linked Open Data</small></div>
+      <div class="ps" data-g="map" data-p="on the map" data-say="On the web map the building appears in its years, one click away from its evidence."><b>Explore</b><span>web map</span><small>browser</small></div>
     </div>
     <div class="pp-lane"><div class="pk"></div></div>
     <div class="row" style="flex:0 0 auto">
-      <div class="pt"><b>no export step</b><p>Edit in QGIS, refresh the web map.</p></div>
-      <div class="pt k"><b>another backend</b><p>Geometries as GeoSPARQL triples in QLever, as for Florentia Illustrata.</p></div>
+      <div class="pt"><b>no export step</b><p>Edit the footprint, refresh the web map.</p></div>
+      <div class="pt k"><b>another option</b><p>Geometries stored in the graph itself, as for Florentia Illustrata.</p></div>
     </div>
   </div>
-  <aside class="notes">Geometries stay in PostGIS, where GIS people already work. ResearchSpace queries them live, through SQL Sail, so a polygon drawn in QGIS appears on the web map without any export. Everything else, who, what, when, which source, lives in the knowledge graph as Linked Open Data. An alternative geometry backend: QLever, or any GeoSPARQL endpoint; Florentia Illustrata reads its parcels from QLever.</aside>
+  <aside class="notes">The steps matter more than the tools: draw, store, connect, link, explore. Technically: footprints are drawn in QGIS and stay in PostGIS, where GIS people already work. The platform queries them live, through SQL Sail, so a footprint drawn in QGIS appears on the web map without any export. Everything else, who, what, when, which source, lives in the knowledge graph as Linked Open Data. An alternative geometry backend: QLever, or any GeoSPARQL endpoint; Florentia Illustrata reads its parcels from there.</aside>
 </section>
 
 <section class="slide c">
   <div class="lab"><span>metapolis · 04</span><span>who does what</span></div>
   <h2 class="h">Everyone works <span class="acc">where they are best</span>.</h2>
   <div class="cards short">
-    <div class="cd" style="--d:.1s"><b>01 · GIS specialist</b><h5>draws</h5><p>Footprints in QGIS, with start and end years.</p><div class="ft"><span class="tag">QGIS</span></div></div>
+    <div class="cd" style="--d:.1s"><b>01 · GIS specialist</b><h5>draws</h5><p>Footprints on a map, with start and end years.</p><div class="ft"><span class="tag">map</span></div></div>
     <div class="cd" style="--d:.3s"><b>02 · historian</b><h5>describes</h5><p>Buildings, people, events and sources, in web forms.</p><div class="ft"><span class="tag">forms</span></div></div>
     <div class="cd" style="--d:.5s"><b>03 · everyone</b><h5>links</h5><p>Entities to each other, documents to places, notes to relations.</p><div class="ft"><span class="tag">graph</span></div></div>
     <div class="cd a" style="--d:.7s"><b>04 · reader</b><h5>explores</h5><p>Map, timeline and sources, in the browser.</p><div class="ft"><span class="tag">web</span></div></div>
   </div>
-  <div class="h s" data-at="1" style="text-align:center">Nobody writes <span class="acc">SPARQL or SQL</span>.</div>
-  <aside class="notes">The GIS specialist draws footprints in QGIS and sets start and end years. The historian creates buildings, people, events and sources through web forms. Everyone links entities, attaches documents and writes notes on relations. The reader explores map, timeline and sources. Press →: nobody needs to write SPARQL or SQL. The GIS person keeps working in QGIS; the historian works in web forms; and the two meet on the map.</aside>
+  <aside class="notes">The GIS specialist draws footprints and sets start and end years. The historian creates buildings, people, events and sources through web forms. Everyone links entities, attaches documents and writes notes on relations. The reader explores map, timeline and sources. The GIS person keeps working with geographic tools; the historian works in web forms; and the two meet on the map.</aside>
 </section>
 
 <section class="slide c">
@@ -695,13 +710,13 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
         <g data-at="1">
           <path class="ge st" pathLength="1" d="M240 104 L338 188" stroke-width="2" marker-end="url(#ah)"/>
           <text class="el" x="300" y="128">took place at</text>
-          <rect class="bxw" x="20" y="50" width="220" height="56"/><text class="nl" x="130" y="85" text-anchor="middle">Event</text>
+          <rect class="bxw" x="20" y="44" width="220" height="68"/><text class="nl" x="130" y="74" text-anchor="middle">Event</text><text class="el" x="130" y="98" text-anchor="middle">an acquisition of title</text>
           <path class="ge st" pathLength="1" d="M580 104 L482 188" stroke-width="2" marker-end="url(#ah)"/>
           <text class="el" x="552" y="150">owned</text>
-          <rect class="bxw" x="580" y="50" width="220" height="56"/><text class="nl" x="690" y="85" text-anchor="middle">Person</text>
-          <path class="ge st" pathLength="1" d="M240 382 L338 252" stroke-width="2" marker-end="url(#ah)"/>
+          <rect class="bxw" x="580" y="44" width="220" height="68"/><text class="nl" x="690" y="74" text-anchor="middle">Person</text><text class="el" x="690" y="98" text-anchor="middle">Fulvia Targioni Tozzetti</text>
+          <path class="ge st" pathLength="1" d="M240 382 L338 262" stroke-width="2" marker-end="url(#ah)"/>
           <text class="el" x="300" y="352">documents</text>
-          <rect class="bxw" x="20" y="380" width="220" height="56"/><text class="nl" x="130" y="415" text-anchor="middle">Source</text>
+          <rect class="bxw" x="20" y="374" width="220" height="68"/><text class="nl" x="130" y="404" text-anchor="middle">Source</text><text class="el" x="130" y="428" text-anchor="middle">the 1835 cadastre</text>
         </g>
         <g data-at="2">
           <rect x="230" y="298" width="118" height="38" rx="6" style="fill:var(--bg)" class="sa" stroke-width="2"/>
@@ -713,13 +728,14 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
           <text x="398" y="421" style="font-size:16px">this building, and how sure we are</text>
         </g>
         <g data-at="3" style="font-size:15px;font-weight:600">
-          <path class="sa" d="M650 106 L625 146M730 106 L735 146M490 232 L540 250M130 436 L100 456" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <path class="sa" d="M650 106 L625 146M730 106 L735 146M510 232 L540 250M130 436 L100 456" stroke-width="1.5" stroke-dasharray="4 4"/>
           <rect x="585" y="146" width="80" height="32" rx="16" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="625" y="167" text-anchor="middle" class="ac">VIAF</text>
           <rect x="680" y="146" width="110" height="32" rx="16" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="735" y="167" text-anchor="middle" class="ac">Wikidata</text>
           <rect x="540" y="236" width="124" height="32" rx="16" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="602" y="257" text-anchor="middle" class="ac">Getty AAT</text>
           <rect x="40" y="456" width="120" height="32" rx="16" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="100" y="477" text-anchor="middle" class="ac">WorldCat</text>
         </g>
-        <rect class="bxa" x="330" y="190" width="160" height="60"/><text class="nl" x="410" y="227" text-anchor="middle" style="fill:#fff">Building</text>
+        <rect class="bxa" x="310" y="190" width="200" height="72"/><text class="nl" x="410" y="222" text-anchor="middle" style="fill:#fff">Building</text>
+        <text class="el" x="410" y="246" text-anchor="middle" style="fill:#fff;stroke:none">a house, Via dell'Amorino</text>
       </svg>
     </div>
     <div class="col g1 pts mid">
@@ -729,27 +745,27 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
       <div class="pt" data-at="3"><b>enriched</b><p>From VIAF, Wikidata, WorldCat and the Getty vocabularies.</p></div>
     </div>
   </div>
-  <aside class="notes">Four core entities: Building, Event, Person, Source. Relations are entities too, with domain, range and notes. Enrichment from VIAF, Wikidata, WorldCat and the Getty vocabularies. One design choice to highlight: a relation is not just a line between two things. It is an entity with its own notes, so a scholar can record why a source is connected to a building, not only that it is. That is where interpretation lives. Press → three times.</aside>
+  <div class="src">Example: a house in Via dell'Amorino, Florence, in the 1835 cadastre (Florentia Illustrata).</div>
+  <aside class="notes">Four core entities: Building, Event, Person, Source, shown here with one example: a house in Via dell'Amorino, the acquisition of title recorded in the 1835 cadastre, and Fulvia Targioni Tozzetti. Relations are entities too, with domain, range and notes. Enrichment from VIAF, Wikidata, WorldCat and the Getty vocabularies. One design choice to highlight: a relation is not just a line between two things. It is an entity with its own notes, so a scholar can record why a source is connected to a building, not only that it is. That is where interpretation lives. Press → three times.</aside>
 </section>
 
 <section class="slide c" data-w="reel">
-  <div class="lab"><span>metapolis · 06</span><span>the map, in six moves</span></div>
+  <div class="lab"><span>metapolis · 06</span><span>the map, in five moves</span></div>
   <h2 class="h s">A familiar map, with <span class="acc">time</span> and <span class="acc">evidence</span> built in.</h2>
   <div class="body">
     <div class="col g1 mid rls ia">
-      <button class="rl" data-v="assets/video/basemaps.mp4" data-name="basemaps"><b>01 · basemaps</b><span>Today's lagoon: waterways, satellite, orthophoto.</span><i></i></button>
-      <button class="rl" data-v="assets/video/historical_map.mp4" data-name="historical maps"><b>02 · historical maps</b><span>Georeferenced maps as layers, with transparency.</span><i></i></button>
-      <button class="rl" data-v="assets/video/swipe_spyglass.mp4" data-name="swipe and spyglass"><b>03 · swipe &amp; spyglass</b><span>Past and present, side by side.</span><i></i></button>
-      <button class="rl" data-v="assets/video/timeline.mp4" data-name="colour and timeline"><b>04 · colour &amp; timeline</b><span>Buildings by function, appearing year by year.</span><i></i></button>
-      <button class="rl" data-v="assets/video/sources.mp4" data-name="sources"><b>05 · sources</b><span>Every feature one click from its documents.</span><i></i></button>
-      <button class="rl" data-v="assets/video/search.mp4" data-name="search"><b>06 · search</b><span>By type and date, as a table or on the map.</span><i></i></button>
+      <button class="rl" data-v="assets/video/historical_map.mp4" data-name="historical maps"><b>01 · historical maps</b><span>Georeferenced maps as layers, with transparency.</span><i></i></button>
+      <button class="rl" data-v="assets/video/swipe_spyglass.mp4" data-name="swipe and spyglass"><b>02 · swipe &amp; spyglass</b><span>Past and present, side by side.</span><i></i></button>
+      <button class="rl" data-v="assets/video/timeline.mp4" data-name="colour and timeline"><b>03 · colour &amp; timeline</b><span>Buildings by function, appearing year by year.</span><i></i></button>
+      <button class="rl" data-v="assets/video/sources.mp4" data-name="sources"><b>04 · sources</b><span>Every feature one click from its documents.</span><i></i></button>
+      <button class="rl" data-v="assets/video/search.mp4" data-name="search"><b>05 · search</b><span>By type and date, as a table or on the map.</span><i></i></button>
     </div>
     <div class="vwin g2">
       <div class="dbar"><i></i><i></i><i></i><span class="durl">veniss.net · <span class="rl-name"></span></span></div>
       <video muted playsinline preload="auto"></video>
     </div>
   </div>
-  <aside class="notes">The heart of it: a familiar, Google-Maps-like interface, but with time as a first-class dimension and every feature one click away from its evidence. Six moves, recorded on VeNiss: switch basemap; turn on a georeferenced historical map and lower its transparency; swipe and spyglass to compare past and present; colour buildings by function and drag the timeline, so buildings appear and disappear by year; click a building for its sources and people; search by type and date (that clip runs at double speed). Clips play in order; click one to jump. The live demos come with the use cases.</aside>
+  <aside class="notes">The heart of it: a familiar, Google-Maps-like interface, but with time as a first-class dimension and every feature one click away from its evidence. Five moves, recorded on VeNiss: turn on a georeferenced historical map and lower its transparency; swipe and spyglass to compare past and present; colour buildings by function and drag the timeline, so buildings appear and disappear by year; click a building for its sources and people; search by type and date (that clip runs at double speed). Clips play in order; click one to jump. The live demos come with the use cases.</aside>
 </section>
 
 <section class="slide c">
@@ -787,13 +803,13 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
   <div class="bgimg light" style="background-image:url(assets/img/florence.jpg)"></div>
   <div class="lab"><span>florentia illustrata · 01</span><span>the source <span class="wip">not yet public</span></span></div>
   <h2 class="h">Florence, <span class="acc">parcel by parcel</span>, in 1835.</h2>
-  <div class="nums">
+  <div class="nums bal">
     <div class="a"><div class="stat"><span data-count="17681">17681</span><small>land parcels</small></div><p>Each one linked to its owners, its use and its acquisition.</p></div>
     <div><div class="stat">1835<small>Catasto Generale Toscano</small></div><p>The first geometric cadastre of the city.</p></div>
-    <div><div class="stat">1<small>knowledge graph</small></div><p>Open data from Belli, Lucchesi, Raggi (FUP 2022), modelled in CIDOC CRM.</p></div>
+    <div><div class="stat">open<small>data</small></div><p>Published by Belli, Lucchesi, Raggi (FUP 2022), now one connected graph.</p></div>
   </div>
   <div class="src">Overlays: the c. 1850 plan of the city and the 2023 orthophoto (Regione Toscana) · florentiaillustrata.net</div>
-  <aside class="notes">Florence in the Catasto Generale Toscano, c. 1835, at florentiaillustrata.net: 17,681 land parcels, each linked to its owners, its use and its acquisition. Data from Belli, Lucchesi, Raggi, Firenze nella prima metà dell'Ottocento (FUP 2022), modelled in CIDOC CRM. Historical overlays: the 1850 plan of the city and the 2023 orthophoto. Florentia starts from a single source: the nineteenth-century cadastre of Florence, with almost eighteen thousand parcels. In a book, this is a table. In Metapolis, every parcel is a place on the map, connected to the people who owned it and to what it was used for.</aside>
+  <aside class="notes">Florence in the Catasto Generale Toscano, c. 1835, at florentiaillustrata.net: 17,681 land parcels, each linked to its owners, its use and its acquisition. Data from Belli, Lucchesi, Raggi, Firenze nella prima metà dell'Ottocento (FUP 2022), published as open data. Historical overlays: the 1850 plan of the city and the 2023 orthophoto. Florentia starts from a single source: the nineteenth-century cadastre of Florence, with almost eighteen thousand parcels. In a book, this is a table. In Metapolis, every parcel is a place on the map, connected to the people who owned it and to what it was used for.</aside>
 </section>
 
 <section class="slide c">
@@ -806,9 +822,9 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
       <g style="font-size:17px"><text x="58" y="73">1005</text><text x="168" y="73">casa</text><text x="288" y="73">Via dell'Amorino</text><text x="528" y="73">Targioni Tozzetti, Fulvia</text><text x="858" y="73">8</text></g>
       <g data-at="1">
         <path class="sf" d="M95 92 L190 228M675 92 L825 228M900 92 L560 228" stroke-width="1.5" stroke-dasharray="4 5"/>
-        <rect class="bxw" x="90" y="230" width="200" height="62"/><text class="nl" x="190" y="258" text-anchor="middle">parcel 1005</text><text class="el" x="190" y="281" text-anchor="middle">E24 · casa</text>
-        <rect class="bxa" x="400" y="230" width="200" height="62"/><text class="nl" x="500" y="258" text-anchor="middle" style="fill:#fff">acquisition</text><text class="el" x="500" y="281" text-anchor="middle" style="fill:#fff;stroke:none">E8</text>
-        <rect class="bxw" x="690" y="230" width="270" height="62"/><text class="nl" x="825" y="258" text-anchor="middle">Fulvia Targioni Tozzetti</text><text class="el" x="825" y="281" text-anchor="middle">E21 · person</text>
+        <rect class="bxw" x="90" y="230" width="200" height="62"/><text class="nl" x="190" y="258" text-anchor="middle">parcel 1005</text><text class="el" x="190" y="281" text-anchor="middle">a house</text>
+        <rect class="bxa" x="400" y="230" width="200" height="62"/><text class="nl" x="500" y="258" text-anchor="middle" style="fill:#fff">acquisition</text><text class="el" x="500" y="281" text-anchor="middle" style="fill:#fff;stroke:none">an event</text>
+        <rect class="bxw" x="690" y="230" width="270" height="62"/><text class="nl" x="825" y="258" text-anchor="middle">Fulvia Targioni Tozzetti</text><text class="el" x="825" y="281" text-anchor="middle">a person</text>
         <path class="ge st" pathLength="1" d="M398 261 H296" stroke-width="2" marker-end="url(#ah)"/><text class="el" x="347" y="320" text-anchor="middle">transferred title of</text>
         <path class="ge st" pathLength="1" d="M688 261 H606" stroke-width="2" marker-end="url(#ah)"/><text class="el" x="647" y="320" text-anchor="middle">acquired title through</text>
       </g>
@@ -830,7 +846,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
     <div class="pt" data-at="2"><b>2 · co-owners</b><p>Eight family members, one acquisition.</p></div>
     <div class="pt" data-at="3"><b>3 · a person</b><p>Leads to all of their parcels.</p></div>
   </div>
-  <aside class="notes">One row of the cadastre becomes a small graph, in CIDOC CRM: the parcel (E24), an acquisition (E8) and the person who acquired title (E21). This house in Via dell'Amorino has eight owners, all Targioni Tozzetti, brothers, sisters and cousins, who acquire title through the same acquisition. And from a person you reach every other parcel they owned. Press → three times. The next slide shows it live.</aside>
+  <aside class="notes">One row of the cadastre becomes a small graph: the parcel, an acquisition and the person who acquired title. This house in Via dell'Amorino has eight owners, all Targioni Tozzetti, brothers, sisters and cousins, who acquire title through the same acquisition. And from a person you reach every other parcel they owned. Press → three times. The next slide shows it live.</aside>
 </section>
 
 <section class="slide c demo" data-w="demo" data-steps="4">
@@ -865,7 +881,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
       <div class="ps" data-g="tags" data-p="“moglie di”" data-say="An owner described as “moglie di”, wife of, is a woman: the graph follows that relation."><b>wife of</b><span>“moglie di”</span></div>
       <div class="ps" data-g="text" data-p="given names" data-say="The other given names are matched against an open list of Italian names; only names that are always female are kept."><b>first names</b><span>an open list</span></div>
       <div class="ps" data-g="people" data-p="+79 women" data-say="79 more owners are likely unmarried women, 3 of them nuns."><b>+79 women</b><span>3 of them nuns</span></div>
-      <div class="ps" data-g="map" data-p="a gender map" data-say="One SPARQL query becomes a map layer: women only, co-ownership, men only, institutions."><b>gender map</b><span>one query, one layer</span></div>
+      <div class="ps" data-g="map" data-p="a gender map" data-say="One query becomes a map layer: women only, co-ownership, men only, institutions."><b>gender map</b><span>one query, one layer</span></div>
     </div>
     <div class="pp-lane"><div class="pk"></div></div>
     <div class="row" style="flex:0 0 auto">
@@ -989,7 +1005,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
 </section>
 
 <section class="slide c" data-w="bars">
-  <div class="lab"><span>veniss · 02</span><span>from FileMaker to a graph</span></div>
+  <div class="lab"><span>veniss · 02</span><span>from a database to a graph</span></div>
   <h2 class="h">Archipelago in 2020, <span class="acc">VeNiss today</span>.</h2>
   <div class="body">
     <div class="col g2 mid" style="gap:2.6vmin">
@@ -999,14 +1015,14 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
         <div class="bp" data-a="589" data-b="174"><span class="l">people</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
         <div class="bp" data-a="321" data-b="57"><span class="l">islands + buildings</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
       </div>
-      <div class="legend"><span><i class="sw-a"></i>VeNiss, October 2026</span><span><i class="sw-i"></i>Archipelago in FileMaker, 2020</span></div>
+      <div class="legend"><span><i class="sw-a"></i>VeNiss, October 2026</span><span><i class="sw-i"></i>Archipelago database, 2020</span></div>
     </div>
     <div class="col g1 mid" style="gap:3vmin">
       <div class="stat"><span data-count="7551">7551</span><small>entries in the graph</small></div>
       <div class="pts"><div class="pt k"><b>and also</b><p>1,698 archival units · 2,203 images · 27 georeferenced historical maps.</p></div></div>
     </div>
   </div>
-  <div class="src">veniss.net database overview, October 2026, including records still in progress · Archipelago FileMaker export, March 2020.</div>
+  <div class="src">veniss.net database overview, October 2026, including records still in progress · Archipelago database export, March 2020.</div>
   <aside class="notes">Where VeNiss started and where it is. In 2020 the Archipelago FileMaker database held 131 sources, 147 events, 174 people and 57 places. Today the VeNiss graph counts about 7,500 entries: 1,351 primary and 512 secondary sources, 690 events, 589 people, 59 islands and 262 buildings, 1,698 archival units, 2,203 images, 27 georeferenced historical maps. These counts include records still in progress. The home page of veniss.net shows this overview live.</aside>
 </section>
 
@@ -1125,8 +1141,8 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
     <div class="lab"><span>veniss · 07</span><span>2020</span></div>
     <h2 class="h">Archipelago, <span class="acc">in pieces</span>.</h2>
     <div class="wrows">
-      <div class="wr"><span class="wk">sources</span><p>a FileMaker database<small>131 sources · 147 events · 174 people</small></p><i class="wv">×</i></div>
-      <div class="wr"><span class="wk">geometries</span><p>QGIS<small>separate files, no link to the sources</small></p><i class="wv">×</i></div>
+      <div class="wr"><span class="wk">sources</span><p>a database<small>131 sources · 147 events · 174 people</small></p><i class="wv">×</i></div>
+      <div class="wr"><span class="wk">geometries</span><p>a separate map<small>separate files, no link to the sources</small></p><i class="wv">×</i></div>
       <div class="wr"><span class="wk">narrative</span><p>text, elsewhere<small>no way to the map or the documents</small></p><i class="wv">×</i></div>
     </div>
   </div>
@@ -1135,7 +1151,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
     <h2 class="h">VeNiss, <span class="acc">one graph</span>.</h2>
     <div class="wrows">
       <div class="wr"><span class="wk">sources</span><p>7,500+ entries<small>entered through forms by three teams</small></p><i class="wv">✓</i></div>
-      <div class="wr"><span class="wk">geometries</span><p>QGIS, live on the web map<small>islands and buildings in phases, in 2D and 3D</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">geometries</span><p>drawn once, live on the web map<small>islands and buildings in phases, in 2D and 3D</small></p><i class="wv">✓</i></div>
       <div class="wr"><span class="wk">time</span><p>five centuries, one timeline<small>27 historical maps that follow it</small></p><i class="wv">✓</i></div>
     </div>
   </div>
@@ -1153,7 +1169,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
     <span class="dt" role="img" aria-label="digiTatti"><svg viewBox="0 0 220 224"><use href="#dt-arc"/></svg><span>digiTatti</span></span>
   </div>
   <div class="fit"><p>Places as networks, through time, <span class="acc">in one place</span>. <span style="color:rgba(255,255,255,.6)">Thank you.</span></p></div>
-  <div class="lab"><span>Lukas Klic · Remo Grillo · Gianmarco Spinaci — dh.itatti.harvard.edu · NEH HAA-287761-22 · ERC 101040474 · built on ResearchSpace</span></div>
+  <div class="lab"><span>Lukas Klic · Remo Grillo · Gianmarco Spinaci — dh.itatti.harvard.edu · NEH HAA-287761-22 · ERC 101040474 · built on an open-source platform</span></div>
   <aside class="notes">We started by saying that a place is a network of relationships, and that our tools only see the shapes. Metapolis puts the map, the time, the sources and the interpretation in one place, and makes all of it open for others to explore and build on. Thank you. (Behind the text: the VeNiss map, swipe and spyglass.)</aside>
 </section>
 
@@ -1235,22 +1251,17 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
   W.pipe.G.table = '<svg viewBox="0 0 160 90"><rect x="24" y="10" width="112" height="70" style="fill:var(--bg)" stroke="currentColor" stroke-width="3"/><path d="M24 28h112M24 45h112M24 62h112M58 10v70M100 10v70" stroke="currentColor" stroke-width="2"/><rect x="58" y="28" width="42" height="17" style="fill:var(--soft)"/></svg>';
   W.pipe.G.people = '<svg viewBox="0 0 160 90"><g fill="currentColor"><circle cx="40" cy="30" r="11"/><path d="M22 74a18 18 0 0 1 36 0z"/><circle cx="120" cy="30" r="11"/><path d="M102 74a18 18 0 0 1 36 0z"/></g><g style="fill:var(--accent)"><circle cx="80" cy="24" r="13"/><path d="M58 76a22 22 0 0 1 44 0z"/></g></svg>';
 
-  // --- a place as a network: steps bring in people, events and sources; the last one runs a clock through the years
+  // --- a place as a network: steps bring in people, events and sources; the last three stop the clock at 1450, 1750, 2000
   W.place = {
-    step: function(s, k){
-      var self = this, y = 1400;
-      clearInterval(s._clock);
-      if (k < 4) return this.year(s, null);
-      this.year(s, y);
-      s._clock = every(s, function(){ y = y >= 2026 ? 1400 : Math.min(2026, y + 5); self.year(s, y); }, 60);
-    },
+    stops: {4: 1450, 5: 1750, 6: 2000},
+    step: function(s, k){ this.year(s, this.stops[k] || null); },
     year: function(s, y){
       $$(s, '[data-from]').forEach(function(g){
         var off = y === null ? g.classList.contains('ph') && !g.hasAttribute('data-default') : y < +g.dataset.from || y > +g.dataset.to;
         g.classList.toggle('off', off);
       });
       $(s, '.pl-year').textContent = y === null ? '' : y;
-      if (y !== null) $(s, '.pl-hand').setAttribute('transform', 'translate(' + ((y - 1400) / 626 * 800).toFixed(1) + ',0)');
+      if (y !== null) $(s, '.pl-hand').style.transform = 'translateX(' + ((y - 1400) / 626 * 800).toFixed(1) + 'px)';
     }
   };
 
