@@ -22,6 +22,11 @@
     data-w="calc"          interactive widget (slider + buttons)
     .slide.duo             split slide: black half / crimson half
     .slide.demo            live demo: a web page in an iframe (data-src, loaded one slide ahead)
+
+  Live demos that need a login: run `node demo-server.mjs` in this folder and open the address
+  it prints. It proxies the demo pages through 127.0.0.1, so logging in inside the frame works.
+  Opened as a file, the slides check for the server and offer to start it; on a Mac, install the
+  launcher once with `node demo-server.mjs --install` and they can start it themselves.
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -306,6 +311,16 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
 .dfall b{font-weight:800;font-size:3.4vmin;letter-spacing:-.025em;color:var(--ink)}
 .dfall p{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;max-width:60ch;line-height:1.5}
 .dwin.max{position:fixed;inset:0;z-index:30;border:0;outline:0}
+/* demo server notice, when the slides are opened as a file */
+#ds{position:fixed;left:var(--pad);bottom:calc(var(--pad) + 1vmin);z-index:25;max-width:min(120vmin,88vw);display:none;align-items:center;gap:1.4vmin;
+  background:var(--ink);color:#ddd;border-left:4px solid #d6324a;padding:1.2vmin 1.4vmin 1.2vmin 1.8vmin;font-family:var(--mono);font-size:clamp(11px,1.6vmin,16px);line-height:1.45;box-shadow:0 1vmin 3vmin rgba(0,0,0,.25)}
+#ds.on{display:flex}
+#ds>b{color:#d6324a;font-weight:500;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+#ds>span{flex:1 1 auto;min-width:0}
+#ds code{background:#262626;color:#fff;font-size:1em}
+#ds .btn{color:#fff;border-color:#555;padding:.3vmin .9vmin}
+#ds .btn.go{background:#d6324a;border-color:#d6324a}
+#ds .x{border:0;color:#8d8d8d;font-size:1.4em;line-height:1;padding:0 .3vmin;margin-left:auto}
 
 /* modal */
 .why{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;padding:.2vmin .9vmin;margin-left:.6vmin;background:var(--accent);color:#fff;border:0;cursor:pointer;vertical-align:.2vmin}
@@ -653,11 +668,11 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
       <button class="btn" data-act="max" title="Fill the screen (Esc to exit)">⤢ expand</button>
     </div>
     <div class="dview">
-      <div class="dfall"><b>Loading the live page…</b><p>If it stays blank or asks you to log in, use “new tab ↗”: the site may not keep you logged in inside another page.</p></div>
+      <div class="dfall"><b>Loading the live page…</b><p>If it stays blank, or the login does not stick, present from the demo server: node demo-server.mjs</p></div>
       <iframe data-src="https://florentiaillustrata.net/resource/:test" title="Florentia Illustrata, live demo" allow="fullscreen; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </div>
   </div>
-  <aside class="notes">Live demo slide: a real web page inside the presentation. Set the address in the iframe's data-src (and in the "new tab" link). The page starts loading when you reach the slide before this one, so it is ready when you arrive. Click into the page to use it: from then on the keyboard belongs to the page and the frame gets a crimson outline. To continue, click anywhere outside the frame (clicks on this slide never change slide), then press →. Zoom buttons enlarge the page for the back of the room; "reset" reloads the starting address; "expand" fills the screen (Esc to exit). If the site needs a login, check it before the talk: browsers often do not send login cookies to a page embedded in another site.</aside>
+  <aside class="notes">Live demo slide: a real web page inside the presentation. Set the address in the iframe's data-src (and in the "new tab" link). The page starts loading when you reach the slide before this one, so it is ready when you arrive. Click into the page to use it: from then on the keyboard belongs to the page and the frame gets a crimson outline. To continue, click anywhere outside the frame (clicks on this slide never change slide), then press →. Zoom buttons enlarge the page for the back of the room; "reset" reloads the starting address; "expand" fills the screen (Esc to exit). Sites that need a login: present from the demo server. It routes the demo through 127.0.0.1, so you can log in inside the frame and the login sticks; opened as a plain file, browsers refuse the site's login cookie inside a frame. Opened as a file, the slides check whether the server runs and say so in a notice at the bottom left: "open the slides through it" if it runs, "start it" if not. "Start it" needs the launcher, installed once per Mac with node demo-server.mjs --install; the browser then asks you to confirm before starting it. Without the launcher: run node demo-server.mjs in this folder and open the address it prints.</aside>
 </section>
 
 <section class="slide c">
@@ -700,6 +715,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
   </div>
 </div>
 
+<div id="ds" class="ia" role="status"></div>
 <div id="track"><div id="bar"></div></div>
 <div id="pn"></div>
 
@@ -835,8 +851,71 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
 
   // iframes load from data-src one slide ahead, then stay loaded
   function preload(s){
-    if (s) $$(s, 'iframe[data-src]').forEach(function(f){ f.src = f.dataset.src; f.removeAttribute('data-src'); });
+    if (s) $$(s, 'iframe[data-src]').forEach(function(f){
+      var u = f.dataset.src; f.removeAttribute('data-src');
+      viaDemoServer(u, function(v){ f.src = v; });
+    });
   }
+  // served by demo-server.mjs: demo pages go through its local proxy, so logins inside the frame stick.
+  // Ask the server itself: other local servers (VS Code's Live Server, python -m http.server) do not answer
+  var DEMO_SERVER = !window.fetch || !/^https?:$/.test(location.protocol) ? Promise.resolve(false)
+    : fetch('/__demo/ping', { cache: 'no-store' })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(j){ return !!j && 'serves' in j; }, function(){ return false; });
+  function viaDemoServer(u, cb){
+    DEMO_SERVER.then(function(ok){
+      if (!ok) return cb(u);
+      fetch('/__demo/proxy?url=' + encodeURIComponent(u))
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(j){ cb(j && j.url || u); }, function(){ cb(u); });
+    });
+  }
+
+  // opened as a file with live demos: check whether the demo server runs, and offer to start it
+  // (the launcher from `node demo-server.mjs --install` opens on the digitatti-demo: link, after the browser asks)
+  var ds = document.getElementById('ds'), hasDemo = !!document.querySelector('.slide.demo');
+  var FILE = location.protocol === 'file:' ? decodeURIComponent(location.pathname) : '';
+  var INSTALL = 'node "' + FILE.slice(0, FILE.lastIndexOf('/') + 1) + 'demo-server.mjs" --install';
+  function esc(t){ return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function dsShow(html){ ds.innerHTML = '<b>live demo</b><span>' + html + '</span><button class="btn x" data-ds="x" aria-label="Close">×</button>'; ds.classList.add('on'); }
+  function dsFind(cb){
+    var left = 5, found = null;
+    for (var p = 8000; p < 8005; p++) fetch('http://127.0.0.1:' + p + '/__demo/ping?file=' + encodeURIComponent(FILE))
+      .then(function(r){ return r.json(); }).then(function(j){ if (j.serves && !found) found = j.url; }, function(){})
+      .then(function(){ if (--left === 0) cb(found); });
+  }
+  function dsCheck(){
+    if (!hasDemo || !window.fetch) return;
+    DEMO_SERVER.then(function(ok){
+      if (ok) return;
+      ds._busy = false;
+      if (!FILE) return dsShow('Logins inside the demo frame need the demo server, and this copy comes from ' + esc(location.host) + '. Open the .html file from your disk instead (not through VS Code’s Live Server), then use “start it”; or run <code>node demo-server.mjs</code> in its folder.');
+      dsFind(function(url){
+        ds._url = url;
+        if (url) dsShow('The demo server is running. <button class="btn go" data-ds="open">open the slides through it →</button>');
+        else dsShow('Logins inside the demo frame need the demo server. <button class="btn go" data-ds="start">▶ start it</button>');
+      });
+    });
+  }
+  ds.addEventListener('click', function(e){
+    var b = e.target.closest('[data-ds]'), a = b && b.dataset.ds;
+    if (a === 'x') ds.classList.remove('on');
+    else if (a === 'open') location.href = ds._url + '#' + (i + 1);
+    else if (a === 'copy' && navigator.clipboard) navigator.clipboard.writeText(INSTALL).then(function(){ b.textContent = 'copied'; });
+    else if (a === 'start'){
+      ds._busy = true;
+      location.href = 'digitatti-demo://start?file=' + encodeURIComponent(FILE);
+      dsShow('Starting… confirm the browser’s request to open “digiTatti Demo Server”.');
+      var t0 = Date.now();
+      (function poll(){
+        dsFind(function(url){
+          if (url) location.href = url + '#' + (i + 1);
+          else if (Date.now() - t0 < 15000) setTimeout(poll, 800);
+          else dsShow('It did not start. Install the launcher once, in Terminal: <code>' + esc(INSTALL) + '</code> <button class="btn" data-ds="copy">copy</button> Or run <code>node demo-server.mjs</code> in this folder and open the address it prints.');
+        });
+      })();
+    }
+  });
 
   function go(n, atEnd){
     n = Math.max(0, Math.min(slides.length - 1, n));
@@ -855,6 +934,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
     s.querySelectorAll('.fit').forEach(fit);
     countUp(s);
     preload(s); preload(slides[i + 1]);
+    if (c.contains('demo')) dsCheck(); else if (!ds._busy) ds.classList.remove('on');
     var w = W[s.dataset.w]; if (w && w.enter) w.enter(s);
   }
   function next(){ var s = slides[i]; if (k < maxStep(s)){ k++; applyStep(s, k); } else go(i + 1); }
@@ -862,6 +942,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
 
   var h = parseInt(location.hash.slice(1), 10);
   go(isNaN(h) ? 0 : h - 1);
+  if (!slides[i].classList.contains('demo')) dsCheck();
 
   fitAll();
   if (document.fonts){ document.fonts.ready.then(fitAll); document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', fitAll); }
