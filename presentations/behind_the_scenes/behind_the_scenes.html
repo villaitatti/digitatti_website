@@ -242,7 +242,7 @@ svg .wt{fill:#fff}
 .ps.done::after{background:repeating-linear-gradient(90deg,var(--accent) 0 .6vmin,transparent .6vmin 1.2vmin);animation:dash .5s linear infinite}
 @keyframes dash{from{background-position:0 0}to{background-position:1.2vmin 0}}
 .pp-lane{position:relative;flex:1 1 auto;min-height:22vmin}
-.pk{position:absolute;top:4vmin;left:0;width:30vmin;margin-left:-15vmin;display:flex;flex-direction:column;align-items:center;gap:1vmin;transition:left .8s cubic-bezier(.4,0,.2,1)}
+.pk{position:absolute;top:4vmin;left:0;width:30vmin;margin-left:-15vmin;display:flex;flex-direction:column;align-items:center;gap:1vmin;transition:left .8s cubic-bezier(.4,0,.2,1),opacity .3s ease}
 .pk.jump{transition:none}
 .pk::before{content:"";position:absolute;left:50%;top:-4vmin;height:3.2vmin;border-left:2px solid var(--accent)}
 .pk svg{width:100%;height:18vmin;display:block;overflow:visible;animation:pop .4s ease}
@@ -411,13 +411,91 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
 .cards.c3{grid-template-columns:repeat(3,1fr)}
 .cards.c3 .cd{min-height:0}
 .cards.short .cd{min-height:30vmin}
+/* records that become a web of relations: the table makes room for the graph */
+.rg{gap:3vmin}
+.rg .recs{flex:3 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden;transition:flex .9s cubic-bezier(.6,0,.2,1)}
+.rg .rgg{flex:.001 1 0;min-width:0;opacity:0;transition:flex .9s cubic-bezier(.6,0,.2,1),opacity .6s ease .5s}
+.slide[data-k="2"] .rg .recs,.slide[data-k="3"] .rg .recs{flex:1 1 0}
+.slide[data-k="2"] .rg .rgg,.slide[data-k="3"] .rg .rgg{flex:1.45 1 0;opacity:1}
+.slide[data-k="2"] .rt .c3,.slide[data-k="3"] .rt .c3{display:none}
+.slide[data-k="2"] .rt,.slide[data-k="3"] .rt{font-size:1.8vmin}
+.rt td{white-space:nowrap;transition:background .4s,color .4s,box-shadow .4s}
+.rt td.n0{font-family:var(--mono);color:var(--muted)}
+.slide:not([data-k="0"]) .rt .nm{background:var(--soft);color:var(--accent);font-weight:700}
+.slide:not([data-k="0"]) .rt .wf{color:var(--accent)}
+.slide:not([data-k="0"]) .rt .s1{box-shadow:inset 0 -3px 0 #9a9a9a}
+.slide:not([data-k="0"]) .rt .s2{box-shadow:inset 0 -3px 0 var(--ink)}
+/* data model: the Wikipedia example belongs to step 3 only; step 4 is the Florentia example */
+.dm .ext[data-at]{transition:opacity .45s ease}
+.slide[data-k="4"] .dm .ext{opacity:0}
+/* three outputs that come together: the outer cards glide in at the last step */
+.tw .tool{transition:transform 1s cubic-bezier(.6,0,.2,1)}
+.slide[data-k="3"] .tw .tool.l{transform:translateX(70px)}
+.slide[data-k="3"] .tw .tool.r{transform:translateX(-70px)}
+.slide[data-k="3"] .tw .q{opacity:0}
+.tw .join[data-at]{transition:opacity .5s ease .8s}
+/* extend, don't rebuild: a footprint is drawn, the ghost idea fades, the bridge is built, the footprint travels across */
+.brg2 .drawn{stroke-dasharray:1;stroke-dashoffset:1}
+.slide.active .brg2 .drawn{animation:drawin 1.4s ease .4s forwards}
+@keyframes drawin{to{stroke-dashoffset:0}}
+.brg2 .fillin{opacity:0}
+.slide.active .brg2 .fillin{animation:cdin .6s ease 1.6s forwards}
+.brg2 .ghost{transition:opacity .5s ease}
+.slide[data-k="1"] .brg2 .ghost,.slide[data-k="2"] .brg2 .ghost{opacity:0}
+.brg2 .deck{transform-box:fill-box;transform-origin:left center;transform:scaleX(0);transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.brg2 .bridge.on .deck{transform:none}
+@keyframes trav{0%,10%{transform:translate(0,0)}75%{transform:translate(500px,0)}100%{transform:translate(580px,-67px)}}
+.slide[data-k="2"] .brg2 .trav{animation:trav 2.4s cubic-bezier(.5,0,.3,1) forwards}
+.brg2 .land[data-at]{transition:opacity .5s ease 2.2s}
+@keyframes tlh{to{transform:translateX(126px)}}
+.slide[data-k="2"] .brg2 .tl-hand{animation:tlh 3s ease-in-out 2.8s infinite alternate}
+/* today / what we want: on the dark half the crosses stay grey, crimson is kept for the aim */
+.now-aim .hd .wv{color:#8d8d8d}
+.cd>svg.ic{width:100%;height:11vmin;display:block;margin-bottom:.6vmin}
+
+/* a register scrolls by, slows down and stops on one name, which opens into its record */
+.lg-wrap{position:relative}
+.ledger{position:absolute;inset:0;display:flex;flex-direction:column;border:2px solid var(--ink);background:var(--bg);transition:opacity .6s ease}
+.ledger .lg-h{display:flex;justify-content:space-between;gap:2vmin;background:var(--ink);color:#fff;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;padding:1vmin 1.6vmin}
+.lg-v{position:relative;flex:1 1 auto;overflow:hidden;-webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent)}
+.lg-in{position:absolute;left:0;right:0;top:0;will-change:transform}
+.lg-r{display:grid;grid-template-columns:7ch 1.5fr .9fr 1.3fr;gap:1.4vmin;align-items:baseline;padding:.6vmin 1.6vmin;font-size:2vmin;line-height:1.25;border-bottom:1px solid var(--wash2);transform-origin:0 50%;transition:opacity .5s ease,transform .6s ease,color .3s,background .3s}
+.lg-r i{font-style:normal;font-family:var(--mono);font-size:1.6vmin;color:var(--muted)}
+.lg-r b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg-r span,.lg-r em{font-style:normal;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ledger.focus .lg-r{opacity:.1}
+.ledger.focus .lg-r.me{opacity:1;color:var(--accent);background:var(--soft);transform:scale(1.1)}
+.ledger.focus .lg-r.me i,.ledger.focus .lg-r.me span,.ledger.focus .lg-r.me em{color:var(--accent)}
+.lg-wrap.done .ledger{opacity:0;pointer-events:none}
+.lg-wrap .rec{transition:opacity .5s ease}
+.lg-wrap:not(.done) .rec{opacity:0}
+.slide.active .lg-wrap:not(.done) .rec .f{animation:none}
+
+/* "why it matters": archives that appear one by one, an archival record filled in field by field */
+.kgs .arch{opacity:0}
+.slide.active .kgs .arch{animation:cdin .6s ease forwards;animation-delay:var(--d)}
+.rec{width:100%;border:2px solid var(--ink);background:var(--bg);display:flex;flex-direction:column}
+.rec .rh{display:flex;justify-content:space-between;gap:2vmin;background:var(--ink);color:#fff;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;padding:1vmin 1.6vmin}
+.rec .f{display:grid;grid-template-columns:16ch 1fr;gap:1.6vmin;align-items:baseline;padding:1.5vmin 1.6vmin;border-top:1px solid var(--faint);opacity:0;transform:translateX(-1vmin)}
+.slide.active .rec .f{animation:cdin .5s ease forwards;animation-delay:var(--d)}
+.rec .f span{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.rec .f b{font-size:3vmin;font-weight:700;letter-spacing:-.015em;line-height:1.2}
+.rec .f b em{font-style:normal;font-weight:400;color:var(--muted)}
+.rec .f.hl b{color:var(--accent)}
 
 /* "extend, don't rebuild": the bridge opens between the two blocks */
 .brg .bridge rect{transform-box:fill-box;transform-origin:center;transform:scaleX(0);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
 .brg .bridge.on rect{transform:none}
-/* a place as a network: out-of-period nodes fade, footprints of other phases disappear */
-.pl .pn.off{opacity:.12}
+/* a place as a network: footprints of other phases disappear, events not yet happened fade, the city appears */
 .pl .ph.off{opacity:0}
+.pl .row.ahead{opacity:.14!important}
+.pl-net{transform-box:view-box;transform-origin:500px 65px;transition:transform 1.3s cubic-bezier(.6,0,.2,1),opacity .7s ease .5s}
+.pl-net.out{opacity:0}
+.pl-city[data-at]{transition:opacity .8s ease .6s}
+.pl-city .bld{fill:var(--wash2);stroke:#bdbab3;stroke-width:1}
+.pl-city .home{fill:var(--soft);stroke:var(--accent);stroke-width:2.5}
+.pl-city .mini{opacity:0;transition:opacity .5s ease}
+.pl-city.on .mini{opacity:1;transition-delay:var(--d)}
 
 @media (max-aspect-ratio:3/2){.code{font-size:1.68vmin}.code.sm{font-size:1.5vmin}}
 @media (max-aspect-ratio:1/1){.body{flex-direction:column}.cards,.nums,.who{grid-template-columns:1fr 1fr}}
@@ -461,8 +539,8 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
     <div class="day">
       <div class="dh"><b>Metapolis</b><span>~35 min</span></div>
       <div class="agenda">
-        <div style="flex:5"><div class="nm">I · Why we need it</div><div class="blk" style="--h:70%;transition-delay:.05s"></div></div>
-        <div style="flex:10"><div class="nm">II · What Metapolis is</div><div class="blk" style="--h:70%;transition-delay:.12s"></div></div>
+        <div style="flex:8"><div class="nm">I · Why it matters</div><div class="blk" style="--h:70%;transition-delay:.05s"></div></div>
+        <div style="flex:9"><div class="nm">II · What Metapolis is</div><div class="blk" style="--h:70%;transition-delay:.12s"></div></div>
         <div style="flex:8"><div class="nm acc">III · Florentia Illustrata</div><div class="blk a" style="--h:70%;transition-delay:.19s"></div></div>
         <div style="flex:9"><div class="nm acc">III · VeNiss</div><div class="blk a" style="--h:70%;transition-delay:.26s"></div></div>
         <div style="flex:3"><div class="nm mut">Q&amp;A</div><div class="blk w" style="--h:70%;transition-delay:.33s"></div></div>
@@ -470,132 +548,268 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
     </div>
     <div class="legend"><span><i class="sw-i"></i>talk</span><span><i class="sw-a"></i>use case, with a live demo</span><span><i class="sw-w"></i>questions</span></div>
   </div>
-  <aside class="notes">About five minutes on why we need a new tool, ten on what Metapolis is and does, then fifteen on two use cases, Florentia Illustrata and VeNiss, each with a live demo.</aside>
+  <aside class="notes">About eight minutes on why it matters, nine on what Metapolis is and does, then fifteen on two use cases, Florentia Illustrata and VeNiss, each with a live demo.</aside>
 </section>
 
 <!-- ================= PART I · WHY ================= -->
 <section class="slide red">
   <div class="lab part"><span>part one</span><span>I / III</span></div>
-  <div class="fit" style="font-weight:900"><p>why we need it</p></div>
+  <div class="fit" style="font-weight:900"><p>why it matters</p></div>
+</section>
+
+<section class="slide c" data-w="ledger">
+  <div class="lab"><span>why it matters · 01</span><span>Florence, 1835 · step through with →</span></div>
+  <h2 class="h">Behind every record, <span class="acc">a life</span>.</h2>
+  <div class="body">
+    <div class="col g15 mid lg-wrap">
+      <div class="ledger" aria-hidden="true">
+        <div class="lg-h"><span>Catasto Generale Toscano · Florence</span><span>1835</span></div>
+        <div class="lg-v"><div class="lg-in"><div class="lg-r"><i>1</i><b>Calamai, Costanza</b><span>casa</span><em>Via Faenza</em></div><div class="lg-r"><i>88</i><b>Piatti, Costantino</b><span>casa</span><em>Via Evangelista</em></div><div class="lg-r"><i>178</i><b>Pecchioli, Giuseppe</b><span>ingresso</span><em>Via Panicale</em></div><div class="lg-r"><i>276</i><b>Masini, Pietro</b><span>ingresso</span><em>Via Chiara</em></div><div class="lg-r"><i>371</i><b>Capacci, Celso</b><span>bottega e corte</span><em>Via dei Ginori</em></div><div class="lg-r"><i>459</i><b>Bacci, Alessandro</b><span>bottega</span><em>Via delle Cantonelle</em></div><div class="lg-r"><i>573</i><b>Nencioni, Pietro</b><span>bottega</span><em>Via Porciaia</em></div><div class="lg-r"><i>672</i><b>Melani, Antonio Maria</b><span>casa</span><em>Via Romita</em></div><div class="lg-r"><i>765</i><b>Valenti, Giovacchino</b><span>ingresso e corte</span><em>Via della Stipa</em></div><div class="lg-r"><i>859</i><b>Gargani, Vincenzo</b><span>ingresso</span><em>Campo Corbolini</em></div><div class="lg-r"><i>947</i><b>Moulinier, Bernardo</b><span>casa</span><em>Via dell&#x27;Amorino</em></div><div class="lg-r"><i>1033</i><b>Pieri, Gaspero</b><span>bottega</span><em>Via dei Cenni</em></div><div class="lg-r"><i>1160</i><b>Bolognesi, Gaetano</b><span>casa</span><em>Borgo S. Lorenzo</em></div><div class="lg-r"><i>1255</i><b>Margiacchi, Giovan Battista</b><span>bottega</span><em>Via Panzani</em></div><div class="lg-r"><i>1349</i><b>Mazzoni, Bonfilia</b><span>casa</span><em>Via Vigna Nuova</em></div><div class="lg-r"><i>1438</i><b>Santini, Maria Anna</b><span>bottega</span><em>Via del Parione</em></div><div class="lg-r"><i>1535</i><b>Federighi, Cassandra Ottavia Gaspera</b><span>casa</span><em>Via dei Federighi</em></div><div class="lg-r"><i>1633</i><b>Gherardi, Giuseppe</b><span>bottega</span><em>Via della Spada</em></div><div class="lg-r"><i>1721</i><b>Benassi, Luisa</b><span>casa</span><em>Piazza S. Maria Novella</em></div><div class="lg-r"><i>1818</i><b>Gondi Cerretani, Vincenzo</b><span>fabbricato e corte</span><em>Piazza Vecchia di S. M. Novella</em></div><div class="lg-r"><i>1908</i><b>Ceccherelli, Domenico</b><span>orto</span><em>Via Faenza</em></div><div class="lg-r"><i>2004</i><b>Pieri, Agostino</b><span>casa</span><em>Via Valfonda</em></div><div class="lg-r"><i>2094</i><b>Strozzi, Carlo</b><span>casa e fabbricato</span><em>Via Nuova</em></div><div class="lg-r"><i>2284</i><b>Pampaloni, Luigi</b><span>casa</span><em>Sul Prato</em></div><div class="lg-r"><i>2373</i><b>Morandi, Bini</b><span>casa e corte</span><em>Via Palazzuolo</em></div><div class="lg-r"><i>2481</i><b>Luib, Antonio</b><span>orto</span><em>Via Nuova</em></div><div class="lg-r"><i>2597</i><b>Meini, Pasquale</b><span>casa</span><em>Borgo Ognissanti</em></div><div class="lg-r"><i>2687</i><b>Branconi, Giovanni</b><span>casa</span><em>Borgo Ognissanti</em></div><div class="lg-r"><i>2778</i><b>Balocchi, Giuseppe</b><span>casa</span><em>Via Gora</em></div><div class="lg-r"><i>2880</i><b>Nobili, Teresa</b><span>orto</span><em>Borgo Ognissanti</em></div><div class="lg-r"><i>3010</i><b>Baldesi, Giuliano</b><span>ingresso</span><em>Via Palazzuolo</em></div><div class="lg-r"><i>3097</i><b>Masini, Bernardo</b><span>ingresso</span><em>Via Palazzuolo</em></div><div class="lg-r"><i>3193</i><b>Benelli, Giovan Antonio</b><span>casa</span><em>Via dell&#x27;Albero</em></div><div class="lg-r"><i>3299</i><b>Tommasini, Gaetano</b><span>orto</span><em>Via della Scala</em></div><div class="lg-r"><i>3404</i><b>Lascialfare, Colomba</b><span>casa</span><em>Sul Prato</em></div><div class="lg-r"><i>3519</i><b>Durazzini, Giuseppe</b><span>orto</span><em>Via della Scala</em></div><div class="lg-r"><i>3638</i><b>Picchianti, Giovan Battista</b><span>casa</span><em>Via Valfonda</em></div><div class="lg-r"><i>3726</i><b>Stiozzi Ridolfi, Giuseppe Bartolomeo al Sacrofonte già Girolamo da Cepparello</b><span>lavorativo vitato, fruttato</span><em>Via della Scala</em></div><div class="lg-r"><i>3817</i><b>Albizzi, Amerigo</b><span>casa e corte</span><em>Borgo degli Albizzi</em></div><div class="lg-r"><i>3907</i><b>Carocci, Ferdinando</b><span>bottega</span><em>Via dello Sprone e Via del Fosso</em></div><div class="lg-r"><i>3993</i><b>Torricelli, Andrea</b><span>bottega</span><em>Mercato di S. Piero</em></div><div class="lg-r"><i>4083</i><b>Pomi, Luisa</b><span>bottega</span><em>Via del Proconsolo</em></div><div class="lg-r"><i>4169</i><b>Buzzegoli, Alberto</b><span>casa</span><em>Via delle Badesse</em></div><div class="lg-r"><i>4261</i><b>Gondi, Cassandra</b><span>casa</span><em>Via Vigna Vecchia</em></div><div class="lg-r"><i>4351</i><b>Lenzoni, Francesco</b><span>palazzo</span><em>Via del Diluvio</em></div><div class="lg-r"><i>4462</i><b>Barducci, Francesco</b><span>rimessa</span><em>Borgo dei Greci</em></div><div class="lg-r"><i>4548</i><b>Frastaglini, Antonio</b><span>casa</span><em>Via delle Serve Smarrite</em></div><div class="lg-r"><i>4638</i><b>Gori, Agostino</b><span>casa</span><em>Via dei Leoni</em></div><div class="lg-r"><i>4724</i><b>Chiari, Luisa</b><span>casa</span><em>Via de Rustici</em></div><div class="lg-r"><i>4811</i><b>Bichi, Gaetano</b><span>bottega</span><em>Via de Neri</em></div><div class="lg-r"><i>4897</i><b>Grassi, Antonio</b><span>fabbricato e corte</span><em>Via dei Vagellai</em></div><div class="lg-r"><i>5003</i><b>Gazzeri, Cosimo</b><span>casa</span><em>Via dei Saponai</em></div><div class="lg-r"><i>5092</i><b>Moriani, Vincenzo</b><span>casa</span><em>Via del Moro</em></div><div class="lg-r"><i>5205</i><b>Filippi, Angiola</b><span>fabbricato</span><em>Via Baldracca</em></div><div class="lg-r"><i>5307</i><b>Dell&#x27;Imperatore, Ferdinando</b><span>bottega</span><em>Ponte Vecchio</em></div><div class="lg-r"><i>5399</i><b>Bracci, Pietro</b><span>bottega</span><em>Via Lambertesca</em></div><div class="lg-r"><i>5494</i><b>Andreini, Gaetano</b><span>casa e corte</span><em>Chiasso del Buco</em></div><div class="lg-r"><i>5584</i><b>Quadri, Natale</b><span>bottega</span><em>Via Por S. Maria</em></div><div class="lg-r"><i>5677</i><b>Guadagni, Giuseppe</b><span>casa</span><em>Via Terma</em></div><div class="lg-r"><i>5768</i><b>Torrigiani, Pietro</b><span>casa</span><em>Via delle Bombarde</em></div><div class="lg-r"><i>5854</i><b>Piatti, Guglielmo</b><span>magazzino</span><em>Chiasso del Panico</em></div><div class="lg-r"><i>5949</i><b>Naldini, Giovanni Evangelista</b><span>casa</span><em>Via Calimaruzza</em></div><div class="lg-r"><i>6050</i><b>Perfetti, Giuseppe</b><span>casa</span><em>Via del Braccio</em></div><div class="lg-r"><i>6139</i><b>Buoni, Gaetano</b><span>banco</span><em>Piazza del Gran Duca</em></div><div class="lg-r"><i>6225</i><b>Ciarpaglini, Francesca</b><span>casa</span><em>Sdrucciolo S. Michele</em></div><div class="lg-r"><i>6311</i><b>Uguccioni, Giovanni Fabio</b><span>magazzino</span><em>Via degli Antellesi</em></div><div class="lg-r"><i>6418</i><b>Palagi, Pietro</b><span>bottega</span><em>Via dei Cerchi e Via dei Cimatori</em></div><div class="lg-r"><i>6511</i><b>Baldocci, Francesco</b><span>bottega</span><em>Via Calimara</em></div><div class="lg-r"><i>6597</i><b>Petrioli, Luigi</b><span>bottega</span><em>Via Pellicceria</em></div><div class="lg-r"><i>6683</i><b>Strozzi, Filippo</b><span>casa</span><em>Chiasso dei Limonai</em></div><div class="lg-r"><i>6770</i><b>Strozzi, Emilio</b><span>bottega</span><em>Via delle Cipolle</em></div><div class="lg-r"><i>6859</i><b>Grassi, Antonio</b><span>bottega</span><em>Via Pellicceria</em></div><div class="lg-r me"><i>6949</i><b>Morelli, Rosa</b><span>bottega</span><em>Piazza S. Andrea</em></div><div class="lg-r"><i>6951</i><b>Quercioli, Serafino</b><span>fabbricato</span><em>Mercato</em></div><div class="lg-r"><i>6952</i><b>Strozzi, Filippo</b><span>magazzino</span><em>Mercato</em></div><div class="lg-r"><i>6953</i><b>Lascialfare, Vincenzo</b><span>fabbricato</span><em>Mercato</em></div><div class="lg-r"><i>6954</i><b>Lascialfare, Vincenzo</b><span>bottega</span><em>Mercato</em></div><div class="lg-r"><i>6955</i><b>Lascialfare, Vincenzo</b><span>bottega e fabbricato</span><em>Mercato</em></div><div class="lg-r"><i>6956</i><b>Bigalli, Giovanni</b><span>fabbricato</span><em>Mercato</em></div><div class="lg-r"><i>6957</i><b>Santini, Giuseppe</b><span>bottega</span><em>Mercato</em></div><div class="lg-r"><i>6958</i><b>Paoli, Giovan Gualberto</b><span>fabbricato</span><em>Via Calimara</em></div><div class="lg-r"><i>6959</i><b>Bucciolini, Carlo</b><span>fabbricato</span><em>Via Calimara</em></div></div></div>
+      </div>
+      <div class="rec">
+        <div class="rh"><span>Catasto Generale Toscano · Florence</span><span>1835</span></div>
+        <div class="f" style="--d:.2s"><span>owner</span><b>Rosa Morelli</b></div>
+        <div class="f hl" style="--d:.55s"><span>recorded as</span><b>“moglie di Jacopo Mosel” <em>· wife of Jacopo Mosel</em></b></div>
+        <div class="f" style="--d:.9s"><span>property</span><b>a shop <em>· bottega</em></b></div>
+        <div class="f" style="--d:1.25s"><span>where</span><b>Piazza S. Andrea, in the Old Market</b></div>
+      </div>
+    </div>
+    <div class="col g1 pts mid">
+      <div class="pt" data-at="1"><b>named through her husband</b><p>The register calls her “wife of”: a woman owner, visible almost by accident.</p></div>
+      <div class="pt" data-at="2"><b>an owner of shops</b><p>Six properties in her name: three shops, one of them a silversmith's, and three buildings.</p></div>
+      <div class="pt" data-at="3"><b>a vanished place</b><p>The Old Market was demolished at the end of the century. Today it is Piazza della Repubblica.</p></div>
+      <div class="pt k" data-at="4"><b>why it matters</b><p>Archives hold thousands of lives like hers, scattered across records that nobody has connected.</p></div>
+    </div>
+  </div>
+  <div class="src">Catasto Generale Toscano, 1835 · as modelled in Florentia Illustrata.</div>
+  <aside class="notes">Start with a crowd: the register of the 1835 Florentine cadastre scrolls by, real names, one after another, parcel after parcel. In a list they mean little. Then it slows down and stops on one of them. Start with a person. In 1835 the Florentine cadastre lists a shop in Piazza S. Andrea, in the Old Market, owned by Rosa Morelli. The register does not describe her on her own terms: it calls her "moglie di Jacopo Mosel", wife of Jacopo Mosel. Yet her name leads to six properties: three shops, one of them a silversmith's, and three buildings. And the place itself is gone: the Old Market was demolished at the end of the nineteenth century to make room for today's Piazza della Repubblica. Press → four times. The point: archives hold thousands of lives like hers, but they are scattered across records that nobody has connected. That is what this work is about.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>why it matters · 02</span><span>the problem</span></div>
+  <h2 class="h">History survives <span class="acc">in pieces</span>.</h2>
+  <div class="fig">
+    <svg viewBox="0 0 1000 470" class="kgs">
+        <g class="arch" style="--d:0.20s"><rect x="30" y="20" width="190" height="118" class="bxw"/><text class="el" x="44" y="44">STATE ARCHIVE</text><rect x="63" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M68 91h14M68 98h14M68 105h9" stroke="#9a9a9a" stroke-width="1.5"/><rect x="113" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M118 91h14M118 98h14M118 105h9" stroke="#9a9a9a" stroke-width="1.5"/><rect x="163" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M168 91h14M168 98h14M168 105h9" stroke="#9a9a9a" stroke-width="1.5"/></g>
+        <g class="arch" style="--d:0.55s"><rect x="405" y="10" width="190" height="118" class="bxw"/><text class="el" x="419" y="34">LIBRARY</text><rect x="439" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M444 71v34" stroke="#fff" stroke-width="1.5"/><rect x="489" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M494 71v34" stroke="#fff" stroke-width="1.5"/><rect x="539" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M544 71v34" stroke="#fff" stroke-width="1.5"/></g>
+        <g class="arch" style="--d:0.90s"><rect x="780" y="20" width="190" height="118" class="bxw"/><text class="el" x="794" y="44">MUSEUM</text><rect x="810" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M816 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/><rect x="860" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M866 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/><rect x="910" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M916 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/></g>
+        <g class="arch" style="--d:1.25s"><rect x="90" y="330" width="190" height="118" class="bxw"/><text class="el" x="104" y="354">PHOTO ARCHIVE</text><rect x="121" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="141" cy="404" r="3" style="fill:#fff"/><path d="M121 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/><rect x="171" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="191" cy="404" r="3" style="fill:#fff"/><path d="M171 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/><rect x="221" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="241" cy="404" r="3" style="fill:#fff"/><path d="M221 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/></g>
+        <g class="arch" style="--d:1.60s"><rect x="700" y="330" width="190" height="118" class="bxw"/><text class="el" x="714" y="354">A SCHOLAR'S NOTES</text><rect x="732" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M737 403h16M737 409h16M737 415h10" stroke="#9a9a9a" stroke-width="1.2"/><rect x="782" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M787 403h16M787 409h16M787 415h10" stroke="#9a9a9a" stroke-width="1.2"/><rect x="832" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M837 403h16M837 409h16M837 415h10" stroke="#9a9a9a" stroke-width="1.2"/></g>
+    </svg>
+  </div>
+  <div class="row" style="flex:0 0 auto">
+    <div class="pt"><b>scattered</b><p>Every archive, library and museum keeps its own piece of the story, in its own catalogue.</p></div>
+    <div class="pt k"><b>connected by hand</b><p>Scholars spend years linking the pieces, and the links end up in footnotes.</p></div>
+  </div>
+  <aside class="notes">The evidence about a city, a building or a person is never in one place. A deed is in a state archive, a book in a library, a drawing in a museum, a photograph in a photo archive, and the connections between them often only in a scholar's own notes. Each institution catalogues its own holdings, in its own way. Researchers spend years connecting the pieces by hand, and when the book is published, those connections end up in footnotes, where nobody else can build on them.</aside>
+</section>
+
+<section class="slide c" data-w="say">
+  <div class="lab"><span>why it matters · 03</span><span>step through with →</span></div>
+  <h2 class="h">Bringing the pieces <span class="acc">together</span>.</h2>
+  <div class="ctl say"><span class="v" data-k="0">Today the pieces sit apart, each in its own archive.</span><span class="v" data-k="1" hidden>Connect: records from different archives point to the same people, buildings and events.</span><span class="v" data-k="2" hidden>Research together: scholars with different skills build on the same evidence.</span><span class="v" data-k="3" hidden>Tell stories: a narrative walks through the evidence, and every step leads back to a source.</span></div>
+  <div class="fig">
+    <svg viewBox="0 0 1000 470" class="kgs">
+        <g><rect x="30" y="20" width="190" height="118" class="bxw"/><text class="el" x="44" y="44">STATE ARCHIVE</text><rect x="63" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M68 91h14M68 98h14M68 105h9" stroke="#9a9a9a" stroke-width="1.5"/><rect x="113" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M118 91h14M118 98h14M118 105h9" stroke="#9a9a9a" stroke-width="1.5"/><rect x="163" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M168 91h14M168 98h14M168 105h9" stroke="#9a9a9a" stroke-width="1.5"/></g>
+        <g><rect x="405" y="10" width="190" height="118" class="bxw"/><text class="el" x="419" y="34">LIBRARY</text><rect x="439" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M444 71v34" stroke="#fff" stroke-width="1.5"/><rect x="489" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M494 71v34" stroke="#fff" stroke-width="1.5"/><rect x="539" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M544 71v34" stroke="#fff" stroke-width="1.5"/></g>
+        <g><rect x="780" y="20" width="190" height="118" class="bxw"/><text class="el" x="794" y="44">MUSEUM</text><rect x="810" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M816 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/><rect x="860" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M866 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/><rect x="910" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M916 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/></g>
+        <g><rect x="90" y="330" width="190" height="118" class="bxw"/><text class="el" x="104" y="354">PHOTO ARCHIVE</text><rect x="121" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="141" cy="404" r="3" style="fill:#fff"/><path d="M121 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/><rect x="171" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="191" cy="404" r="3" style="fill:#fff"/><path d="M171 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/><rect x="221" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="241" cy="404" r="3" style="fill:#fff"/><path d="M221 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/></g>
+        <g><rect x="700" y="330" width="190" height="118" class="bxw"/><text class="el" x="714" y="354">A SCHOLAR'S NOTES</text><rect x="732" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M737 403h16M737 409h16M737 415h10" stroke="#9a9a9a" stroke-width="1.2"/><rect x="782" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M787 403h16M787 409h16M787 415h10" stroke="#9a9a9a" stroke-width="1.2"/><rect x="832" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M837 403h16M837 409h16M837 415h10" stroke="#9a9a9a" stroke-width="1.2"/></g>
+        <g data-at="1">
+        <path class="ge st" pathLength="1" d="M75 98 L430 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M175 98 L590 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M500 88 L430 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M875 98 L590 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M135 408 L590 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M235 408 L510 296" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M745 408 L510 296" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M845 408 L430 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M430 232 L510 296" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M590 232 L510 296" stroke-width="1.3"/>
+        <circle cx="430" cy="232" r="14" class="bxi"/>
+        <text x="408" y="238" text-anchor="end" style="font-size:16px">a person</text>
+        <rect x="575" y="217" width="30" height="30" style="fill:var(--wash2)" class="st" stroke-width="2.5"/>
+        <text x="614" y="238" style="font-size:16px">a building</text>
+        <rect x="498" y="284" width="24" height="24" transform="rotate(45 510 296)" class="bxa"/>
+        <text x="510" y="332" text-anchor="middle" style="font-size:16px">an event</text>
+        </g>
+        <g data-at="2">
+        <path d="M300 170 L430 232" class="sa" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <path d="M720 170 L590 232" class="sa" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <path d="M360 300 L510 296" class="sa" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <circle cx="300" cy="161" r="8" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><path d="M287 184a13 12 0 0 1 26 0z" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><text x="300" y="204" text-anchor="middle" style="font-size:15px;fill:var(--accent)">a historian</text>
+        <circle cx="720" cy="161" r="8" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><path d="M707 184a13 12 0 0 1 26 0z" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><text x="720" y="204" text-anchor="middle" style="font-size:15px;fill:var(--accent)">an architect</text>
+        <circle cx="360" cy="291" r="8" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><path d="M347 314a13 12 0 0 1 26 0z" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><text x="360" y="334" text-anchor="middle" style="font-size:15px;fill:var(--accent)">a cartographer</text>
+        </g>
+        <g data-at="3">
+        <path class="ge sa" pathLength="1" d="M135 408 L590 232 L510 296 L430 232 L75 98" stroke-width="5" stroke-linejoin="round" style="opacity:.85"/>
+        <circle cx="135" cy="408" r="11" class="bxa" stroke="#fff" stroke-width="2"/><text x="135" y="413" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff;stroke:none">1</text>
+        <circle cx="590" cy="232" r="11" class="bxa" stroke="#fff" stroke-width="2"/><text x="590" y="237" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff;stroke:none">2</text>
+        <circle cx="510" cy="296" r="11" class="bxa" stroke="#fff" stroke-width="2"/><text x="510" y="301" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff;stroke:none">3</text>
+        <circle cx="430" cy="232" r="11" class="bxa" stroke="#fff" stroke-width="2"/><text x="430" y="237" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff;stroke:none">4</text>
+        <circle cx="75" cy="98" r="11" class="bxa" stroke="#fff" stroke-width="2"/><text x="75" y="103" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff;stroke:none">5</text>
+        </g>
+    </svg>
+  </div>
+  <aside class="notes">The same archives as before. Press →: we connect them. A deed, a book, a drawing, a photograph, a note: once they point to the same person, the same building, the same event, the pieces start to talk to each other. Press →: scholars join, a historian, an architect, a cartographer, each adding what they know to the same shared evidence, and each credited for it. Press →: on top of this, we can tell stories, narratives that walk through the evidence step by step, where every sentence can be checked against its source.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>why it matters · 04</span><span>the aim</span></div>
+  <h2 class="h">Three things <span class="acc">we want to make possible</span>.</h2>
+  <div class="cards c3">
+    <div class="cd" style="--d:.1s"><svg class="ic" viewBox="0 0 160 70"><rect x="20" y="16" width="30" height="40" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2.5"/><rect x="110" y="16" width="30" height="40" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2.5"/><path d="M50 36 H110" class="st" stroke-width="2.5"/><circle cx="80" cy="36" r="9" class="bxi"/></svg><b>01 · connect</b><h5>Archives that talk to each other</h5><p>Records kept in different places, linked to the same people, buildings and events.</p></div>
+    <div class="cd" style="--d:.35s"><svg class="ic" viewBox="0 0 160 70"><g class="sa" stroke-width="2.5" style="fill:var(--bg)"><circle cx="45" cy="24" r="8"/><path d="M31 54a14 13 0 0 1 28 0z"/><circle cx="80" cy="20" r="9"/><path d="M64 54a16 15 0 0 1 32 0z"/><circle cx="115" cy="24" r="8"/><path d="M101 54a14 13 0 0 1 28 0z"/></g></svg><b>02 · research together</b><h5>One shared body of evidence</h5><p>Scholars in different places and fields build on each other's work, and every contribution is credited.</p></div>
+    <div class="cd a" style="--d:.6s"><svg class="ic" viewBox="0 0 160 70"><path d="M20 50 L60 22 L100 46 L140 18" stroke="#fff" stroke-width="4" fill="none" stroke-linejoin="round"/><g style="fill:#fff"><circle cx="20" cy="50" r="7"/><circle cx="60" cy="22" r="7"/><circle cx="100" cy="46" r="7"/><circle cx="140" cy="18" r="7"/></g></svg><b>03 · tell stories</b><h5>Stories you can check</h5><p>Narratives built on data curated by specialists: every claim one click from its source, doubts stated, open to new questions.</p></div>
+  </div>
+  <aside class="notes">So the aim is threefold. Connect: let records held in different archives speak to each other, through the people, buildings and events they share. Research together: give a community of scholars, in different places and fields, one shared body of evidence, where each contribution is credited. Tell stories: let them publish narratives built on critically curated data, where every statement can be traced back to its source, uncertainties are stated, and readers can ask new questions of the same evidence. The next slides show what that means for a single building.</aside>
 </section>
 
 <section class="slide c bg" data-w="place">
   <div class="bgimg light" style="background-image:url(assets/img/florence.jpg)"></div>
-  <div class="lab"><span>why · 01</span><span>step through with →</span></div>
+  <div class="lab"><span>why it matters · 05</span><span>an illustrative story · step through with →</span></div>
   <h2 class="h">A place is <span class="acc">a network</span>, through time.</h2>
+  <div class="ctl"><span class="v pl-say" style="font-size:2.3vmin">&nbsp;</span></div>
   <div class="fig">
-    <svg viewBox="0 0 1000 520" class="kgs pl">
-      <text class="pl-year" x="500" y="30" text-anchor="middle" style="font-size:34px;font-weight:900;fill:var(--accent)"></text>
-      <g data-at="1">
-        <g class="pn" data-from="1420" data-to="1480"><path class="st" d="M190 105 L430 180" stroke-width="1.5"/><circle cx="190" cy="105" r="11" class="bxi"/><text x="168" y="111" text-anchor="end" style="font-size:17px">a patron</text></g>
-        <g class="pn" data-from="1590" data-to="1835"><path class="st" d="M120 215 L415 205" stroke-width="1.5"/><circle cx="120" cy="215" r="11" class="bxi"/><text x="98" y="221" text-anchor="end" style="font-size:17px">a family</text></g>
-        <g class="pn" data-from="1835" data-to="2026"><path class="st" d="M210 330 L430 262" stroke-width="1.5"/><circle cx="210" cy="330" r="11" class="bxi"/><text x="188" y="336" text-anchor="end" style="font-size:17px">its owners</text></g>
-      </g>
-      <g data-at="2">
-        <g class="pn" data-from="1420" data-to="1470"><path class="sa" d="M810 105 L570 180" stroke-width="1.5"/><rect x="799" y="94" width="22" height="22" transform="rotate(45 810 105)" class="bxa"/><text x="834" y="111" style="font-size:17px">construction</text></g>
-        <g class="pn" data-from="1700" data-to="1750"><path class="sa" d="M860 215 L585 205" stroke-width="1.5"/><rect x="849" y="204" width="22" height="22" transform="rotate(45 860 215)" class="bxa"/><text x="884" y="221" style="font-size:17px">a new wing</text></g>
-        <g class="pn" data-from="1950" data-to="2000"><path class="sa" d="M790 330 L570 262" stroke-width="1.5"/><rect x="779" y="319" width="22" height="22" transform="rotate(45 790 330)" class="bxa"/><text x="814" y="336" style="font-size:17px">demolition</text></g>
-        <g class="pn" data-from="1420" data-to="1470"><path class="sa" d="M190 105 Q500 -10 810 105" stroke-width="1.5"/></g>
-        <g class="pn" data-from="1700" data-to="1750"><path class="sa" d="M120 215 Q490 40 860 215" stroke-width="1.5"/></g>
-        <g class="pn" data-from="1950" data-to="2000"><path class="sa" d="M210 330 Q500 290 790 330" stroke-width="1.5"/></g>
-      </g>
-      <g data-at="3">
-        <g class="pn" data-from="1430" data-to="2026"><path class="st" d="M330 386 L460 292" stroke-width="1.5" stroke-dasharray="4 4"/><rect x="319" y="386" width="22" height="28" style="fill:var(--bg)" stroke="currentColor" stroke-width="2"/><text x="330" y="436" text-anchor="middle" style="font-size:16px">a deed</text></g>
-        <g class="pn" data-from="1710" data-to="2026"><path class="st" d="M500 386 L500 292" stroke-width="1.5" stroke-dasharray="4 4"/><rect x="489" y="386" width="22" height="28" style="fill:var(--bg)" stroke="currentColor" stroke-width="2"/><text x="500" y="436" text-anchor="middle" style="font-size:16px">a drawing</text></g>
-        <g class="pn" data-from="1835" data-to="2026"><path class="st" d="M670 386 L560 292" stroke-width="1.5" stroke-dasharray="4 4"/><rect x="659" y="386" width="22" height="28" style="fill:var(--bg)" stroke="currentColor" stroke-width="2"/><text x="670" y="436" text-anchor="middle" style="font-size:16px">the cadastre</text></g>
-      </g>
-      <g class="ph" data-from="1420" data-to="1699"><path d="M445 160 H555 V250 H445 Z" style="fill:var(--soft)" class="sa" stroke-width="3"/></g>
-      <g class="ph" data-from="1700" data-to="1949" data-default><path d="M415 145 H585 V240 H540 V290 H415 Z" style="fill:var(--soft)" class="sa" stroke-width="3"/></g>
-      <g class="ph" data-from="1950" data-to="2026"><path d="M415 145 H585 V240 H415 Z" style="fill:var(--soft)" class="sa" stroke-width="3"/><path d="M540 240 V290 H415 V240" class="sa" stroke-width="2" stroke-dasharray="5 5"/></g>
-      <text class="nl" x="500" y="207" text-anchor="middle" style="fill:var(--accent)">a building</text>
-      <g data-at="4">
-        <path class="st" d="M100 480 H900" stroke-width="2"/>
-        <g class="m" style="font-size:13px">
-          <path class="st" d="M100 473 V487M227.8 473 V487M355.6 473 V487M483.4 473 V487M611.2 473 V487M739 473 V487M866.8 473 V487" stroke-width="1.5"/>
-          <text class="mu" x="100" y="508" text-anchor="middle">1400</text><text class="mu" x="227.8" y="508" text-anchor="middle">1500</text><text class="mu" x="355.6" y="508" text-anchor="middle">1600</text><text class="mu" x="483.4" y="508" text-anchor="middle">1700</text><text class="mu" x="611.2" y="508" text-anchor="middle">1800</text><text class="mu" x="739" y="508" text-anchor="middle">1900</text><text class="mu" x="866.8" y="508" text-anchor="middle">2000</text>
+    <svg viewBox="0 0 1000 540" class="kgs pl">
+      <g class="pl-city" data-at="6"></g>
+      <g class="pl-net">
+        <!-- the building: its footprint changes with its history; the line below is its life -->
+        <path class="st" d="M500 100 V512" stroke-width="2"/>
+        <g class="ph" data-ph="A"><rect x="460" y="28" width="80" height="70" style="fill:var(--wash2)" class="st" stroke-width="2.5"/></g>
+        <g class="ph" data-ph="B"><path d="M460 28 H540 V58 H600 V98 H460 Z" style="fill:var(--wash2)" class="st" stroke-width="2.5"/></g>
+        <g class="ph" data-ph="C"><rect x="460" y="28" width="80" height="70" style="fill:var(--wash2)" class="st" stroke-width="2.5"/><path d="M540 58 H600 V98 H540" class="st" stroke-width="1.5" stroke-dasharray="5 5"/></g>
+        <text class="pl-year" x="620" y="74" style="font-size:30px;font-weight:900;fill:var(--accent)"></text>
+        <!-- the three kinds of node, with their colours -->
+        <g data-at="1" class="m" style="font-size:14px">
+          <circle cx="98" cy="136" r="7" class="bxi"/><text x="112" y="141" class="mu"><tspan style="fill:var(--ink);font-weight:500">ACTORS</tspan> · who</text>
+          <rect x="415" y="129" width="12" height="12" transform="rotate(45 421 135)" class="bxa"/><text x="436" y="141" class="mu"><tspan style="fill:var(--accent);font-weight:500">EVENTS</tspan> · what, when</text>
+          <rect x="752" y="126" width="12" height="16" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="1.5"/><text x="772" y="141" class="mu"><tspan style="fill:var(--ink);font-weight:500">SOURCES</tspan> · how we know</text>
         </g>
-        <g class="pl-hand"><path class="sa" d="M100 464 V496" stroke-width="4"/><circle cx="100" cy="480" r="7" class="bxa"/></g>
+        <!-- one row per event: actors → event ← sources -->
+        <g class="row" data-at="1" data-year="1460">
+          <path class="st" d="M254 195 H482" stroke-width="1.5" marker-end="url(#ah)"/><text class="el" x="368" y="186" text-anchor="middle" style="fill:var(--ink)">commissions</text>
+          <circle cx="240" cy="195" r="11" class="bxi"/><text x="222" y="201" text-anchor="end" style="font-size:17px">a wool merchant</text>
+          <path d="M748 195 H520" stroke="#9a9a9a" stroke-width="1.5" stroke-dasharray="5 4" fill="none" marker-end="url(#ahm)"/><text class="el" x="634" y="186" text-anchor="middle">documents</text>
+          <rect x="750" y="182" width="20" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><text x="782" y="201" style="font-size:17px">a building contract</text>
+          <rect x="489" y="184" width="22" height="22" transform="rotate(45 500 195)" class="bxa"/><text x="500" y="168" text-anchor="middle" style="font-size:17px;font-weight:800;fill:var(--accent)">1460 · built</text>
+        </g>
+        <g class="row" data-at="2" data-year="1590">
+          <path class="st" d="M254 273 L482 284" stroke-width="1.5" marker-end="url(#ah)"/><text class="el" x="368" y="268" text-anchor="middle" style="fill:var(--ink)">sell</text>
+          <path class="st" d="M254 297 L482 286" stroke-width="1.5" marker-end="url(#ah)"/><text class="el" x="368" y="310" text-anchor="middle" style="fill:var(--ink)">buys</text>
+          <circle cx="240" cy="273" r="11" class="bxi"/><text x="222" y="279" text-anchor="end" style="font-size:17px">his heirs</text>
+          <circle cx="240" cy="297" r="11" class="bxi"/><text x="222" y="303" text-anchor="end" style="font-size:17px">a noble family</text>
+          <path d="M748 285 H520" stroke="#9a9a9a" stroke-width="1.5" stroke-dasharray="5 4" fill="none" marker-end="url(#ahm)"/><text class="el" x="634" y="276" text-anchor="middle">documents</text>
+          <rect x="750" y="272" width="20" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><text x="782" y="291" style="font-size:17px">a notarial deed</text>
+          <rect x="489" y="274" width="22" height="22" transform="rotate(45 500 285)" class="bxa"/><text x="500" y="258" text-anchor="middle" style="font-size:17px;font-weight:800;fill:var(--accent)">1590 · sold</text>
+        </g>
+        <g class="row" data-at="3" data-year="1720">
+          <path class="st" d="M254 375 H482" stroke-width="1.5" marker-end="url(#ah)"/><text class="el" x="368" y="366" text-anchor="middle" style="fill:var(--ink)">designs</text>
+          <circle cx="240" cy="375" r="11" class="bxi"/><text x="222" y="381" text-anchor="end" style="font-size:17px">an architect</text>
+          <path d="M748 375 H520" stroke="#9a9a9a" stroke-width="1.5" stroke-dasharray="5 4" fill="none" marker-end="url(#ahm)"/><text class="el" x="634" y="366" text-anchor="middle">documents</text>
+          <rect x="750" y="362" width="20" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><text x="782" y="381" style="font-size:17px">his drawing</text>
+          <rect x="489" y="364" width="22" height="22" transform="rotate(45 500 375)" class="bxa"/><text x="500" y="348" text-anchor="middle" style="font-size:17px;font-weight:800;fill:var(--accent)">1720 · a new wing</text>
+        </g>
+        <g class="row" data-at="4" data-year="1890">
+          <path class="st" d="M254 465 H482" stroke-width="1.5" marker-end="url(#ah)"/><text class="el" x="368" y="456" text-anchor="middle" style="fill:var(--ink)">orders</text>
+          <circle cx="240" cy="465" r="11" class="bxi"/><text x="222" y="471" text-anchor="end" style="font-size:17px">the City</text>
+          <path d="M748 465 H520" stroke="#9a9a9a" stroke-width="1.5" stroke-dasharray="5 4" fill="none" marker-end="url(#ahm)"/><text class="el" x="634" y="456" text-anchor="middle">documents</text>
+          <rect x="750" y="452" width="20" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><text x="782" y="471" style="font-size:17px">a photograph</text>
+          <rect x="489" y="454" width="22" height="22" transform="rotate(45 500 465)" class="bxa"/><text x="500" y="438" text-anchor="middle" style="font-size:17px;font-weight:800;fill:var(--accent)">1890 · wing demolished</text>
+        </g>
+        <!-- the clock that runs down the building's life -->
+        <g data-at="5"><g class="pl-hand"><circle cx="500" cy="0" r="9" class="bxa" stroke="#fff" stroke-width="2.5"/></g></g>
       </g>
     </svg>
   </div>
-  <aside class="notes">A place is not just its shape. It is a network: a building linked to people, events and sources, and the links change over time. Press → four times: people, events (a patron commissions, a family enlarges, owners demolish: events tie people to the building), sources, then the clock runs through the years: people come and go, events happen, sources accumulate, the network and the footprint change. Spoken line: "A city is not a set of shapes on a map… our tools mostly see only the shapes."</aside>
+  <aside class="notes">An illustrative story, built one event at a time. On a map, a building is just a shape: that is what our tools see. Then its history: actors on the left (who), events in the middle on the building's life line (what happened, and when), sources on the right (how we know). Arrows go from the actors to the event they took part in, with what they did, and from each source to the event it documents. 1460, a wool merchant commissions the building, and a building contract documents it. 1590, his heirs sell it to a noble family: a notarial deed. 1720, an architect adds a new wing: his drawing survives. 1890, the City demolishes the wing for a new street: a photograph shows it. Press → again: a clock runs down the building's life, the footprint changes with each phase, and what has not happened yet is faded. Press → once more and zoom out: this is one building among many, each with a story like this one. Spoken line: "A city is more than shapes on a map. Conventional maps keep the shapes, and lose the people, the events and the evidence."</aside>
 </section>
 
 <section class="slide dark">
-  <div class="lab"><span>why · 02</span><span>&nbsp;</span></div>
-  <div class="fit"><p>A city is not a set of shapes on a map. <span class="acc">Our tools mostly see only the shapes.</span></p></div>
+  <div class="lab"><span>why it matters · 06</span><span>&nbsp;</span></div>
+  <div class="fit"><p>A city is more than shapes on a map. <span class="acc">Conventional maps keep the shapes, and lose the people, the events and the evidence.</span></p></div>
 </section>
 
-<section class="slide c">
-  <div class="lab"><span>why · 03</span><span>how Archipelago and VeNiss started · step through with →</span></div>
-  <h2 class="h">Three people, three outputs, <span class="acc">no connection</span>.</h2>
+<section class="slide c" data-w="say">
+  <div class="lab"><span>why it matters · 07</span><span>how Archipelago and VeNiss started · step through with →</span></div>
+  <h2 class="h">Three experts, three outputs, <span class="acc">one connected result</span>.</h2>
+  <div class="ctl say"><span class="v" data-k="0">Many projects start like this: three experts, each with an output of their own.</span><span class="v" data-k="1" hidden>Each output is good at one thing, and misses the rest.</span><span class="v" data-k="2" hidden>Some questions can only be answered across the three outputs.</span><span class="v" data-k="3" hidden>Our aim: keep the three outputs connected, in one shared workspace.</span></div>
   <div class="fig">
-    <svg viewBox="0 30 1000 330" class="kgs">
-      <g data-at="3">
-        <path class="ge sa" pathLength="1" d="M150 148 C150 70, 300 58, 478 58" stroke-width="3"/>
-        <path class="ge sa" pathLength="1" d="M850 148 C850 70, 700 58, 522 58" stroke-width="3"/>
-        <text x="500" y="70" text-anchor="middle" style="font-size:34px;font-weight:900;fill:var(--accent);stroke:none">×</text>
-        <text class="el" x="500" y="112" text-anchor="middle">a change, its event, its people?</text>
+    <svg viewBox="0 60 1000 340" class="kgs tw">
+      <g class="join" data-at="3">
+        <rect x="90" y="100" width="820" height="262" rx="16" class="sa" stroke-width="2.5"/>
+        <text class="m" x="500" y="90" text-anchor="middle" style="font-size:14px;fill:var(--accent)">ONE CONNECTED WORKSPACE</text>
       </g>
-      <rect x="40" y="150" width="220" height="140" class="bxw"/>
-      <text class="el" x="62" y="182">SOURCES</text><text class="nl" x="62" y="226" style="font-size:27px">Historian</text><text class="el" x="62" y="266">records · documents</text>
-      <rect x="390" y="150" width="220" height="140" class="bxw"/>
-      <text class="el" x="412" y="182">GEOMETRIES</text><text class="nl" x="412" y="226" style="font-size:27px">GIS specialist</text><text class="el" x="412" y="266">footprints · maps</text>
-      <rect x="740" y="150" width="220" height="140" class="bxw"/>
-      <text class="el" x="762" y="182">NARRATIVE</text><text class="nl" x="762" y="226" style="font-size:27px">Author</text><text class="el" x="762" y="266">the argument</text>
-      <g data-at="1">
-        <path class="ge sa" pathLength="1" d="M262 220 H312" stroke-width="3"/><path class="ge sa" pathLength="1" d="M388 220 H338" stroke-width="3"/>
-        <text x="325" y="232" text-anchor="middle" style="font-size:34px;font-weight:900;fill:var(--accent);stroke:none">×</text>
-        <text class="el" x="325" y="328" text-anchor="middle">a document next to</text><text class="el" x="325" y="346" text-anchor="middle">its building?</text>
+      <g class="tool l">
+        <rect x="40" y="120" width="220" height="222" class="bxw"/>
+        <text class="el" x="58" y="146">SOURCES</text>
+        <circle cx="74" cy="176" r="10" class="bxi"/><path d="M58 206a16 15 0 0 1 32 0z" class="bxi"/>
+        <rect x="88" y="186" width="16" height="21" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M92 193h8M92 199h8" stroke="#9a9a9a" stroke-width="1.5"/>
+        <text class="nl" x="118" y="190" style="font-size:19px">the historian</text>
+        <text class="el" x="118" y="210">documents</text>
+        <text class="el" x="58" y="246">OUTPUT</text><text x="58" y="268" style="font-size:17px">→ a database</text>
+        <g data-at="1" style="font-size:15px;fill:var(--accent)"><text class="ac" x="58" y="304">✕ no map</text><text class="ac" x="58" y="326">✕ not on the web</text></g>
       </g>
-      <g data-at="2">
-        <path class="ge sa" pathLength="1" d="M612 220 H662" stroke-width="3"/><path class="ge sa" pathLength="1" d="M738 220 H688" stroke-width="3"/>
-        <text x="675" y="232" text-anchor="middle" style="font-size:34px;font-weight:900;fill:var(--accent);stroke:none">×</text>
-        <text class="el" x="675" y="328" text-anchor="middle">an argument next to</text><text class="el" x="675" y="346" text-anchor="middle">its map?</text>
+      <g class="tool">
+        <rect x="390" y="120" width="220" height="222" class="bxw"/>
+        <text class="el" x="408" y="146">MAPS</text>
+        <circle cx="424" cy="176" r="10" class="bxi"/><path d="M408 206a16 15 0 0 1 32 0z" class="bxi"/>
+        <path d="M438 206 L436 190 L452 184 L462 194 L456 207 Z" style="fill:var(--soft)" class="sa" stroke-width="2"/>
+        <text class="nl" x="468" y="190" style="font-size:19px">the mapmaker</text>
+        <text class="el" x="468" y="210">GIS specialist</text>
+        <text class="el" x="408" y="246">OUTPUT</text><text x="408" y="268" style="font-size:17px">→ a digital map</text>
+        <g data-at="1" style="font-size:15px;fill:var(--accent)"><text class="ac" x="408" y="304">✕ no links to sources</text><text class="ac" x="408" y="326">✕ time only as “layers”</text></g>
+      </g>
+      <g class="tool r">
+        <rect x="740" y="120" width="220" height="222" class="bxw"/>
+        <text class="el" x="758" y="146">NARRATIVE</text>
+        <circle cx="774" cy="176" r="10" class="bxi"/><path d="M758 206a16 15 0 0 1 32 0z" class="bxi"/>
+        <path d="M788 190 l9 3 v15 l-9 -3 z M797 193 l9 -3 v15 l-9 3 z" style="fill:var(--bg)" class="st" stroke-width="1.8"/>
+        <text class="nl" x="818" y="190" style="font-size:19px">the author</text>
+        <text class="el" x="818" y="210">the argument</text>
+        <text class="el" x="758" y="246">OUTPUT</text><text x="758" y="268" style="font-size:17px">→ a book</text>
+        <g data-at="1" style="font-size:15px;fill:var(--accent)"><text class="ac" x="758" y="304">✕ one fixed view</text><text class="ac" x="758" y="326">✕ no data to reuse</text></g>
+      </g>
+      <g class="q" data-at="2">
+        <path d="M262 205 H388M612 205 H738" stroke="#9a9a9a" stroke-width="2" stroke-dasharray="5 5" fill="none"/>
+        <circle cx="325" cy="205" r="17" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><text x="325" y="213" text-anchor="middle" style="font-size:22px;font-weight:800;fill:var(--accent);stroke:none">?</text>
+        <circle cx="675" cy="205" r="17" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><text x="675" y="213" text-anchor="middle" style="font-size:22px;font-weight:800;fill:var(--accent);stroke:none">?</text>
+        <text class="el" x="325" y="376" text-anchor="middle">which document</text><text class="el" x="325" y="394" text-anchor="middle">describes this building?</text>
+        <text class="el" x="675" y="376" text-anchor="middle">where on the map</text><text class="el" x="675" y="394" text-anchor="middle">is this argument?</text>
+      </g>
+      <g class="join" data-at="3">
+        <path d="M330 205 H390M610 205 H670" class="sa" stroke-width="5"/>
+        <circle cx="360" cy="205" r="16" class="bxa" stroke="#fff" stroke-width="2.5"/><text x="360" y="212" text-anchor="middle" style="font-size:18px;font-weight:800;fill:#fff;stroke:none">✓</text>
+        <circle cx="640" cy="205" r="16" class="bxa" stroke="#fff" stroke-width="2.5"/><text x="640" y="212" text-anchor="middle" style="font-size:18px;font-weight:800;fill:#fff;stroke:none">✓</text>
       </g>
     </svg>
   </div>
   <div class="src">Archipelago, 2020: 131 sources, 147 events and 174 people in a database; the geometries in a separate map; the narrative in a text file.</div>
-  <aside class="notes">Three people, each doing good research, each producing an output. The historian collects sources in a database; the GIS specialist draws geometries in a desktop GIS; the author writes the narrative for print. Each output is part of the research, and nothing connects them. This is literally how Archipelago and then VeNiss started: a database for the sources, a GIS for the geometries, and nothing linking the two. You could not show a document next to the building it describes, or link a change in the urban fabric to the event and the people who caused it. Press → three times: each attempted link breaks.</aside>
+  <aside class="notes">Three people, each doing good research, each producing an output. The historian collects sources in a database; the mapmaker, a GIS specialist, draws the geometries in a desktop GIS; the author writes the narrative for print. This is literally how Archipelago and then VeNiss started: a database for the sources, a GIS for the geometries, and nothing linking the two. Press →: what each output misses. We spent years experimenting with these tools, from desktop GIS to digital exhibits and story-map tools: each solves part of the problem, none covers the whole research cycle, from collecting sources, to drawing, to interpreting, to publishing something others can search and reinterpret. Press →: the questions that only the three outputs together can answer. You could not show a document next to the building it describes, or link a change in the urban fabric to the event and the people who caused it. Press → again: our aim, the three outputs kept connected in one shared workspace.</aside>
 </section>
 
-<section class="slide c">
-  <div class="lab"><span>why · 04</span><span>what we tried</span></div>
-  <h2 class="h">Each tool solves <span class="acc">part of the problem</span>.</h2>
-  <div class="body v mid">
-    <table class="tb">
-      <tr><th>tool</th><th>good at</th><th class="acc">missing</th></tr>
-      <tr data-at="1"><td><strong>Desktop GIS</strong></td><td>spatial analysis, drawing</td><td class="acc">web publishing · links to sources · time beyond “layers”</td></tr>
-      <tr data-at="2"><td><strong>Digital exhibits</strong></td><td>web exhibits</td><td class="acc">only points · no geospatial search</td></tr>
-      <tr data-at="3"><td><strong>Story-map tools</strong></td><td>polished visualizations</td><td class="acc">the author's view only · no data management</td></tr>
-    </table>
-    <div class="src" data-at="4">None covers the whole cycle: collect sources → draw → interpret → publish → let others search and reinterpret.</div>
-  </div>
-  <aside class="notes">We spent years experimenting with these tools. Each solves part of the problem; none covers the whole research cycle, from collecting sources, to drawing, to interpreting, to publishing something others can search and reinterpret.</aside>
-</section>
-
-<section class="slide duo red">
+<section class="slide duo red now-aim">
   <div class="half hd">
-    <div class="lab"><span>why · 05</span><span>the research</span></div>
-    <h2 class="h">Years of <span class="acc">evidence</span>.</h2>
+    <div class="lab"><span>why it matters · 08</span><span>today</span></div>
+    <h2 class="h">Today, the research <span class="mut">ends in a book</span>.</h2>
     <div class="wrows">
-      <div class="wr"><span class="wk">sources</span><p>letters, deeds, maps, drawings<small>read, transcribed, compared</small></p><i class="wv">✓</i></div>
-      <div class="wr"><span class="wk">places</span><p>buildings and their phases<small>drawn, dated, georeferenced</small></p><i class="wv">✓</i></div>
-      <div class="wr"><span class="wk">people</span><p>owners, builders, residents<small>identified and linked</small></p><i class="wv">✓</i></div>
-      <div class="wr"><span class="wk">time</span><p>centuries of change<small>events, phases, dates</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">sources</span><p>buried in footnotes<small>the reader cannot go back to the document</small></p><i class="wv">✕</i></div>
+      <div class="wr"><span class="wk">places</span><p>one fixed map<small>the author's view, printed once</small></p><i class="wv">✕</i></div>
+      <div class="wr"><span class="wk">questions</span><p>only the author's<small>a new question means starting over</small></p><i class="wv">✕</i></div>
+      <div class="wr"><span class="wk">data</span><p>locked away<small>in personal files and formats that age</small></p><i class="wv">✕</i></div>
     </div>
   </div>
   <div class="half">
-    <div class="lab"><span>&nbsp;</span><span>what the reader gets</span></div>
-    <h2 class="h">A book, <span class="acc">a flat map</span>.</h2>
+    <div class="lab"><span>&nbsp;</span><span>what we want</span></div>
+    <h2 class="h">We want <span class="acc">a living resource</span>.</h2>
     <div class="wrows">
-      <div class="wr"><span class="wk">sources</span><p>buried in footnotes<small>no way back to the document</small></p><i class="wv">×</i></div>
-      <div class="wr"><span class="wk">places</span><p>one final map<small>the author's view, fixed</small></p><i class="wv">×</i></div>
-      <div class="wr"><span class="wk">search</span><p>not by place <em>and</em> time<small>no new questions</small></p><i class="wv">×</i></div>
-      <div class="wr"><span class="wk">data</span><p>locked in silos<small>proprietary formats</small></p><i class="wv">×</i></div>
+      <div class="wr"><span class="wk">sources</span><p>one click from every claim<small>anyone can check the evidence</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">places</span><p>a map that moves through time<small>explore it, change the view</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">questions</span><p>open to new ones<small>search by place and by time</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">data</span><p>open and lasting<small>reusable by others, for decades</small></p><i class="wv">✓</i></div>
     </div>
   </div>
-  <aside class="notes">The cost for scholarship: years of research end as a print book or a flat dataset. Sources are buried in footnotes; readers cannot search by place and time; data is locked in silos and proprietary formats. The most valuable part of the work, the evidence, becomes secondary. The reader sees the final map, but cannot go back to the document, cannot ask a different question, and cannot reuse the data.</aside>
+  <aside class="notes">Today, years of research usually end as a printed book or a flat dataset. The sources are buried in footnotes, and the reader cannot go back to the document. The map is the author's view, printed once. Readers cannot ask a different question without starting over, and the data stays locked in personal files and formats that age. The most valuable part of the work, the evidence, becomes secondary. What we want instead is a living resource: every claim one click from its source, a map that moves through time, open to new questions by place and by time, and data that others can reuse for decades.</aside>
 </section>
 
 <!-- ================= PART II · METAPOLIS ================= -->
@@ -623,46 +837,107 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
   <aside class="notes">Metapolis is a map-centric research and publication platform that links archival, bibliographic and multimedia sources to interpretation, on a map that moves through time, designed for non-technical users. Two words matter here: research and publication. Metapolis is where you do the work and where you show it: the same data, no export step in between.</aside>
 </section>
 
-<section class="slide c">
+<section class="slide c" data-w="say">
   <div class="lab"><span>metapolis · 02</span><span>step through with →</span></div>
   <h2 class="h">Extend, <span class="acc">don't rebuild</span>.</h2>
+  <div class="ctl say"><span class="v" data-k="0">The obvious idea: build a new map editor in the browser. It would take years, and never be as good.</span><span class="v" data-k="1" hidden>Instead: keep QGIS, and transform ResearchSpace from within, with maps, a timeline, new forms and stories, linked live to GIS. That is Metapolis.</span><span class="v" data-k="2" hidden>A footprint drawn in QGIS lands on the web map, linked to its people, events and sources, in its own years.</span></div>
   <div class="fig">
-    <svg viewBox="0 0 1000 390" class="kgs brg">
-      <text class="el" x="210" y="62" text-anchor="middle">KEEP</text>
-      <rect x="40" y="80" width="340" height="220" class="bxi"/>
-      <text x="210" y="172" text-anchor="middle" style="font-size:40px;font-weight:800;fill:#fff;stroke:none">Geographical</text><text x="210" y="216" text-anchor="middle" style="font-size:40px;font-weight:800;fill:#fff;stroke:none">tools</text>
-      <text class="el" x="210" y="256" text-anchor="middle" style="fill:#aaa;stroke:none">draw · georeference · edit</text>
-      <text class="el" x="790" y="62" text-anchor="middle">REUSE</text>
-      <rect x="620" y="80" width="340" height="220" class="bxw"/>
-      <text class="nl" x="790" y="184" text-anchor="middle" style="font-size:44px">A platform</text>
-      <text class="el" x="790" y="224" text-anchor="middle">graph · forms · search · publishing</text>
+    <svg viewBox="0 30 1000 425" class="kgs brg2">
+      <!-- left: QGIS, where mapmakers draw -->
+      <rect x="20" y="50" width="300" height="300" style="fill:var(--bg)" class="st" stroke-width="2"/>
+      <rect x="20" y="50" width="300" height="26" class="bxi"/>
+      <g style="fill:#777"><circle cx="34" cy="63" r="4"/><circle cx="46" cy="63" r="4"/><circle cx="58" cy="63" r="4"/></g>
+      <text class="m" x="306" y="68" text-anchor="end" style="font-size:13px;fill:#fff;stroke:none">QGIS</text>
+      <rect x="21" y="76" width="59" height="273" style="fill:var(--wash2)"/>
+      <g style="fill:#c9c9c9"><rect x="30" y="92" width="42" height="9"/><rect x="30" y="110" width="42" height="9"/><rect x="30" y="128" width="42" height="9"/></g><rect x="30" y="146" width="42" height="9" style="fill:var(--soft)" class="sa" stroke-width="1.2"/>
+      <rect x="80" y="76" width="239" height="273" style="fill:#f7f6f2"/>
+      <path d="M80 160 H319 M200 76 V349 M80 280 H319" stroke="#e7e5e0" stroke-width="12" fill="none"/>
+      <g style="fill:#d9d6cf"><rect x="96" y="92" width="44" height="50"/><rect x="148" y="92" width="38" height="50"/><rect x="214" y="92" width="48" height="34"/><rect x="270" y="102" width="38" height="40"/><rect x="96" y="176" width="58" height="44"/><rect x="214" y="176" width="42" height="64"/><rect x="266" y="186" width="42" height="40"/><rect x="104" y="294" width="54" height="42"/><rect x="226" y="294" width="64" height="42"/></g>
+      <path class="fillin" d="M166 188 H194 V216 H184 V246 H166 Z" style="fill:var(--soft)"/>
+      <path class="drawn sa" pathLength="1" d="M166 188 H194 V216 H184 V246 H166 Z" stroke-width="2.5"/>
+      <path d="M204 252 L226 230 L232 236 L210 258 L201 261 Z" style="fill:var(--bg)" class="st" stroke-width="2"/>
+      <text class="m" x="20" y="374" style="font-size:13px;fill:var(--accent)">KEEP · where mapmakers draw</text>
+      <text x="20" y="398" style="font-size:16px">QGIS: free mapping software,</text><text x="20" y="418" style="font-size:16px">used by mapmakers worldwide</text>
+
+      <!-- right: ResearchSpace, where scholars describe, link and publish -->
+      <rect x="680" y="50" width="300" height="300" style="fill:var(--bg)" class="st" stroke-width="2"/>
+      <rect x="680" y="50" width="300" height="26" class="bxi"/>
+      <g style="fill:#777"><circle cx="694" cy="63" r="4"/><circle cx="706" cy="63" r="4"/><circle cx="718" cy="63" r="4"/></g>
+      <text class="m" x="966" y="68" text-anchor="end" style="font-size:13px;fill:#fff;stroke:none">ResearchSpace</text>
+      <rect x="692" y="88" width="150" height="132" fill="none" stroke="#c9c9c9" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text class="el" x="767" y="159" text-anchor="middle">no map</text>
+      <path d="M880 110 L915 178 M950 110 L915 178" class="st" stroke-width="1.3"/>
+      <circle cx="880" cy="110" r="10" class="bxi"/><text class="el" x="894" y="106" style="font-size:11px">person</text>
+      <rect x="941" y="98" width="18" height="24" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><text class="el" x="958" y="140" text-anchor="middle" style="font-size:11px">source</text>
+      <rect x="905" y="168" width="20" height="20" transform="rotate(45 915 178)" class="bxa"/><text class="el" x="915" y="210" text-anchor="middle">event</text>
+      <rect x="692" y="234" width="276" height="104" style="fill:var(--wash)"/>
+      <text x="706" y="256" style="font-size:14px;font-weight:700">Building</text>
+      <g style="fill:#d9d6cf"><rect x="706" y="268" width="150" height="8"/><rect x="706" y="284" width="110" height="8"/><rect x="706" y="300" width="170" height="8"/></g>
+      <rect x="900" y="312" width="56" height="18" class="bxa"/><text x="928" y="325" text-anchor="middle" style="font-size:11px;font-weight:700;fill:#fff;stroke:none">save</text>
+      <text class="m" x="680" y="374" style="font-size:13px;fill:var(--accent)">REUSE · where scholars describe and publish</text>
+      <text x="680" y="398" style="font-size:16px">ResearchSpace: open-source research</text><text x="680" y="418" style="font-size:16px">platform, created at the British Museum</text>
+
+      <!-- step 0: the idea we did not follow -->
+      <g class="ghost">
+        <rect x="360" y="150" width="280" height="130" rx="12" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2" stroke-dasharray="7 6"/>
+        <text x="500" y="196" text-anchor="middle" style="font-size:18px;font-weight:700;fill:var(--muted)">a new map editor</text>
+        <text x="500" y="220" text-anchor="middle" style="font-size:18px;font-weight:700;fill:var(--muted)">in the browser?</text>
+        <text class="el" x="500" y="254" text-anchor="middle">years of work, never as good</text>
+        <circle cx="636" cy="152" r="17" class="bxa"/><text x="636" y="159" text-anchor="middle" style="font-size:18px;font-weight:800;fill:#fff;stroke:none">✕</text>
+      </g>
+
+      <!-- step 1: the bridge -->
       <g data-at="1" class="bridge">
-        <text class="el" x="500" y="62" text-anchor="middle" style="fill:var(--accent)">ADD</text>
-        <rect x="380" y="140" width="240" height="100" class="bxa"/>
-        <text x="500" y="187" text-anchor="middle" style="font-size:30px;font-weight:800;fill:#fff;stroke:none">Metapolis</text>
-        <text class="el" x="500" y="215" text-anchor="middle" style="fill:#fff;stroke:none">maps · geometries · time</text>
+        <text class="m" x="500" y="176" text-anchor="middle" style="font-size:13px;fill:var(--accent)">ADD · the link to GIS</text>
+        <path class="arch sa" d="M330 300 Q500 196 670 300" stroke-width="3"/>
+        <g class="sa" stroke-width="3"><path d="M410 230 V266 M500 230 V246 M590 230 V266"/></g>
+        <rect class="deck bxa" x="320" y="200" width="360" height="30"/>
+        <text x="500" y="221" text-anchor="middle" style="font-size:19px;font-weight:800;fill:#fff;stroke:none">Metapolis</text>
+        <text class="m" x="500" y="324" text-anchor="middle" style="font-size:13px;fill:var(--accent)">geometries, read live</text>
       </g>
-      <g data-at="2">
-        <path class="flow sa" d="M210 304 V336 H790 V304" stroke-width="3"/>
-        <text class="el" x="500" y="368" text-anchor="middle">a polygon drawn on a map becomes a building in the graph</text>
+
+      <!-- step 1, inside: Metapolis transforms ResearchSpace; crimson marks what it adds -->
+      <g data-at="1" class="inside">
+        <rect x="680" y="50" width="300" height="300" fill="none" class="sa" stroke-width="3"/>
+        <rect x="680" y="50" width="300" height="26" class="bxa"/>
+        <g style="fill:#fff;opacity:.6"><circle cx="694" cy="63" r="4"/><circle cx="706" cy="63" r="4"/><circle cx="718" cy="63" r="4"/></g>
+        <text class="m" x="966" y="68" text-anchor="end" style="font-size:13px;fill:#fff;stroke:none">ResearchSpace + Metapolis</text>
+        <rect x="692" y="88" width="150" height="132" style="fill:#f7f6f2"/>
+        <path d="M692 130 H842 M770 88 V220" stroke="#e7e5e0" stroke-width="9" fill="none"/>
+        <path d="M702 206 H832" class="st" stroke-width="2"/>
+        <text class="el" x="767" y="198" text-anchor="middle" style="font-size:11px">1500 ─ 2026</text>
+        <rect x="692" y="88" width="150" height="132" fill="none" class="sa" stroke-width="2.5"/>
+        <rect x="692" y="88" width="100" height="17" class="bxa"/><text class="m" x="698" y="100" style="font-size:10px;fill:#fff;stroke:none">map · timeline</text>
+        <path d="M880 110 L915 178 M950 110 L915 178" class="sa" stroke-width="2.5"/>
+        <text class="m" x="915" y="94" text-anchor="middle" style="font-size:10px;fill:var(--accent)">relations</text>
+        <rect x="692" y="234" width="276" height="104" fill="none" class="sa" stroke-width="2.5"/>
+        <rect x="918" y="234" width="50" height="17" class="bxa"/><text class="m" x="924" y="246" style="font-size:10px;fill:#fff;stroke:none">forms</text>
+        <text class="m" x="680" y="444" style="font-size:12px;fill:var(--accent)">+ METAPOLIS: maps, timeline, forms, stories</text>
       </g>
+
+      <!-- step 2: a footprint travels across and lands on the web map -->
+      <g data-at="2" class="land">
+        <g style="fill:#d9d6cf"><rect x="700" y="110" width="30" height="16"/><rect x="782" y="96" width="44" height="24"/><rect x="782" y="140" width="40" height="34"/></g>
+        <path d="M760 150 L880 110 M760 150 L915 178 M760 150 L950 110" stroke="var(--ink)" stroke-width="1.3" stroke-dasharray="4 4" fill="none"/>
+        <g class="tl-hand"><circle cx="704" cy="206" r="6" class="bxa"/></g>
+      </g>
+      <g data-at="2"><g class="trav"><path d="M166 188 H194 V216 H184 V246 H166 Z" style="fill:var(--soft)" class="sa" stroke-width="2.5"/></g></g>
     </svg>
   </div>
-  <div class="src">The platform is open source: created at the British Museum, now maintained by its team and community.</div>
-  <aside class="notes">Drawing and georeferencing stay in the geographical tools (QGIS). Data, enrichment, search, authoring and publishing come from a platform, ResearchSpace, open source, created at the British Museum. Metapolis adds the geospatial layer that joins them. We decided early not to rebuild QGIS in a browser: it would never be as good. Instead we built on ResearchSpace, which already handles knowledge graphs, forms, search and publishing, and added what was missing: maps, geometries, time, and the bridge to GIS.</aside>
+  <aside class="notes">Drawing and georeferencing stay in QGIS, free mapping software used by mapmakers worldwide. Data, enrichment, search, authoring and publishing come from ResearchSpace, an open-source research platform created at the British Museum. On the right you can see what ResearchSpace lacks: a map. Step 0: the obvious idea was to rebuild a map editor in the browser. We decided early not to: it would take years and never be as good as QGIS. Press →: instead, Metapolis transforms ResearchSpace from within: everything in crimson on the right is Metapolis, the map and its timeline, new forms, relations that carry notes, stories, together with the live link to the geometries drawn in GIS. Press →: a footprint drawn in QGIS travels across the bridge and lands on the web map, where it is linked to the people, events and sources of the knowledge graph, with a timeline that shows it in its own years.</aside>
 </section>
 
-<section class="slide c" data-w="pipe">
-  <div class="lab"><span>metapolis · 03</span><span>architecture</span></div>
-  <h2 class="h">Drawn once, <span class="acc">live on the web map</span>.</h2>
+<section class="slide c" data-w="pipe" data-manual data-steps="5" data-intro="From historical evidence to the web map, in five steps: press →.">
+  <div class="lab"><span>metapolis · 03</span><span>the whole process · step through with →</span></div>
+  <h2 class="h">From historical evidence <span class="acc">to the web map</span>.</h2>
   <div class="body v" style="gap:2.2vmin">
     <div class="ctl"><span class="v pp-say" style="font-size:2.3vmin">&nbsp;</span></div>
     <div class="pipe">
-      <div class="ps" data-g="polygon" data-p="QGIS" data-say="A GIS specialist draws a footprint and gives it start and end years."><b>Draw</b><span>a footprint</span></div>
-      <div class="ps" data-g="db" data-p="PostGIS" data-say="The geometry is saved in a spatial database, where GIS people already work."><b>Store</b><span>a geometry</span></div>
-      <div class="ps" data-g="sql" data-p="SQL Sail" data-say="The platform asks the database live: nothing is exported or copied."><b>Connect</b><span>live, no export</span></div>
-      <div class="ps" data-g="graph" data-p="knowledge graph" data-say="In the knowledge graph the footprint is a Building, linked to its events, people and sources."><b>Link</b><span>a building</span></div>
-      <div class="ps" data-g="map" data-p="web map" data-say="On the map the building appears in its years, one click away from its evidence."><b>Explore</b><span>on the map</span></div>
+      <div class="ps" data-g="hmap" data-p="historical map" data-say="It starts from evidence: a historical map, aligned with today's streets (georeferenced)."><b>Find</b><span>a historical map</span></div>
+      <div class="ps" data-g="polygon" data-p="QGIS" data-say="A GIS specialist traces the building's footprint over the old map, and gives it start and end years."><b>Draw</b><span>a footprint</span></div>
+      <div class="ps" data-g="graph" data-p="knowledge graph" data-say="The drawing is saved in a spatial database that the platform reads live: in the knowledge graph it becomes a Building."><b>Connect</b><span>live, no export</span></div>
+      <div class="ps" data-g="link" data-p="archives · Wikidata · Getty" data-say="Historians link it to people, events and documents, and to data from elsewhere: archives, Wikidata, the Getty vocabularies."><b>Enrich</b><span>data from elsewhere</span></div>
+      <div class="ps" data-g="map" data-p="web map" data-say="Published: on the map the building appears in its years, one click away from its evidence."><b>Publish</b><span>on the web map</span></div>
     </div>
     <div class="pp-lane"><div class="pk"></div></div>
     <div class="row" style="flex:0 0 auto">
@@ -670,7 +945,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
       <div class="pt k"><b>another backend</b><p>Geometries stored inside the graph itself, as for Florentia Illustrata.</p></div>
     </div>
   </div>
-  <aside class="notes">Geometries stay in PostGIS, where GIS people already work. ResearchSpace queries them live, through SQL Sail, so a polygon drawn in QGIS appears on the web map without any export. Everything else, who, what, when, which source, lives in the knowledge graph as Linked Open Data. An alternative geometry backend: QLever, or any GeoSPARQL endpoint; Florentia Illustrata reads its parcels from QLever.</aside>
+  <aside class="notes">The whole process, one step per →. Find: it starts from evidence, a historical map, georeferenced so that it lines up with today's streets. Draw: a GIS specialist traces the building's footprint over it in QGIS and gives it start and end years. Connect: the geometry is saved in a spatial database, PostGIS, where GIS people already work; ResearchSpace queries it live, through SQL Sail, so nothing is exported, and in the knowledge graph the footprint becomes a Building. Enrich: historians link it to people, events and documents, and to data from elsewhere, such as archives, Wikidata, VIAF, WorldCat and the Getty vocabularies. Publish: on the web map the building appears in its years, one click away from its evidence. An alternative geometry backend: QLever, or any GeoSPARQL endpoint; Florentia Illustrata reads its parcels from QLever.</aside>
 </section>
 
 <section class="slide c">
@@ -690,17 +965,17 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
   <h2 class="h">Relations are <span class="acc">entities too</span>.</h2>
   <div class="body">
     <div class="fig g15">
-      <svg viewBox="0 0 820 500" class="kgs">
+      <svg viewBox="0 0 820 500" class="kgs dm">
         <g data-at="1">
           <path class="ge st" pathLength="1" d="M240 104 L338 188" stroke-width="2" marker-end="url(#ah)"/>
           <text class="el" x="300" y="128">took place at</text>
-          <rect class="bxw" x="20" y="50" width="220" height="56"/><text class="nl" x="130" y="85" text-anchor="middle">Event</text>
+          <rect class="bxw" x="20" y="50" width="220" height="56"/><rect x="36" y="64" width="28" height="26" rx="3" style="fill:var(--bg)" class="sa" stroke-width="2"/><rect x="36" y="64" width="28" height="8" class="bxa"/><path d="M42 59v8M58 59v8" class="sa" stroke-width="2.5"/><path d="M42 81h5M50 81h5M58 81h1" class="sa" stroke-width="3"/><text class="nl" x="145" y="85" text-anchor="middle">Event</text>
           <path class="ge st" pathLength="1" d="M580 104 L482 188" stroke-width="2" marker-end="url(#ah)"/>
           <text class="el" x="552" y="150">owned</text>
-          <rect class="bxw" x="580" y="50" width="220" height="56"/><text class="nl" x="690" y="85" text-anchor="middle">Person</text>
+          <rect class="bxw" x="580" y="50" width="220" height="56"/><circle cx="610" cy="70" r="7.5" class="bxi"/><path d="M596 96a14 13 0 0 1 28 0z" class="bxi"/><text class="nl" x="705" y="85" text-anchor="middle">Person</text>
           <path class="ge st" pathLength="1" d="M240 382 L338 252" stroke-width="2" marker-end="url(#ah)"/>
           <text class="el" x="300" y="352">documents</text>
-          <rect class="bxw" x="20" y="380" width="220" height="56"/><text class="nl" x="130" y="415" text-anchor="middle">Source</text>
+          <rect class="bxw" x="20" y="380" width="220" height="56"/><path d="M38 391 h18 l8 8 v27 h-26 z" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M56 391 v8 h8" fill="none" stroke="#9a9a9a" stroke-width="2"/><path d="M43 406h16M43 413h16M43 420h11" stroke="#9a9a9a" stroke-width="1.5"/><text class="nl" x="145" y="415" text-anchor="middle">Source</text>
         </g>
         <g data-at="2">
           <rect x="230" y="298" width="118" height="38" rx="6" style="fill:var(--bg)" class="sa" stroke-width="2"/>
@@ -711,12 +986,14 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
           <text x="398" y="398" style="font-size:16px">why this source documents</text>
           <text x="398" y="421" style="font-size:16px">this building, and how sure we are</text>
         </g>
-        <g data-at="3" style="font-size:15px;font-weight:600">
-          <path class="sa" d="M650 106 L625 146M730 106 L735 146M490 232 L540 250M130 436 L100 456" stroke-width="1.5" stroke-dasharray="4 4"/>
-          <rect x="585" y="146" width="80" height="32" rx="16" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="625" y="167" text-anchor="middle" class="ac">VIAF</text>
-          <rect x="680" y="146" width="110" height="32" rx="16" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="735" y="167" text-anchor="middle" class="ac">Wikidata</text>
-          <rect x="540" y="236" width="124" height="32" rx="16" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="602" y="257" text-anchor="middle" class="ac">Getty AAT</text>
-          <rect x="40" y="456" width="120" height="32" rx="16" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="100" y="477" text-anchor="middle" class="ac">WorldCat</text>
+        <g data-at="3" class="ext">
+          <path class="sa" d="M690 106 V160" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text class="m" x="700" y="137" text-anchor="middle" style="font-size:12px;fill:var(--accent)">same as · Wikidata Q174330</text>
+          <image href="assets/img/wiki_brunelleschi.jpg" x="590" y="160" width="220" height="159"/>
+          <rect x="590" y="160" width="220" height="159" fill="none" stroke="#9a9a9a" stroke-width="1.5"/>
+          <path class="sa" d="M410 250 L406 262M130 436 L100 456" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <rect x="346" y="262" width="120" height="30" rx="15" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="406" y="282" text-anchor="middle" class="ac" style="font-size:14px;font-weight:600">Getty AAT</text>
+          <rect x="40" y="456" width="120" height="30" rx="15" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="100" y="476" text-anchor="middle" class="ac" style="font-size:14px;font-weight:600">WorldCat</text>
         </g>
         <g data-at="4" style="font-size:15px;font-weight:600">
           <text class="ac" x="130" y="130" text-anchor="middle">acquisition of title</text>
@@ -724,18 +1001,18 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
           <text class="ac" x="130" y="370" text-anchor="middle">Catasto, 1835</text>
           <text class="ac" x="410" y="276" text-anchor="middle">a house, Via dell'Amorino</text>
         </g>
-        <rect class="bxa" x="330" y="190" width="160" height="60"/><text class="nl" x="410" y="227" text-anchor="middle" style="fill:#fff">Building</text>
+        <rect class="bxa" x="330" y="190" width="160" height="60"/><path d="M342 210 l16 -10 l16 10 z" style="fill:#fff"/><path d="M345 213 v20 M352 213 v20 M364 213 v20 M371 213 v20 M341 236 h34" stroke="#fff" stroke-width="2.5"/><text class="nl" x="428" y="227" text-anchor="middle" style="fill:#fff">Building</text>
       </svg>
     </div>
     <div class="col g1 pts mid">
       <div class="pt k"><b>four entities</b><p><strong>Building · Event · Person · Source</strong>, each with its own form.</p></div>
       <div class="pt" data-at="1"><b>linked</b><p>Every link has a meaning: took place at, owned, documents.</p></div>
       <div class="pt" data-at="2"><b>relations are entities</b><p>With domain, range and <strong>notes</strong>: not only <em>that</em> a source is connected, but <em>why</em>.</p></div>
-      <div class="pt" data-at="3"><b>enriched</b><p>From VIAF, Wikidata, WorldCat and the Getty vocabularies.</p></div>
+      <div class="pt" data-at="3"><b>enriched</b><p>A person in our graph is the same as on Wikipedia and Wikidata; also VIAF, WorldCat and the Getty vocabularies.</p></div>
       <div class="pt" data-at="4"><b>an example</b><p>A house in Via dell'Amorino, acquired by Fulvia Targioni Tozzetti, documented by the 1835 cadastre.</p></div>
     </div>
   </div>
-  <aside class="notes">Four core entities: Building, Event, Person, Source. Relations are entities too, with domain, range and notes. Enrichment from VIAF, Wikidata, WorldCat and the Getty vocabularies. One design choice to highlight: a relation is not just a line between two things. It is an entity with its own notes, so a scholar can record why a source is connected to a building, not only that it is. That is where interpretation lives. Press → four times; the last step gives a concrete case from Florentia Illustrata: a house in Via dell'Amorino, the acquisition of title, Fulvia Targioni Tozzetti, and the 1835 cadastre.</aside>
+  <aside class="notes">Four core entities: Building, Event, Person, Source. Relations are entities too, with domain, range and notes. Enrichment from Wikipedia and Wikidata, VIAF, WorldCat and the Getty vocabularies: at step three, a person in the graph, here Filippo Brunelleschi as a well-known example, is linked to his Wikidata identity, Q174330, and through it to his Wikipedia page. One design choice to highlight: a relation is not just a line between two things. It is an entity with its own notes, so a scholar can record why a source is connected to a building, not only that it is. That is where interpretation lives. Press → four times; the last step gives a concrete case from Florentia Illustrata: a house in Via dell'Amorino, the acquisition of title, Fulvia Targioni Tozzetti, and the 1835 cadastre.</aside>
 </section>
 
 <section class="slide c" data-w="reel">
@@ -800,41 +1077,62 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
   <aside class="notes">Florence in the Catasto Generale Toscano, c. 1835, at florentiaillustrata.net: 17,681 land parcels, each linked to its owners, its use and its acquisition. Data from Belli, Lucchesi, Raggi, Firenze nella prima metà dell'Ottocento (FUP 2022), turned into a knowledge graph. Historical overlays: the 1850 plan of the city and the 2023 orthophoto. Florentia starts from a single source: the nineteenth-century cadastre of Florence, with almost eighteen thousand parcels. In a book, this is a table. In Metapolis, every parcel is a place on the map, connected to the people who owned it and to what it was used for.</aside>
 </section>
 
-<section class="slide c">
-  <div class="lab"><span>florentia illustrata · 02</span><span>step through with →</span></div>
-  <h2 class="h">From a table row <span class="acc">to a graph</span>.</h2>
-  <div class="fig">
-    <svg viewBox="0 0 1000 470" class="kgs">
-      <g class="el"><text x="50" y="32">PARCEL</text><text x="160" y="32">TYPE</text><text x="280" y="32">STREET</text><text x="520" y="32">OWNER</text><text x="850" y="32">OWNERS</text></g>
-      <rect x="40" y="42" width="110" height="48" class="bxw"/><rect x="150" y="42" width="120" height="48" class="bxw" style="opacity:.7"/><rect x="270" y="42" width="240" height="48" class="bxw"/><rect x="510" y="42" width="330" height="48" class="bxw" style="opacity:.7"/><rect x="840" y="42" width="120" height="48" class="bxw"/>
-      <g style="font-size:17px"><text x="58" y="73">1005</text><text x="168" y="73">casa</text><text x="288" y="73">Via dell'Amorino</text><text x="528" y="73">Targioni Tozzetti, Fulvia</text><text x="858" y="73">8</text></g>
-      <g data-at="1">
-        <path class="sf" d="M95 92 L190 228M675 92 L825 228M900 92 L560 228" stroke-width="1.5" stroke-dasharray="4 5"/>
-        <rect class="bxw" x="90" y="230" width="200" height="62"/><text class="nl" x="190" y="258" text-anchor="middle">parcel 1005</text><text class="el" x="190" y="281" text-anchor="middle">a house</text>
-        <rect class="bxa" x="400" y="230" width="200" height="62"/><text class="nl" x="500" y="258" text-anchor="middle" style="fill:#fff">acquisition</text><text class="el" x="500" y="281" text-anchor="middle" style="fill:#fff;stroke:none">an event</text>
-        <rect class="bxw" x="690" y="230" width="270" height="62"/><text class="nl" x="825" y="258" text-anchor="middle">Fulvia Targioni Tozzetti</text><text class="el" x="825" y="281" text-anchor="middle">a person</text>
-        <path class="ge st" pathLength="1" d="M398 261 H296" stroke-width="2" marker-end="url(#ah)"/><text class="el" x="347" y="320" text-anchor="middle">transferred title of</text>
-        <path class="ge st" pathLength="1" d="M688 261 H606" stroke-width="2" marker-end="url(#ah)"/><text class="el" x="647" y="320" text-anchor="middle">acquired title through</text>
-      </g>
-      <g data-at="2">
-        <path class="st" d="M500 292 L380 386M500 292 L420 386M500 292 L460 386M500 292 L500 386M500 292 L540 386M500 292 L580 386M500 292 L620 386" stroke-width="1.2"/>
-        <g class="bxi"><circle cx="380" cy="394" r="9"/><circle cx="420" cy="394" r="9"/><circle cx="460" cy="394" r="9"/><circle cx="500" cy="394" r="9"/><circle cx="540" cy="394" r="9"/><circle cx="580" cy="394" r="9"/><circle cx="620" cy="394" r="9"/></g>
-        <text class="el" x="500" y="438" text-anchor="middle">+7 Targioni Tozzetti: brothers, sisters, cousins</text>
-      </g>
-      <g data-at="3">
-        <path class="sa" d="M825 292 L770 380M825 292 L825 394M825 292 L880 380" stroke-width="1.5" stroke-dasharray="4 4"/>
-        <rect x="760" y="380" width="20" height="20" style="fill:var(--soft)" class="sa" stroke-width="2"/><rect x="815" y="394" width="20" height="20" style="fill:var(--soft)" class="sa" stroke-width="2"/><rect x="870" y="380" width="20" height="20" style="fill:var(--soft)" class="sa" stroke-width="2"/>
-        <text class="el" x="825" y="446" text-anchor="middle" style="fill:var(--accent)">all the parcels of a person</text>
-      </g>
-    </svg>
+<section class="slide c" data-w="say">
+  <div class="lab"><span>florentia illustrata · 02</span><span>from records to relations · step through with →</span></div>
+  <h2 class="h">From records <span class="acc">to a web of relations</span>.</h2>
+  <div class="ctl say"><span class="v" data-k="0">Seven records from the 1835 cadastre. In a table, each row stands alone.</span><span class="v" data-k="1" hidden>But the same name, the same husband and the same two streets come back, row after row.</span><span class="v" data-k="2" hidden>As a graph they connect: one woman, five of her properties, two places, a husband.</span><span class="v" data-k="3" hidden>Her neighbours join through the places they share: a goldsmith in her street, a grocer on the square. The city becomes a network.</span></div>
+  <div class="body rg">
+    <div class="recs">
+      <table class="tb sm rt">
+        <tr><th>n.</th><th>owner</th><th class="c3">described as</th><th>property</th><th>street</th></tr>
+        <tr><td class="n0">5272</td><td class="nm">Morelli, Rosa</td><td class="c3 wf">wife of Jacopo Mosel</td><td>entrance</td><td class="s1">Via degli Archibusieri</td></tr>
+        <tr><td class="n0">5273</td><td class="nm">Morelli, Rosa</td><td class="c3 wf">wife of Jacopo Mosel</td><td>shop · silversmith</td><td class="s1">Via degli Archibusieri</td></tr>
+        <tr><td class="n0">5275</td><td class="nm">Morelli, Rosa</td><td class="c3 wf">wife of Jacopo Mosel</td><td>shop</td><td class="s1">Via degli Archibusieri</td></tr>
+        <tr><td class="n0">5284</td><td>Moro, Tommaso</td><td class="c3"></td><td>shop · goldsmith</td><td class="s1">Via degli Archibusieri</td></tr>
+        <tr><td class="n0">6948</td><td>Morosi, Massimo</td><td class="c3"></td><td>shop · grocer</td><td class="s2">Piazza S. Andrea</td></tr>
+        <tr><td class="n0">6949</td><td class="nm">Morelli, Rosa</td><td class="c3 wf">wife of Jacopo Mosel</td><td>shop</td><td class="s2">Piazza S. Andrea</td></tr>
+        <tr><td class="n0">6950</td><td class="nm">Morelli, Rosa</td><td class="c3 wf">wife of Jacopo Mosel</td><td>house</td><td class="s2">Piazza S. Andrea</td></tr>
+      </table>
+    </div>
+    <div class="fig rgg">
+      <svg viewBox="0 0 600 440" class="kgs">
+        <g data-at="2">
+          <!-- Rosa owns five properties; each property is in a street; she is recorded as wife of Jacopo Mosel -->
+          <path class="ge st" pathLength="1" d="M300 196 L70 262M300 196 L135 244M300 196 L200 266M300 196 L425 262M300 196 L505 258" stroke-width="1.6"/>
+          <text class="el" x="232" y="214" text-anchor="middle" style="fill:var(--ink)">owns</text>
+          <path d="M70 280 L110 340M135 262 L112 340M200 284 L118 340M425 280 L486 340M505 276 L494 340" stroke="#9a9a9a" stroke-width="1.4" stroke-dasharray="4 4" fill="none"/>
+          <text class="el" x="152" y="318">in</text><text class="el" x="470" y="318">in</text>
+          <path class="ge sa" pathLength="1" d="M300 182 L300 108" stroke-width="2.2"/>
+          <text class="el" x="308" y="150" style="fill:var(--accent)">wife of</text>
+          <circle cx="300" cy="78" r="12" style="fill:var(--bg)" class="st" stroke-width="2.5"/><path d="M282 108a18 16 0 0 1 36 0" style="fill:var(--bg)" class="st" stroke-width="2.5"/>
+          <text x="300" y="58" text-anchor="middle" style="font-size:15px">Jacopo Mosel</text>
+          <circle cx="300" cy="170" r="13" class="bxi"/><path d="M280 204a20 18 0 0 1 40 0z" class="bxi"/>
+          <text x="300" y="228" text-anchor="middle" style="font-size:17px;font-weight:800;fill:var(--accent)">Rosa Morelli</text>
+          <g style="fill:var(--wash2)" stroke="var(--ink)" stroke-width="2"><rect x="56" y="250" width="28" height="28"/><rect x="121" y="232" width="28" height="28"/><rect x="186" y="254" width="28" height="28"/><rect x="411" y="250" width="28" height="28"/><rect x="491" y="246" width="28" height="28"/></g>
+          <g class="el" style="font-size:13px"><text x="70" y="294" text-anchor="middle">entrance</text><text x="135" y="226" text-anchor="middle">silversmith</text><text x="200" y="298" text-anchor="middle">shop</text><text x="425" y="294" text-anchor="middle">shop</text><text x="505" y="290" text-anchor="middle">house</text></g>
+          <path d="M110 372 c-14 -16 -14 -34 0 -34 c14 0 14 18 0 34 z" style="fill:var(--bg)" class="st" stroke-width="2.5"/><circle cx="110" cy="352" r="4" class="bxi"/>
+          <text x="110" y="394" text-anchor="middle" style="font-size:15px;font-weight:700">Via degli Archibusieri</text>
+          <path d="M490 372 c-14 -16 -14 -34 0 -34 c14 0 14 18 0 34 z" style="fill:var(--bg)" class="st" stroke-width="2.5"/><circle cx="490" cy="352" r="4" class="bxi"/>
+          <text x="490" y="394" text-anchor="middle" style="font-size:15px;font-weight:700">Piazza S. Andrea</text>
+        </g>
+        <g data-at="3">
+          <!-- neighbours reach Rosa through the places they share -->
+          <path class="ge st" pathLength="1" d="M40 110 L40 168" stroke-width="1.6"/>
+          <path d="M40 196 L104 340" stroke="#9a9a9a" stroke-width="1.4" stroke-dasharray="4 4" fill="none"/>
+          <circle cx="40" cy="80" r="11" class="bxi"/><path d="M24 108a16 14 0 0 1 32 0z" class="bxi"/>
+          <text x="40" y="60" text-anchor="middle" style="font-size:15px">Tommaso Moro</text>
+          <rect x="26" y="168" width="28" height="28" style="fill:var(--wash2)" stroke="var(--ink)" stroke-width="2"/><text class="el" x="64" y="186" style="font-size:13px">goldsmith</text>
+          <path class="ge st" pathLength="1" d="M560 110 L560 168" stroke-width="1.6"/>
+          <path d="M560 196 L496 340" stroke="#9a9a9a" stroke-width="1.4" stroke-dasharray="4 4" fill="none"/>
+          <circle cx="560" cy="80" r="11" class="bxi"/><path d="M544 108a16 14 0 0 1 32 0z" class="bxi"/>
+          <text x="560" y="60" text-anchor="middle" style="font-size:15px">Massimo Morosi</text>
+          <rect x="546" y="168" width="28" height="28" style="fill:var(--wash2)" stroke="var(--ink)" stroke-width="2"/><text class="el" x="536" y="186" text-anchor="end" style="font-size:13px">grocer</text>
+        </g>
+      </svg>
+    </div>
   </div>
-  <div class="row" style="flex:0 0 auto">
-    <div class="pt k"><b>start</b><p>One row of the 1835 cadastre.</p></div>
-    <div class="pt" data-at="1"><b>1 · entities</b><p>A parcel, an acquisition, a person.</p></div>
-    <div class="pt" data-at="2"><b>2 · co-owners</b><p>Eight family members, one acquisition.</p></div>
-    <div class="pt" data-at="3"><b>3 · a person</b><p>Leads to all of their parcels.</p></div>
-  </div>
-  <aside class="notes">One row of the cadastre becomes a small graph: the parcel, an acquisition and the person who acquired title. This house in Via dell'Amorino has eight owners, all Targioni Tozzetti, brothers, sisters and cousins, who acquire title through the same acquisition. And from a person you reach every other parcel they owned. Press → three times. The next slide shows it live.</aside>
+  <div class="src">Catasto Generale Toscano, 1835: parcels 5272–6950, as modelled in Florentia Illustrata. Rosa Morelli owned six properties; five are shown here.</div>
+  <aside class="notes">Seven real records from the 1835 cadastre. In a table, each row stands alone: a parcel number, an owner, a description, a property, a street. Press →: look again, and the same name comes back five times, always with the same description, "wife of Jacopo Mosel", in the same two streets. Press →: as a graph, the rows connect: one person, Rosa Morelli, owns five properties, among them a silversmith's shop; the properties are in two places, Via degli Archibusieri and Piazza S. Andrea; and she is linked to her husband. Press →: the two other records are her neighbours, a goldsmith in her street and a grocer on the square, and they join the network through the places they share. Now every question can follow these links: whose shops stood next to whose, which families held property where. The next slide shows it live.</aside>
 </section>
 
 <section class="slide c demo" data-w="demo" data-steps="4">
@@ -859,9 +1157,16 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
   <aside class="notes">Live demo (log in first; the frame opens on parcel 1005 in Via dell'Amorino, coloured by owners). Press → to mark each step on the rail. 1. The parcel: a house with eight Targioni Tozzetti co-owners. 2. Its owners in the details panel. 3. Open one owner: father, spouse, title. 4. Highlight every parcel that person owned across the city. Then switch to the macro categories colouring, turn on the 1850 plan and swipe against the 2023 orthophoto if time allows.</aside>
 </section>
 
-<section class="slide c" data-w="pipe">
-  <div class="lab"><span>florentia illustrata · 03</span><span>beyond spatial data · AIUCD 2026</span></div>
-  <h2 class="h">The cadastre records no gender. <span class="acc">The graph can find it.</span></h2>
+<section class="slide dark">
+  <div class="lab"><span>florentia illustrata · 03</span><span>a research question</span></div>
+  <div class="fit"><p>Rosa Morelli was not alone. <span class="acc">How many women owned property in 1835 Florence, and what did they own?</span></p></div>
+  <div class="lab"><span>A question the cadastre was never meant to answer · Andreose, Grillo, Spinaci, AIUCD 2026</span></div>
+  <aside class="notes">Back to Rosa Morelli, the shop owner we met at the start. Once the cadastre is a graph, her record is not an isolated curiosity: we can ask how many women owned property in 1835 Florence, and what kind of property. It is a question the cadastre was never designed to answer: it does not even record gender. This is the research question of the AIUCD 2026 paper by Erica Andreose, Remo Grillo and Gianmarco Spinaci. The next slides show how we got there, what we found, and where it is told: in a story on the platform.</aside>
+</section>
+
+<section class="slide c" data-w="pipe" data-manual data-steps="5" data-intro="The cadastre names every owner, but never says whether they were a man or a woman. Press → to follow the clues.">
+  <div class="lab"><span>florentia illustrata · 04</span><span>beyond spatial data · AIUCD 2026</span></div>
+  <h2 class="h">Finding the women owners, <span class="acc">clue by clue</span>.</h2>
   <div class="body v" style="gap:2.2vmin">
     <div class="ctl"><span class="v pp-say" style="font-size:2.3vmin">&nbsp;</span></div>
     <div class="pipe">
@@ -881,7 +1186,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
 </section>
 
 <section class="slide c" data-w="bars">
-  <div class="lab"><span>florentia illustrata · 04</span><span>interactive</span></div>
+  <div class="lab"><span>florentia illustrata · 05</span><span>interactive</span></div>
   <h2 class="h">What women owned, <span class="acc">and how much</span>.</h2>
   <div class="body">
     <div class="col g2 mid" style="gap:2.6vmin">
@@ -914,7 +1219,7 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
 </section>
 
 <section class="slide">
-  <div class="lab"><span>florentia illustrata · 05</span><span>quote</span></div>
+  <div class="lab"><span>florentia illustrata · 06</span><span>quote</span></div>
   <div class="fit q"><p>“A query becomes a layer, <span class="mark">a category becomes a dynamic legend.</span>”</p></div>
   <div class="lab"><span>Andreose, Grillo, Spinaci, “Beyond Spatial Data”, AIUCD 2026</span></div>
   <aside class="notes">From the conclusions of the paper: the analysis is not a separate tool; it happens on the map. Next: the same work told as a story.</aside>
@@ -931,19 +1236,19 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
       <button class="btn" data-z=".8">80%</button><button class="btn on" data-z="1">100%</button><button class="btn" data-z="1.25">125%</button><button class="btn" data-z="1.5">150%</button>
       <i class="sep"></i>
       <button class="btn" data-act="reset" title="Reload the starting page">↺ reset</button>
-      <a class="btn" href="https://florentiaillustrata.net/resource/rsp:gender-and-property?story=http%3A%2F%2Fwww.researchspace.org%2Finstances%2Fstories%2Fad508a7f-99b6-4265-a8ad-258700aee38f" target="_blank" rel="noopener">new tab ↗</a>
+      <a class="btn" href="https://florentiaillustrata.net/resource/home?states=test-map-controls%3DJTdCJTIycGFuZWwlMjIlM0FudWxsJTdE%26test-map%3DJTdCJTIydmlldyUyMiUzQSU3QiUyMmNlbnRlciUyMiUzQSU1QjEyNTM2MTAuNCUyQzU0MzA0OTcuMSU1RCUyQyUyMnpvb20lMjIlM0ExNC40NSUyQyUyMnJvdGF0aW9uJTIyJTNBMCU3RCU3RA%3D%3D&amp;story=http%3A%2F%2Fwww.researchspace.org%2Finstances%2Fstories%2Fad508a7f-99b6-4265-a8ad-258700aee38f&amp;storySlide=1" target="_blank" rel="noopener">new tab ↗</a>
       <button class="btn" data-act="max" title="Fill the screen (Esc to exit)">⤢ expand</button>
     </div>
     <div class="dview">
       <div class="dfall"><b>Loading the story…</b><p>It needs a login: present from the demo server (node demo-server.mjs). If the story does not open, use Stories in the site header.</p></div>
-      <iframe data-src="https://florentiaillustrata.net/resource/rsp:gender-and-property?story=http%3A%2F%2Fwww.researchspace.org%2Finstances%2Fstories%2Fad508a7f-99b6-4265-a8ad-258700aee38f" title="Florentia Illustrata, live demo: stories" allow="fullscreen; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <iframe data-src="https://florentiaillustrata.net/resource/home?states=test-map-controls%3DJTdCJTIycGFuZWwlMjIlM0FudWxsJTdE%26test-map%3DJTdCJTIydmlldyUyMiUzQSU3QiUyMmNlbnRlciUyMiUzQSU1QjEyNTM2MTAuNCUyQzU0MzA0OTcuMSU1RCUyQyUyMnpvb20lMjIlM0ExNC40NSUyQyUyMnJvdGF0aW9uJTIyJTNBMCU3RCU3RA%3D%3D&amp;story=http%3A%2F%2Fwww.researchspace.org%2Finstances%2Fstories%2Fad508a7f-99b6-4265-a8ad-258700aee38f&amp;storySlide=1" title="Florentia Illustrata, live demo: stories" allow="fullscreen; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </div>
   </div>
-  <aside class="notes">Stories, new in Metapolis: a narrative made of map states. The story "Gender and property in 1835 Florence" has 12 steps: women landowners, from records to a knowledge graph, who counts as a woman, the gender map, what women owned, held alone more often than shared, a family estate, urban space by category, shops around the market, reading a single parcel, uncertain identities, conclusions. Each step sets the map: centre, zoom, colouring, selected parcel. Press → to mark the rail: open the story, step through, show that the map follows the text, then leave the story and keep exploring from the same view. Check before the talk that the story is loaded on production; otherwise open it from Stories in the header.</aside>
+  <aside class="notes">Stories, new in Metapolis: a narrative made of map states. The story "Gender and property in 1835 Florence" has 12 steps: women landowners, from records to a knowledge graph, who counts as a woman, the gender map, what women owned, held alone more often than shared, a family estate, urban space by category, shops around the market, reading a single parcel, uncertain identities, conclusions. Each step sets the map: centre, zoom, colouring, selected parcel. Press → to mark the rail: open the story, step through, show that the map follows the text, then leave the story and keep exploring from the same view. The story is loaded on production: the frame opens it at its first step, over the main map.</aside>
 </section>
 
 <section class="slide c">
-  <div class="lab"><span>florentia illustrata · 06</span><span>what became possible</span></div>
+  <div class="lab"><span>florentia illustrata · 07</span><span>what became possible</span></div>
   <h2 class="h">A table became <span class="acc">a city you can question</span>.</h2>
   <div class="ms">
     <div class="msr"><span class="mt">01</span><b>owners, citywide</b><p>Every parcel of a person, across Florence, in one click.</p></div>
@@ -1215,19 +1520,25 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
     init: function(s){
       $$(s, '.ps').forEach(function(p, j){ p.insertAdjacentHTML('afterbegin', '<em>' + (j < 9 ? '0' : '') + (j + 1) + '</em>'); });
     },
+    // show stage j (j = -1: no stage yet, only the section's data-intro)
+    show: function(s, j){
+      var st = $$(s, '.ps'), pk = $(s, '.pk'), say = $(s, '.pp-say'), n = st.length, p = st[j];
+      st.forEach(function(x, m){ x.classList.toggle('on', m === j); x.classList.toggle('done', m < j); });
+      if (!p){ pk.style.opacity = 0; say.innerHTML = s.dataset.intro || '&nbsp;'; return; }
+      pk.classList.toggle('jump', pk.style.opacity === '0' || j === 0);
+      pk.style.opacity = 1;
+      pk.style.left = (p.offsetLeft + p.offsetWidth / 2) + 'px';
+      pk.innerHTML = (this.G[p.dataset.g] || '') + '<i>' + (p.dataset.p || '') + '</i>';
+      say.innerHTML = '<b class="acc">' + (j + 1) + ' / ' + n + '</b> · ' + p.dataset.say;
+    },
+    // with data-manual, → shows the next stage (data-steps = the number of stages); otherwise the stages play in a loop
     enter: function(s){
-      var self = this, st = $$(s, '.ps'), pk = $(s, '.pk'), say = $(s, '.pp-say'), n = st.length, T = 0;
-      function show(j){
-        var p = st[j];
-        st.forEach(function(x, m){ x.classList.toggle('on', m === j); x.classList.toggle('done', m < j); });
-        pk.classList.toggle('jump', j === 0);
-        pk.style.left = (p.offsetLeft + p.offsetWidth / 2) + 'px';
-        pk.innerHTML = (self.G[p.dataset.g] || '') + '<i>' + (p.dataset.p || '') + '</i>';
-        say.innerHTML = '<b class="acc">' + (j + 1) + ' / ' + n + '</b> · ' + p.dataset.say;
-      }
-      st.forEach(function(p, j){ later(s, function(){ show(j); }, T); T += j === n - 1 ? 3800 : 2200; });
+      var self = this, n = $$(s, '.ps').length, T = 0;
+      if (s.hasAttribute('data-manual')) return this.show(s, (+s.dataset.k || 0) - 1);
+      $$(s, '.ps').forEach(function(p, j){ later(s, function(){ self.show(s, j); }, T); T += j === n - 1 ? 3800 : 2200; });
       later(s, function(){ self.enter(s); }, T);
-    }
+    },
+    step: function(s, k){ if (s.hasAttribute('data-manual')) this.show(s, k - 1); }
   };
 
   // more glyphs for the packet of the pipelines in this deck
@@ -1237,24 +1548,94 @@ body.in-frame .dhint .in{display:inline;color:#d6324a}
   W.pipe.G.sql = '<svg viewBox="0 0 160 90"><path d="M8 45h26M126 45h26"' + LN + ' stroke-dasharray="5 5"/><rect x="36" y="22" width="88" height="46" rx="4" style="fill:var(--bg)" stroke="currentColor" stroke-width="3"/><text x="80" y="53" text-anchor="middle" style="font:500 22px var(--mono);fill:var(--accent)">SQL</text></svg>';
   W.pipe.G.map = '<svg viewBox="0 0 160 90"><path d="M20 22l40-12 40 12 40-12v58l-40 12-40-12-40 12z" style="fill:var(--bg)" stroke="currentColor" stroke-width="3"/><path d="M60 10v58M100 22v58"' + LN + '/><path d="M66 36l22-6 12 16-16 14-16-8z" style="fill:var(--accent)"/></svg>';
   W.pipe.G.table = '<svg viewBox="0 0 160 90"><rect x="24" y="10" width="112" height="70" style="fill:var(--bg)" stroke="currentColor" stroke-width="3"/><path d="M24 28h112M24 45h112M24 62h112M58 10v70M100 10v70" stroke="currentColor" stroke-width="2"/><rect x="58" y="28" width="42" height="17" style="fill:var(--soft)"/></svg>';
+  W.pipe.G.hmap = '<svg viewBox="0 0 160 90"><rect x="20" y="8" width="120" height="74" style="fill:#efe6d2" stroke="#b9a37a" stroke-width="2.5"/><path d="M20 60 C50 48, 70 72, 100 56 S130 46, 140 54" stroke="#b9a37a" stroke-width="2" fill="none"/><rect x="60" y="26" width="26" height="20" style="fill:#d6c39a" stroke="#8a7346" stroke-width="1.5"/><path d="M118 16v16M110 24h16" stroke="#8a7346" stroke-width="1.5"/></svg>';
+  W.pipe.G.link = '<svg viewBox="0 0 160 90"><path d="M80 45L30 18M80 45L130 18M80 45L80 76" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/><rect x="66" y="31" width="28" height="28" style="fill:var(--wash2)" stroke="currentColor" stroke-width="2.5"/><rect x="21" y="6" width="18" height="24" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><circle cx="130" cy="18" r="10" fill="currentColor"/><rect x="71" y="69" width="18" height="18" transform="rotate(45 80 78)" style="fill:var(--accent)"/></svg>';
   W.pipe.G.people = '<svg viewBox="0 0 160 90"><g fill="currentColor"><circle cx="40" cy="30" r="11"/><path d="M22 74a18 18 0 0 1 36 0z"/><circle cx="120" cy="30" r="11"/><path d="M102 74a18 18 0 0 1 36 0z"/></g><g style="fill:var(--accent)"><circle cx="80" cy="24" r="13"/><path d="M58 76a22 22 0 0 1 44 0z"/></g></svg>';
 
-  // --- a place as a network: steps bring in people, events and sources; the last one runs a clock through the years
+  // --- a place as a network: one building's story, event by event; then a clock runs down its life;
+  //     then we zoom out to the city, where every building has a story of its own
   W.place = {
-    step: function(s, k){
-      var self = this, y = 1400;
-      clearInterval(s._clock);
-      if (k < 4) return this.year(s, null);
-      this.year(s, y);
-      s._clock = every(s, function(){ y = y >= 2026 ? 1400 : Math.min(2026, y + 5); self.year(s, y); }, 60);
+    SAY: [
+      'On a map, a building is just a shape.',
+      '1460 · a wool merchant commissions it; a building contract documents it.',
+      '1590 · his heirs sell it to a noble family; a notarial deed records the sale.',
+      '1720 · an architect adds a new wing; his drawing survives.',
+      '1890 · the City demolishes the wing for a new street; a photograph shows it.',
+      'Through time: every change of shape has its people and its evidence.',
+      'Zoom out: every building in the city has a story like this one.'
+    ],
+    PHASE: ['C', 'A', 'A', 'B', 'C', 'C', 'C'],
+    // where each year sits on the building's life line: [year, y]
+    LIFE: [[1440, 118], [1460, 195], [1590, 285], [1720, 375], [1890, 465], [2026, 512]],
+    init: function(s){
+      // the city around the building: blocks of footprints, each with a small network of its own
+      var seed = 11, h = '', minis = '', home = null;
+      function rnd(){ seed = seed * 16807 % 2147483647; return (seed - 1) / 2147483646; }
+      for (var r = 0; r < 4; r++) for (var c = 0; c < 6; c++){
+        var bx = 30 + c * 160, by = 36 + r * 124, n = 2 + (rnd() * 2 | 0), w = (140 - (n - 1) * 6) / n;
+        for (var j = 0; j < n; j++){
+          var x = bx + j * (w + 6), ht = 58 + rnd() * 46, cx = x + w / 2, cy = by + ht / 2, d = Math.hypot(cx - 500, cy - 270);
+          var b = { x: x, y: by, w: w, h: ht, cx: cx, cy: cy, d: d };
+          if (!home || d < home.d) home = b;
+          b.svg = '<rect class="bld" x="' + x.toFixed(1) + '" y="' + by + '" width="' + w.toFixed(1) + '" height="' + ht.toFixed(1) + '"/>';
+          b.mini = '<g class="mini" style="--d:' + (0.9 + d / 420).toFixed(2) + 's"><path d="M' + cx.toFixed(1) + ' ' + cy.toFixed(1) + 'l-10 -9M' + cx.toFixed(1) + ' ' + cy.toFixed(1) + 'l10 -9M' + cx.toFixed(1) + ' ' + cy.toFixed(1) + 'v10" class="st" stroke-width="1"/>'
+            + '<circle cx="' + (cx - 10).toFixed(1) + '" cy="' + (cy - 9).toFixed(1) + '" r="3.4" class="bxi"/><circle cx="' + (cx + 10).toFixed(1) + '" cy="' + (cy - 9).toFixed(1) + '" r="3.4" class="bxa"/><circle cx="' + cx.toFixed(1) + '" cy="' + (cy + 10).toFixed(1) + '" r="3.4" style="fill:#9a9a9a"/></g>';
+          (s._blds = s._blds || []).push(b);
+        }
+      }
+      s._blds.forEach(function(b){ h += b === home ? '<rect class="home" x="' + b.x.toFixed(1) + '" y="' + b.y + '" width="' + b.w.toFixed(1) + '" height="' + b.h.toFixed(1) + '"/>' : b.svg; if (b !== home) minis += b.mini; });
+      var label = '<text class="m" x="' + home.cx.toFixed(1) + '" y="' + (home.y - 8) + '" text-anchor="middle" style="font-size:13px;fill:var(--accent)">THIS BUILDING</text>';
+      $(s, '.pl-city').innerHTML = h + minis + label;
+      // the network shrinks into its building, which lands where it stands in the city
+      s._zoom = 'translate(' + (home.cx - 500).toFixed(1) + 'px,' + (home.cy - 63).toFixed(1) + 'px) scale(.07)';
     },
+    step: function(s, k){
+      var self = this, net = $(s, '.pl-net'), y = 1440;
+      clearInterval(s._clock);
+      $(s, '.pl-say').textContent = this.SAY[Math.min(k, 6)];
+      net.classList.toggle('out', k >= 6);
+      net.style.transform = k >= 6 ? s._zoom : '';
+      this.year(s, null);
+      this.phase(s, this.PHASE[Math.min(k, 6)]);
+      if (k !== 5) return;
+      this.year(s, y);
+      s._clock = every(s, function(){ y = y >= 2026 ? 1440 : Math.min(2026, y + 4); self.year(s, y); }, 50);
+    },
+    phase: function(s, p){ $$(s, '.ph').forEach(function(g){ g.classList.toggle('off', g.dataset.ph !== p); }); },
     year: function(s, y){
-      $$(s, '[data-from]').forEach(function(g){
-        var off = y === null ? g.classList.contains('ph') && !g.hasAttribute('data-default') : y < +g.dataset.from || y > +g.dataset.to;
-        g.classList.toggle('off', off);
-      });
+      $$(s, '.row').forEach(function(r){ r.classList.toggle('ahead', y !== null && +r.dataset.year > y); });
       $(s, '.pl-year').textContent = y === null ? '' : y;
-      if (y !== null) $(s, '.pl-hand').setAttribute('transform', 'translate(' + ((y - 1400) / 626 * 800).toFixed(1) + ',0)');
+      if (y === null) return;
+      this.phase(s, y < 1720 ? 'A' : y < 1890 ? 'B' : 'C');
+      var L = this.LIFE, j = 1;
+      while (j < L.length - 1 && y > L[j][0]) j++;
+      var t = (y - L[j - 1][0]) / (L[j][0] - L[j - 1][0]), py = L[j - 1][1] + t * (L[j][1] - L[j - 1][1]);
+      $(s, '.pl-hand').setAttribute('transform', 'translate(0,' + py.toFixed(1) + ')');
+    }
+  };
+  // --- a register scrolls by, slows down and stops on one name; then that record opens (data-w="ledger")
+  W.ledger = {
+    enter: function(s){
+      var w = $(s, '.lg-wrap'), lg = $(s, '.ledger'), inner = $(s, '.lg-in'), me = $(s, '.lg-r.me'), v = $(s, '.lg-v');
+      lg.classList.remove('focus'); w.classList.remove('done');
+      inner.style.transition = 'none'; inner.style.transform = 'translateY(0)';
+      if (+s.dataset.k > 0) return this.open(s);     // coming back from the next slide: skip the scroll
+      inner.getBoundingClientRect();
+      inner.style.transition = 'transform 4.4s cubic-bezier(.5,.02,.18,1)';
+      inner.style.transform = 'translateY(' + (-(me.offsetTop + me.offsetHeight / 2 - v.clientHeight / 2)).toFixed(0) + 'px)';
+      later(s, function(){ lg.classList.add('focus'); }, 4500);
+      later(s, function(){ w.classList.add('done'); }, 6000);
+    },
+    open: function(s){ $(s, '.ledger').classList.add('focus'); $(s, '.lg-wrap').classList.add('done'); },
+    step: function(s, k){ if (k > 0) this.open(s); }
+  };
+
+  // --- a caption that follows the steps: in .say, the span whose data-k is the latest reached is shown
+  W.say = {
+    step: function(s, k){
+      var cur = null, xs = $$(s, '.say [data-k]');
+      xs.forEach(function(x){ if (+x.dataset.k <= k) cur = x; });
+      xs.forEach(function(x){ x.hidden = x !== cur; });
     }
   };
 
