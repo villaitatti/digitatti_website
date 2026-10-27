@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Mapping Connections · digiTatti</title>
+<!--
+  Mapping Connections: Behind the Scenes at the I Tatti Digital Humanities Lab
+  Kansas City participants, Nelson-Atkins Museum of Art · webinar, Wednesday 28 October 2026, 8:30 am
+
+  Keys: → / space next (also reveals the steps of a slide) · ← back · N presenter notes (a separate window that
+  follows the slides) · G list of all slides · F fullscreen · Esc closes an expanded live site.
+  P presenter mode (online only): every presenter who turns it on, with the presenter code, drives the same slides.
+  Files: style.css (look), widgets.js (interactive slides), engine.js (navigation, notes window), assets/.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Source+Code+Pro:wght@300;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 fill=%22%23a51c30%22/%3E%3Ctext x=%2216%22 y=%2223%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Georgia%22%3Ed%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="dt-arc" viewBox="0 0 220 224"><path fill="none" stroke="currentColor" stroke-width=".9" vector-effect="non-scaling-stroke" d="M0 223L146 223M1.2 200.2L146.4 215.4M4.8 177.6L147.6 207.9M10.7 155.5L149.5 200.6M18.9 134.1L152.3 193.5M29.3 113.8L155.7 186.8M41.7 94.6L159.8 180.4M56.1 76.8L164.6 174.5M72.3 60.6L170 169.1M90.1 46.2L175.9 164.3M109.2 33.8L182.2 160.2M129.6 23.4L189 156.8M151 15.2L196.1 154M173.1 9.3L203.4 152.1M195.7 5.7L210.9 150.9M218.5 4.5L218.5 150.5M64.5 223L65.3 206.9M67.9 191L72 175.4M77.8 160.4L85.1 146M93.9 132.5L104.1 120M115.5 108.6L128 98.4M141.5 89.6L155.9 82.3M170.9 76.5L186.5 72.4M202.4 69.8L218.5 69"/></symbol>
+  </defs>
+</svg>
+
+<div id="stage">
+
+<!-- ======================================================= PROLOGUE -->
+<section class="slide title" data-title="Title">
+  <div class="t-band"><img src="assets/img/kc/sig_panel.jpg" alt="Luca Signorelli and assistant, The Flight into Egypt; Christ Among the Doctors, c. 1520, in a photograph of the Fototeca Berenson"></div>
+  <div class="t-body">
+    <div class="t-main">
+      <h1>Mapping Connections</h1>
+      <p class="dek" style="font-size:30px">Behind the scenes at the I Tatti Digital Humanities Lab</p>
+    </div>
+    <div class="t-side">
+      <div class="logos">
+        <img class="lg-it" src="assets/itatti_logo.png" alt="I Tatti, The Harvard University Center for Italian Renaissance Studies">
+        <span class="dt" role="img" aria-label="digiTatti, the Harvard digital humanities lab for early modern studies"><svg viewBox="0 0 220 224"><use href="#dt-arc"/></svg><span><b>digiTatti</b><small>the Harvard<br>digital humanities lab<br>for early modern studies</small></span></span>
+      </div>
+      <div class="who">
+        <div><b>Lukas Klic</b><span>Head of Digital Humanities Research</span></div>
+        <div><b>Remo Grillo</b><span>Digital Humanities Research Software Engineer</span></div>
+        <div><b>Gianmarco Spinaci</b><span>Digital Humanities Research Software Engineer</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="t-foot"><span>Kansas City · Nelson-Atkins Museum of Art</span><span>Wednesday 28 October 2026</span></div>
+  <p class="cap t-cap">Luca Signorelli and assistant, <i>The Flight into Egypt; Christ Among the Doctors</i>, c. 1520. The Nelson-Atkins Museum of Art. Photograph: Biblioteca Berenson, Fototeca, Villa I Tatti.</p>
+  <aside class="notes">
+    <p><b>Welcome.</b> Good morning, and thank you for having us, from Florence to Kansas City. I am Lukas Klic, I lead digital humanities research at I Tatti; with me are Remo Grillo and Gianmarco Spinaci, our two research software engineers. Together we wanted to give you a behind-the-scenes look at our work in the lab, much of which is unpublished.</p>
+    <p>The picture above us is not here by chance: it is a painting that hangs in your museum, in a photograph from our archive here in Florence. We will loop back to it later in the presentation.</p>
+    <p class="cue">→ next slide · N opens these notes in their own window · P for presenter mode</p>
+  </aside>
+</section>
+<section class="slide" data-title="I Tatti and its lab">
+  <div class="run"><span>introduction</span><b>who we are</b></div>
+  <div class="body">
+    <div class="col c12" style="gap:16px">
+      <figure class="grow"><div class="im"><img src="assets/img/kc/itatti_villa.jpg" alt="Villa I Tatti among cypresses, in autumn" style="object-position:50% 40%"></div></figure>
+      <p class="cap">Villa I Tatti, Florence: Bernard and Mary Berenson's home, left to Harvard in 1959; the Center opened in 1961.</p>
+    </div>
+    <div class="col c1 mid" style="gap:22px">
+      <h2 style="font-size:40px">I Tatti, and <em>its digital lab</em>.</h2>
+      <p>I Tatti is Harvard's center for Italian Renaissance studies, in the Berensons' villa above Florence: a community of scholars from around the world, with a library, an art collection, archives, and Berenson's photo archive.</p>
+      <p><strong>digiTatti</strong>, its Digital Humanities Lab, is a space to exchange ideas and methods that leverage technology to provide greater insight into the history of culture: opening I Tatti's collections, and connecting them to the questions scholars ask.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>I Tatti is Harvard's center for Italian Renaissance studies, in the villa where Bernard and Mary Berenson lived, above Florence. It is a residential community of scholars from all over the world, with a library, an art collection, archives, and Berenson's photograph collection.</p>
+    <p>digiTatti is small: there are three of us, in addition to one or two fellows a year. Our aim is to offer a space to exchange ideas and methods that use technology to give greater insight into the history of culture; when a method works, we try to turn it into a tool others can use.</p>
+  </aside>
+</section>
+<section class="slide" data-title="What the lab does" data-steps="6">
+  <div class="run"><span>introduction</span><b>what we do</b></div>
+  <h2>What the lab does, <em>from the scanner to the scholar</em>.</h2>
+  <div class="flow5">
+    <div class="fs" data-at="1"><i>01</i><svg class="ic" viewBox="0 0 56 56"><rect class="s" x="6" y="30" width="44" height="14" rx="2"/><path class="s" d="M12 30l4-12h24l4 12"/><rect class="a" x="20" y="21" width="16" height="7"/><path class="a" d="M10 37h36"/></svg><h3>Digitize</h3><p>Low-cost mass digitization, built for volume. Our software guides an operator through the archive box by box, folder by folder: place the item, scan, next.</p><span class="lab">photographs · documents · 35 mm slides</span></div>
+    <div class="fs" data-at="2"><i>02</i><svg class="ic" viewBox="0 0 56 56"><rect class="s" x="8" y="8" width="24" height="32"/><path class="s" d="M13 16h14M13 22h14M13 28h9"/><path class="a" d="M36 18h12M36 24h12M36 30h8M36 36h12"/><path class="a" d="M30 46l4-4 4 4"/></svg><h3>Read</h3><p>AI transcribes each item, writes a caption, assigns categories, and produces structured data.</p><span class="lab">transcription · captions · categories</span></div>
+    <div class="fs" data-at="3"><i>03</i><svg class="ic" viewBox="0 0 56 56"><circle class="s" cx="16" cy="28" r="7"/><circle class="s" cx="42" cy="14" r="6"/><circle class="s" cx="42" cy="42" r="6"/><path class="a" d="M22 25l14-8M22 31l14 8"/></svg><h3>Enrich</h3><p>Names and places standardized; a museum placed on the map; an artist matched to reference vocabularies. Ambiguous links are checked by people.</p><span class="lab">linked to other institutions</span></div>
+    <div class="fs" data-at="4"><i>04</i><svg class="ic" viewBox="0 0 56 56"><rect class="s" x="6" y="10" width="44" height="32" rx="2"/><path class="s" d="M6 17h44M20 48h16M28 42v6"/><path class="a" d="M12 26h18M12 32h26"/></svg><h3>Publish</h3><p>Platforms anyone can explore, where every statement leads back to its source.</p><span class="lab">open to everyone</span></div>
+    <div class="fs" data-at="5"><i>05</i><svg class="ic" viewBox="0 0 56 56"><circle class="s" cx="24" cy="24" r="14"/><path class="s" d="M34 34l12 12"/><circle class="af" cx="18" cy="22" r="2.4"/><circle class="af" cx="27" cy="18" r="2.4"/><circle class="af" cx="28" cy="29" r="2.4"/><path class="a" d="M18 22l9-4 1 11z"/></svg><h3>Reuse</h3><p>Tools for our catalogers and researchers to augment and repurpose the data, for their own research questions.</p><span class="lab">for catalogers and researchers</span></div>
+  </div>
+  <div class="with" data-at="6">
+    <div class="lab a">with and for scholars</div>
+    <div class="w3">
+      <div><b>Research support</b><p>Scholars bring their own sources into our tools, to gather them in one place and study them as a whole.</p></div>
+      <div><b>Fellows</b><p>Digital Humanities fellows come with their projects; the lab is where we exchange ideas and methods, and learn from each other.</p></div>
+      <div><b>Collaborations</b><p>Projects of outside researchers within I Tatti's scope: the Italian Renaissance and related fields.</p></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p data-k="0">And those tools often start with digitization, which is a critical component of much of our work.</p>
+    <p data-k="1">We build our own mass digitization systems, designed to be low-cost and to maximize the volume of material we can process. Our systems handle the whole pipeline. We often start from the structure of the archive, its boxes and the folders inside them, with a minimal amount of metadata; the software then guides the scanning operator, who places each item, a letter, a photograph, a document, a 35-millimetre slide, on the scanner, and moves on.</p>
+    <p data-k="2">We then use AI to transcribe the contents, write a caption and assign categories, producing the kind of structured data we can then use to publish that material.</p>
+    <p data-k="3">The transcription is the most important part, because it feeds the next step, enrichment. If a photograph of an artwork says it is held at the Metropolitan Museum, we normalize the name, look up where the museum is, and place it on the map; if it names an artist, we match the artist to reference vocabularies, which give us a standard name, when they were born and died, and where they were active. This reduces our need to catalogue everything by hand, but in many cases we still need to verify connections where there is some ambiguity.</p>
+    <p data-k="4">From there we publish the collections on platforms anyone can explore,</p>
+    <p data-k="5">as well as provide tools so that our catalogers and researchers can augment and repurpose that data in ways that respond to their own research interests.</p>
+    <p data-k="6">And all of this is with and for scholars: they bring their own sources into our tools, gather them in one place, and analyze them as a whole.</p>
+  </aside>
+</section>
+<section class="slide" data-title="The computer science side of our work" data-steps="5">
+  <div class="run"><span>introduction</span><b>what we do · research</b></div>
+  <h2>The computer science side <em>of our work</em>.</h2>
+  <p class="dek">Many of the technical problems we work on apply well beyond the humanities, and the complexity and uncertainty of historical data can make them harder to solve.</p>
+  <div class="cs-line"><span>our earlier work</span><i></i><span>what we are building now</span></div>
+  <div class="cs5">
+    <div class="cs" data-at="1">
+      <i>01</i>
+      <svg class="ic" viewBox="0 0 56 56"><circle class="s" cx="12" cy="14" r="5"/><circle class="s" cx="44" cy="14" r="5"/><circle class="s" cx="12" cy="42" r="5"/><circle class="s" cx="44" cy="42" r="5"/><circle class="af" cx="28" cy="28" r="5"/><path class="a" d="M16 17l8 8M40 17l-8 8M16 39l8-8M40 39l-8-8"/></svg>
+      <h3>Semantic web &amp; linked data</h3>
+      <div class="sub">Describing connections precisely</div>
+      <p>Rich semantic structures describe relationships between people, places, events and objects; linked data connects them to shared authorities, to tell artists, places, repositories and artworks apart.</p>
+      <div class="tags"><span class="tag">Getty ULAN</span><span class="tag">Getty AAT</span><span class="tag">Wikidata</span><span class="tag">VIAF</span></div>
+    </div>
+    <div class="cs" data-at="2">
+      <i>02</i>
+      <svg class="ic" viewBox="0 0 56 56"><rect class="s" x="5" y="12" width="18" height="24"/><rect class="s" x="33" y="12" width="18" height="24"/><path class="a" d="M9 31l4-7 4 4 3-3 2 6M37 31l4-7 4 4 3-3 2 6"/><path class="s" d="M23 24h10" stroke-dasharray="2 3"/><path class="a" d="M14 44h28"/></svg>
+      <h3>Visual similarity</h3>
+      <div class="sub">Finding a work by how it looks</div>
+      <p>Find similar artworks and recognize the same work across different collections, so we can connect what researchers in different places have said about it.</p>
+    </div>
+    <div class="cs" data-at="3">
+      <i>03</i>
+      <svg class="ic" viewBox="0 0 56 56"><path class="s" d="M8 48h40"/><rect class="s" x="12" y="30" width="7" height="18"/><rect class="s" x="24" y="18" width="7" height="30"/><rect class="a" x="36" y="10" width="7" height="38"/></svg>
+      <h3>Benchmarking AI</h3>
+      <div class="sub">Testing before trusting</div>
+      <p>Measuring what AI tools can do and where they fall short: early modern and contemporary handwriting, Renaissance music notation, image captioning.</p>
+    </div>
+    <div class="cs" data-at="4">
+      <i>04</i>
+      <svg class="ic" viewBox="0 0 56 56"><path class="s" d="M3 12h22v14H13l-5 5v-5H3z"/><path class="s" d="M8 17h12M8 21h8"/><path class="a" d="M28 19h8M33 15.5l3.5 3.5-3.5 3.5"/><rect class="s" x="39" y="11" width="15" height="16" rx="2"/><text x="41.2" y="22.5" style="font:600 9px var(--mono);fill:var(--accent)">{ }</text></svg>
+      <h3>Plain-language questions</h3>
+      <div class="sub">Asking the semantic web in plain words</div>
+      <p>Searching linked data takes a specialist query language. We build systems that use AI to translate a research question, asked in plain words, into that language, and bring the answer back.</p>
+      <div class="tags"><span class="tag a">best paper · ISWC 2026</span></div>
+    </div>
+    <div class="cs" data-at="5">
+      <i>05</i>
+      <svg class="ic" viewBox="0 0 56 56"><rect class="s" x="4" y="8" width="13" height="13"/><rect class="s" x="21" y="8" width="13" height="13"/><rect class="s" x="4" y="25" width="13" height="13"/><rect class="a" x="21" y="25" width="13" height="13"/><circle class="s" cx="40" cy="38" r="9"/><path class="s" d="M46.5 44.5l6 6"/><text x="37" y="42" style="font:600 10px var(--serif);fill:var(--accent)">?</text></svg>
+      <h3>Questions of images</h3>
+      <div class="sub">Asking questions of image collections</div>
+      <p>Retrieve images by what they actually show rather than by their data, and answer art-historical questions across large image collections.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p data-k="0">As part of the digital humanities side of our work, we also actively contribute to the field of computer science, because many of the technical issues we work on are highly applicable to the hard sciences as well. One could even argue that, because of the complexity and uncertainty of humanities and historical data, some of the technical requirements we face are actually more challenging than in other scientific disciplines.</p>
+    <p data-k="1">Our earlier work focused primarily on semantic web and linked data technologies. On one side, we use rich semantic structures to describe relationships between people, places, events and objects; on the other, linked data connects us to large shared authorities on the web, such as the Getty's Union List of Artist Names, Wikidata, VIAF and so on. In this way we can disambiguate between artists, places, repositories and artworks.</p>
+    <p data-k="2">We have also done a lot of work on visual similarity: systems that let people find similar artworks and recognize the same artwork across different collections, allowing us to connect what researchers in different places have said about a work.</p>
+    <p data-k="3">We also do extensive benchmarking of AI tools: measuring their capabilities, finding their shortcomings, and seeing where AI can help on projects and take over some of the tedious work. This ranges from transcribing early modern and contemporary handwriting, to Renaissance music notation, to image captioning.</p>
+    <p data-k="4">We are also working to bridge the usability gap of semantic web technologies with AI. Semantic web systems are precise, but to search them you have to write queries in a specialist query language that very few historians know. So we build systems that use the natural-language abilities of AI to translate a research question, asked in plain words, into the language of the semantic web, and to bring the answer back. And as a side note: Remo is currently at the International Semantic Web Conference, where he just won the best paper prize for precisely this work.</p>
+    <p data-k="5">Finally, we work on question-answering systems for large image collections: the ability to retrieve images based on what they actually show, rather than on their data, and to answer art-historical questions based on these collections.</p>
+  </aside>
+</section>
+<section class="slide" data-title="The challenge: access to the data" data-steps="1">
+  <div class="run"><span>introduction</span><b>the challenge</b></div>
+  <h2>One of our challenges: much of the humanities' historical data <em>is hard for digital research to reach</em>.</h2>
+  <p class="dek">Before we can map, search or analyze anything, we have to get to it, and in a form a computer can read.</p>
+  <div class="cards locks">
+    <div class="card"><svg class="ic" viewBox="0 0 56 56"><path class="s" d="M8 12c6-3 13-3 20 1v32c-7-4-14-4-20-1z"/><path class="s" d="M48 12c-6-3-13-3-20 1v32c7-4 14-4 20-1z"/><path class="a" d="M13 20h9M13 26h9M34 20h9M34 26h9"/></svg><h3>In books</h3><p>Catalogues, lists and inventories, printed as prose, often still in copyright: rich data that no computer can read as it stands.</p></div>
+    <div class="card"><svg class="ic" viewBox="0 0 56 56"><rect class="s" x="7" y="18" width="42" height="28"/><path class="s" d="M7 18l6-8h30l6 8"/><path class="a" d="M21 28h14"/></svg><h3>In archives</h3><p>Photographs, letters and diaries: often not digitized, or scanned but never transcribed, so they cannot be searched.</p></div>
+    <div class="card"><svg class="ic" viewBox="0 0 56 56"><rect class="s" x="12" y="24" width="32" height="24" rx="2"/><path class="s" d="M19 24v-7a9 9 0 0 1 18 0v7"/><circle class="af" cx="28" cy="35" r="3"/><path class="a" d="M28 38v4"/></svg><h3>Behind paywalls</h3><p>The secondary literature that explains these sources is licensed for reading, rarely for analysis at scale.</p></div>
+    <div class="card"><svg class="ic" viewBox="0 0 56 56"><path class="s" d="M10 10h36M10 17h36M10 24h30"/><path class="s" d="M10 40h18" style="stroke-width:1.4"/><path class="a" d="M10 46h28" style="stroke-width:1.4"/><text x="40" y="34" style="font:600 13px var(--serif);fill:var(--accent)">¹</text></svg><h3>In footnotes</h3><p>Years of research end in a book; the evidence is cited at the bottom of the page, not available as data.</p></div>
+    <div class="card"><svg class="ic" viewBox="0 0 56 56"><ellipse class="s" cx="28" cy="13" rx="16" ry="5"/><path class="s" d="M12 13v28c0 3 7 5 16 5s16-2 16-5V13M12 27c0 3 7 5 16 5s16-2 16-5"/><path class="a" d="M40 40l8 8M48 40l-8 8"/></svg><h3>In closed databases</h3><p>Scholars' personal archives and project databases, in closed formats, offline once the grant or the career ends.</p></div>
+  </div>
+  <p class="dek" data-at="1" style="max-width:1250px">Most scholars in the humanities work alone. One of our goals is to open up access to these sources, connect them, and let people <em>build on each other's work</em>.</p>
+  <aside class="notes">
+    <p data-k="0">One of the biggest challenges in the digital humanities is access. Much of the historical data needed to support humanities scholarship is still locked away: under copyright in books, undigitized in archives, behind a paywall, in footnotes; or, even when it is in digital form, it is often in a scholar's personal archive, on their own computer.</p>
+    <p data-k="1">One of our main goals is to open up access to these sources, connect them, and let people build on each other's work. For the rest of this talk, we will try to show you our approach to tackling this challenge.</p>
+  </aside>
+</section>
+<section class="slide" data-title="The plan">
+  <div class="run"><span>introduction</span><b>today</b></div>
+  <h2>Today, <em>in two parts</em>.</h2>
+  <div class="plan2 two">
+    <div class="pp"><i>I</i><h3>Research: mapping places through time</h3><p>How the lab came to mapping, the platform we built so scholars can rebuild the history of places together, and two projects that use it.</p><div class="tags"><span class="tag a">Metapolis</span><span class="tag a">VeNiss · Venice</span><span class="tag a">Florentia Illustrata · Florence</span></div></div>
+    <div class="pp"><i>II</i><h3>From archives to data</h3><p>How we digitize collections and use artificial intelligence to read them, above all the world of Bernard and Mary Berenson. Shown live.</p><div class="tags"><span class="tag">Berenson's photo archive</span><span class="tag">his Lists</span><span class="tag">Mary's diaries</span><span class="tag">Zanardi</span><span class="tag">and more</span></div></div>
+    <div class="pp mut"><i>?</i><h3>Your questions</h3><p>Including, if you like, how any of it works.</p></div>
+  </div>
+  <aside class="notes">
+    <p>So, first, we want to show how our lab came to digital mapping, the platform we built so that scholars can rebuild the history of places together, and two projects that use it: VeNiss, Venice's Nissology, for Venice, and Florentia Illustrata, for Florence.</p>
+    <p>Second, how we turn archives into published digital platforms: how we digitize collections, how artificial intelligence now helps us read them, and how we use these collections as building blocks to reconstruct the Berensons' world and their influence on art history.</p>
+  </aside>
+</section>
+<section class="slide" data-title="How we came to maps" data-steps="2">
+  <div class="run"><span>part I · research</span><b>how we got here</b></div>
+  <h2>It began with Florence, <em>and with scholars who wanted maps</em>.</h2>
+  <div class="body">
+    <div class="col c1 mid">
+      <div class="pts">
+        <div class="pt"><i>01</i><b>A historical GIS for Florence</b><p>We set out to build a historical geographic information system for the city, and many researchers wanted to contribute to it.</p></div>
+        <div class="pt" data-at="1"><i>02</i><b>Fellows asked for the same thing</b><p>When we began offering Digital Humanities fellowships, in 2016, a large share of the proposals were about mapping.</p></div>
+        <div class="pt" data-at="2"><i>03</i><b>But existing systems could not do it</b><p>None let many scholars work on the same map, follow it through time, and keep every building linked to its sources.</p></div>
+      </div>
+    </div>
+    <div class="col c1 mid" data-at="1">
+      <div class="fellows">
+        <div><b>Mapping Sculpture</b><span>Mellon fellow · 2016–17</span></div>
+        <div><b>Mapping the Medieval Woman</b><span>Kress fellow · 2016–17</span></div>
+        <div><b>Building Baroque Rome</b><span>Kress fellow · 2017–18</span></div>
+        <div><b>Archipelago: the islands of the Venetian lagoon</b><span>research associate · 2019–21</span></div>
+        <div><b>Towering over Medieval Rome, in 3D</b><span>fellow · 2020–21</span></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p data-k="0">A little history. We started out wanting to create a historical geographic information system, a historical GIS, for Florence, and we had many researchers who wanted to contribute to it.</p>
+    <p data-k="1">When we started offering Digital Humanities fellowships, in 2016, we saw that there was a lot of demand for this from researchers: a large share of the applications were about digital mapping. Where the marble for Renaissance sculpture came from; how medieval women placed their commissions across Europe; how Baroque Rome was built under Innocent X; the towers of medieval Rome, in 3D; and our own project on the islands of the Venetian lagoon.</p>
+    <p data-k="2">The main issue was that the existing systems did not allow us to do what we wanted. None of them let many scholars work on the same map, follow it through time, and keep every building linked to its sources. So what did we want?</p>
+  </aside>
+</section>
+<section class="slide chap" data-title="I · Research: mapping places through time">
+  <div class="ct">
+    <div class="run" style="border:0"><span>part I</span><b>research</b></div>
+    <div>
+      <div class="num">I</div>
+      <h2>Research: mapping places <em>through time</em></h2>
+      <p class="dek">What we wanted: a historical Google Maps with a time slider. Zoom into a city, see who owned each building and how it was used, and build the views your own research question needs.</p>
+      <div class="toc"><span>Metapolis, the platform</span><span>VeNiss: the islands of Venice</span><span>Florentia Illustrata: Florence, 1835</span></div>
+    </div>
+    <span></span>
+  </div>
+  <div class="ci"><img src="assets/img/lagoon_islands.jpg" alt="A map of the Venetian lagoon with its islands numbered"><p class="cap">The islands of the Venetian lagoon, numbered: a VeNiss map.</p></div>
+  <aside class="notes">
+    <p>What we wanted was, in a sense, a historical Google Maps with a time slider: a map where you can zoom in and out of cities and move through time, and explore who owned a particular building and how it was used, public, private, religious, commercial, and so on.</p>
+    <p>And then, for each researcher, the ability to create visualizations of those spaces that respond to their own research question, rather than a single fixed map. That is the first part of our talk: mapping places through time. First, why a printed map is not enough; then a single building, the platform we built, and two projects that use it.</p>
+  </aside>
+</section>
+<section class="slide" data-title="A map in a book" data-steps="3">
+  <div class="run"><span>part I · research</span><b>the map in a book</b></div>
+  <h2>In a book, the map and its sources <em>live apart</em>.</h2>
+  <div class="body">
+    <div class="col c1 mid">
+      <svg class="bookmap" viewBox="0 0 520 600" aria-label="A printed page with a map, a route between numbered points, and footnotes">
+        <rect x="10" y="10" width="500" height="580" class="pg"/>
+        <rect x="50" y="50" width="420" height="330" class="mp"/>
+        <path d="M70 330c60-40 90 10 150-30s70-90 120-80 60-70 110-100" class="coast"/>
+        <path d="M110 300L190 250L260 280L320 190L410 130" class="route"/>
+        <g class="pts"><circle cx="110" cy="300" r="7"/><circle cx="190" cy="250" r="7"/><circle cx="260" cy="280" r="7"/><circle cx="320" cy="190" r="7"/><circle cx="410" cy="130" r="7"/></g>
+        <g class="fn"><text x="96" y="290">1</text><text x="178" y="240">2</text><text x="250" y="270">3</text><text x="308" y="180">4</text><text x="398" y="120">5</text></g>
+        <g class="txt"><path d="M50 410h420M50 428h400M50 446h420M50 464h300"/></g>
+        <g class="notes-b"><path d="M50 512h140"/><text x="50" y="532">1 ASVe, Senato Terra, reg. 12, c. 34v.</text><text x="50" y="550">2 Ibid., c. 51r; see also Rossi 1987, p. 112.</text><text x="50" y="568">3 BMCVe, Mss. P.D. 4b, fasc. 2. …</text></g>
+        <g class="link" data-at="3"><path d="M110 300C60 420 40 480 54 528"/><path d="M190 250C150 400 120 470 60 546"/></g>
+      </svg>
+    </div>
+    <div class="col c1 mid">
+      <div class="pts">
+        <div class="pt"><i>01</i><b>Maps are ready for computers</b><p>Among historical data, maps belong to a small subset that is computationally actionable: a place with coordinates, and a date.</p></div>
+        <div class="pt" data-at="1"><i>02</i><b>Every point needs a footnote</b><p>The line of a journey is drawn on the map; the evidence for each point is at the bottom of the page, or in another book.</p></div>
+        <div class="pt" data-at="2"><i>03</i><b>The map is one author's story</b><p>It shows what that scholar wanted to convey. The data behind it cannot be seen another way.</p></div>
+        <div class="pt" data-at="3"><i>04</i><b>On our maps, each point is one click from its source</b><p>And the same data can be looked at again, by someone else, with a different question.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p data-k="0">Maps lend themselves particularly well to digital analysis. Most historical data is text; maps belong to a small subset of historical data that is computationally actionable from the start: a place with coordinates on a map, with a related date.</p>
+    <p data-k="1">Now think of a map in a printed book. A line shows the movement of people or objects across a region. But each of those little points needs a footnote that cites its source, and the footnote is at the bottom of the page, or in another book. There is a real disconnect between the source of the information and the way it is visualized.</p>
+    <p data-k="2">And the map is always a narrative created by the author: it shows what that scholar wanted to convey, which is exactly what a book should do. But nobody can look at the data behind it in another way.</p>
+    <p data-k="3">On our maps, each point is one click away from its source, and the same data can be looked at again, by someone else, with a different question.</p>
+  </aside>
+</section>
+<section class="slide" data-title="Same sources, many histories">
+  <div class="run"><span>part I · research</span><b>same sources, many histories</b></div>
+  <div class="body">
+    <div class="col c1 mid" style="gap:24px">
+      <h2 style="font-size:42px">The same sources, <em>many histories</em>.</h2>
+      <p>Many scholars work on the same documents and the same places, each from their own perspective. The sources one historian gathers are often exactly what another one needs.</p>
+      <p>So we wanted to give scholars not only each other's narratives, but the data behind them: to look at it differently, remix it, and build new narratives of their own.</p>
+    </div>
+    <div class="col c1 mid">
+      <div class="lenses">
+        <div class="src-core"><svg class="ic" viewBox="0 0 56 56"><rect class="s" x="12" y="8" width="26" height="34"/><rect class="s" x="18" y="14" width="26" height="34" style="fill:var(--paper)"/><path class="a" d="M23 24h16M23 30h16M23 36h10"/></svg><span>one body of sources</span></div>
+        <span class="ln" style="--a:-80deg">social</span><span class="ln" style="--a:-40deg">political</span><span class="ln" style="--a:0deg">religious</span><span class="ln" style="--a:40deg">economic</span><span class="ln" style="--a:80deg">military</span><span class="ln" style="--a:120deg">architectural</span><span class="ln" style="--a:160deg">art history</span><span class="ln" style="--a:200deg">cultural</span><span class="ln" style="--a:240deg">environmental</span>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>What we found is that many scholars work on the same primary sources and the same places, but from different perspectives: social history, political, religious, economic, military, architectural, art history, cultural, environmental history. The sources one scholar gathers are often very relevant to someone else's question.</p>
+    <p>So we wanted to give scholars access not only to each other's narratives, but to the data behind them: the ability to remix it, to visualize the same data in a different way, and to reuse it to create new narratives of their own. That is the idea behind the platform you are about to see.</p>
+  </aside>
+</section>
+<section class="slide" data-w="life" data-steps="1" data-title="A building has a life">
+  <div class="run"><span>part I · research</span><b>a building has a life</b></div>
+  <h2>On a map, a building looks fixed. <em>In history, it has a life.</em></h2>
+  <div class="body life-body">
+    <div class="life" data-b="-1">
+      <div class="lf-stage">
+        <svg viewBox="0 0 760 400" class="lf-svg" aria-label="The island of San Secondo and its church, phase by phase">
+          <g class="lf-water"><path d="M20 330q40-8 80 0t80 0 80 0 80 0 80 0 80 0 80 0 80 0 80 0"/><path d="M60 360q40-8 80 0t80 0 80 0 80 0 80 0 80 0 80 0 80 0"/><path d="M0 300q40-8 80 0t80 0"/><path d="M600 290q40-8 80 0t80 0"/></g>
+          <path class="lf-island" d="M110 300C130 240 250 214 380 214C520 214 630 244 650 300C600 338 300 346 110 300Z"/>
+          <!-- 1500: the church rises -->
+          <g class="lf-church">
+            <rect x="300" y="168" width="170" height="78"/>
+            <path d="M300 168l85-36 85 36"/>
+            <rect x="478" y="110" width="28" height="136"/>
+            <path d="M478 110l14-22 14 22"/>
+            <path class="lf-win" d="M330 200v22M360 200v22M410 200v22M440 200v22"/>
+            <path class="lf-door" d="M376 246v-24a9 9 0 0 1 18 0v24"/>
+          </g>
+          <g class="lf-scaff"><path d="M292 250V150M480 250V150M292 170h188M292 200h188M292 230h188M300 150l40 100M440 150l40 100"/></g>
+          <!-- 1608: a new wing -->
+          <g class="lf-wing"><rect x="200" y="200" width="96" height="46"/><path d="M200 200l48-18 48 18"/><path class="lf-win" d="M222 214v16M248 214v16M274 214v16"/></g>
+          <!-- 1820: gone; today: survey points -->
+          <g class="lf-ghost"><rect x="300" y="168" width="170" height="78"/><path d="M300 168l85-36 85 36"/><rect x="478" y="110" width="28" height="136"/><rect x="200" y="200" width="96" height="46"/></g>
+          <g class="lf-scan"></g>
+          <text class="lf-year" x="700" y="70" text-anchor="end"></text>
+          <text class="lf-name" x="380" y="384" text-anchor="middle">San Secondo, Venetian lagoon</text>
+        </svg>
+        <div class="lf-zoom" data-at="1"><img src="assets/img/lagoon_islands.jpg" alt="A map of the Venetian lagoon with its islands numbered"><div class="lf-zcap"><b>More than sixty islands.</b> Each one has a life, scattered across thousands of documents.</div></div>
+      </div>
+      <div class="lf-line"><span class="lf-tick"><b>1500</b>begun</span><span class="lf-tick"><b>1504</b>finished</span><span class="lf-tick"><b>1608</b>changed</span><span class="lf-tick"><b>1820</b>demolished</span><span class="lf-tick"><b>today</b>surveyed</span></div>
+    </div>
+    <div class="lf-docs">
+      <div class="lab">documents → data → a story <span style="text-transform:none;letter-spacing:0">(kinds of document illustrative)</span></div>
+      <div class="lf-doc"><svg class="ic" viewBox="0 0 40 40"><rect class="s" x="8" y="5" width="24" height="30"/><path class="a" d="M13 13h14M13 19h14M13 25h9"/></svg><div><b>1500 · the church is begun</b><span>a document</span></div></div>
+      <div class="lf-doc"><svg class="ic" viewBox="0 0 40 40"><rect class="s" x="4" y="9" width="32" height="22"/><path class="a" d="M8 26l7-7 5 4 6-8 6 11"/></svg><div><b>1504 · a printed view shows it finished</b><span>a view of the lagoon</span></div></div>
+      <div class="lf-doc"><svg class="ic" viewBox="0 0 40 40"><rect class="s" x="5" y="7" width="30" height="26"/><path class="a" d="M10 27V15l8-5 8 5v12M10 21h16"/></svg><div><b>1608 · the buildings are changed</b><span>a document</span></div></div>
+      <div class="lf-doc"><svg class="ic" viewBox="0 0 40 40"><rect class="s" x="8" y="5" width="24" height="30"/><path class="a" d="M14 14l12 12M26 14L14 26"/></svg><div><b>1820 · the church is demolished</b><span>a document</span></div></div>
+      <div class="lf-doc"><svg class="ic" viewBox="0 0 40 40"><circle class="s" cx="20" cy="20" r="12"/><circle class="af" cx="14" cy="17" r="1.6"/><circle class="af" cx="22" cy="14" r="1.6"/><circle class="af" cx="25" cy="23" r="1.6"/><circle class="af" cx="16" cy="25" r="1.6"/></svg><div><b>Today · surveyed again</b><span>a laser survey of what remains</span></div></div>
+      <button class="replay" data-replay>↺ replay</button>
+    </div>
+  </div>
+  <aside class="notes">
+    <p data-k="0"><span class="cue">plays by itself · about 13 seconds</span>Let us start with one building. On a map, a building is a shape that never changes. In history, it has a life. This is San Secondo, a small island you pass on your left as you come into Venice. In 1500 its church is begun. A printed view of 1504 already shows it finished, which is exactly how historians reason: from the evidence. In 1608 the buildings are changed; in 1820 or 1821 the church is demolished; today our partners have surveyed the island with laser scanners.</p>
+    <p data-k="0">Every one of those moments is known from a document: a record, a view, a drawing. Each document becomes a few pieces of data: a date, a building, an event, a source. Put together, the data tell the story of the building.</p>
+    <p data-k="1">Now zoom out. There are more than sixty islands in the lagoon, and hundreds of buildings, each with a life like this, scattered across thousands of documents in many archives. Rebuilding that, together, is what our platform is for.</p>
+  </aside>
+</section>
+<section class="slide" data-title="Three phases of research" data-steps="3">
+  <div class="run"><span>part I · research</span><b>the challenge</b></div>
+  <h2>Three phases of research, <em>and the pieces never meet</em>.</h2>
+  <div class="trio">
+    <div class="tri">
+      <svg class="ic" viewBox="0 0 56 56"><circle class="s" cx="28" cy="18" r="8"/><path class="s" d="M14 46a14 14 0 0 1 28 0"/></svg>
+      <div class="lab">phase 1</div><h3>Collect the sources</h3>
+      <div class="out"><svg class="ic sm" viewBox="0 0 40 40"><ellipse class="s" cx="20" cy="10" rx="12" ry="4"/><path class="s" d="M8 10v20c0 2 5 4 12 4s12-2 12-4V10M8 20c0 2 5 4 12 4s12-2 12-4"/></svg><span>a database of documents, people, events</span></div>
+      <p class="gap" data-at="1">On one computer, in a closed format. The documents cannot be shown next to the buildings they describe.</p>
+    </div>
+    <div class="tri">
+      <svg class="ic" viewBox="0 0 56 56"><path class="s" d="M8 14l13-5 14 5 13-5v33l-13 5-14-5-13 5z"/><path class="s" d="M21 9v33M35 14v33"/><path class="a" d="M24 22l8-2 4 7-6 5-6-3z"/></svg>
+      <div class="lab">phase 2</div><h3>Draw the buildings</h3>
+      <div class="out"><svg class="ic sm" viewBox="0 0 40 40"><path class="s" d="M6 30l8-14 8 8 6-10 6 16z"/></svg><span>shapes on a map, phase by phase</span></div>
+      <p class="gap" data-at="1">No sources behind the shapes: who built it, when, and how we know.</p>
+    </div>
+    <div class="tri">
+      <svg class="ic" viewBox="0 0 56 56"><path class="s" d="M10 10h26a6 6 0 0 1 6 6v30H16a6 6 0 0 1-6-6z"/><path class="a" d="M17 20h18M17 27h18M17 34h11"/></svg>
+      <div class="lab">phase 3</div><h3>Write the story</h3>
+      <div class="out"><svg class="ic sm" viewBox="0 0 40 40"><path class="s" d="M8 6h18l6 6v22H8z"/><path class="s" d="M12 30h10" style="stroke-width:1"/></svg><span>a book, with footnotes</span></div>
+      <p class="gap" data-at="1">Read once, front to back. Nobody can search it, ask it a new question, or add to it.</p>
+    </div>
+  </div>
+  <div class="bridge" data-at="2"><span class="br-line"></span><div><b>A shared workspace.</b> One map that moves through time, where every building is one click from its sources and every contribution is credited to the person who made it.</div></div>
+  <div class="small mut" data-at="3" style="margin-top:-6px">This is the challenge Metapolis addresses. It grew out of exactly this situation, in the lab's Venice project, Archipelago: in 2020 the sources lived in one database and the maps in another.</div>
+  <aside class="notes">
+    <p data-k="0">Think of the three phases of a research project on a place. They may be done by three people, or by the same person. First, collecting the sources: the historian documents them in a database of documents, people and events. Second, drawing the buildings on a map, phase by phase. Third, writing the story: a book.</p>
+    <p data-k="1">Each result is valuable, and each is incomplete on its own. The database sits on one computer, often in a closed format, and the documents can never be shown next to the buildings they describe. The map has shapes with nothing behind them: who built this, when, how do we know? And the book is read once, front to back; nobody can search it, ask it a new question, or add to it.</p>
+    <p data-k="2">What is missing is a shared workspace: one map that moves through time, where every building is one click from its sources, and every contribution is credited to the person who made it.</p>
+    <p data-k="3">That is the challenge Metapolis addresses. And it is not theory: this is exactly how our own Venice project, Archipelago, started. In 2020, the sources lived in one database and the maps in another, and nothing joined them.</p>
+  </aside>
+</section>
+<section class="slide" data-title="Metapolis">
+  <div class="run"><span>part I · research</span><b>metapolis</b></div>
+  <div class="body">
+    <div class="col c1 mid" style="gap:24px">
+      <div class="lab a">Metapolis · the platform</div>
+      <h2 style="font-size:42px">A map that moves through time, <em>with the evidence attached</em>.</h2>
+      <p>Historical maps over today's, a timeline you can drag, and every building one click from the documents, people and events behind it.</p>
+      <div class="pts">
+        <div class="pt"><i>→</i><b>For scholars</b><p>One place to work together, each in their own field, on the same city.</p></div>
+        <div class="pt"><i>→</i><b>For everyone else</b><p>A place to explore, in a browser, with nothing to install.</p></div>
+        <div class="pt"><i>→</i><b>Open</b><p>Free, open-source software, and data others can reuse.</p></div>
+      </div>
+    </div>
+    <div class="col c15">
+      <div class="bwin vid"><div class="bbar"><i></i><i></i><i></i><span class="url">veniss.net · a story on the map</span></div><div class="bview"><video data-src="assets/video/story.mp4" poster="assets/video/posters/story.jpg" muted playsinline loop data-auto></video></div></div>
+      <p class="cap">Metapolis at work on VeNiss, the islands of Venice: a story told as a sequence of map views.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Metapolis, in one sentence: a map that moves through time, with the evidence attached. You see historical maps over today's, you drag a timeline and the buildings appear and disappear year by year, and every building is one click away from the documents, people and events behind it.</p>
+    <p>It is a place for scholars to work together, each in their own field, on the same city; and a place for everyone else to explore, in a browser, with nothing to install. It is free, open-source software, and the data can be reused by others. In the clip, a story on the Venice platform: the text on the left, and the map following it, step by step.</p>
+  </aside>
+</section>
+<section class="slide" data-title="How a building gets onto the map" data-steps="3">
+  <div class="run"><span>part I · research</span><b>how it works</b></div>
+  <h2>How a building <em>gets onto the map</em>.</h2>
+  <div class="steps4">
+    <div class="st4"><i>1</i><svg class="ic" viewBox="0 0 64 48"><rect class="s" x="4" y="4" width="56" height="40" style="fill:#efe6d2;stroke:#b9a37a"/><path d="M4 34c14-8 22 6 36-4s14-4 20-2" style="fill:none;stroke:#b9a37a;stroke-width:2"/><rect class="a" x="22" y="12" width="14" height="10"/></svg><h3>Georeference a historical map</h3><p>The Austrian land survey of Venice, 1838–41, is laid exactly over a modern base map.</p></div>
+    <div class="st4" data-at="1"><i>2</i><svg class="ic" viewBox="0 0 64 48"><path class="s" d="M14 38l-4-20 20-10 22 8-4 22z" style="fill:var(--soft)"/><path class="a" d="M40 6l10 10"/><text x="6" y="47" style="font:500 9px var(--mono);fill:var(--accent)">1500–1820</text></svg><h3>Retrace the buildings</h3><p>In a GIS, each building on the historical map becomes a polygon, with the years it stood.</p></div>
+    <div class="st4" data-at="2"><i>3</i><svg class="ic" viewBox="0 0 64 48"><rect class="s" x="22" y="16" width="20" height="16"/><circle class="s" cx="8" cy="10" r="5"/><rect class="s" x="48" y="4" width="12" height="14"/><circle class="af" cx="56" cy="40" r="5"/><path class="a" d="M12 13l10 6M48 13l-6 5M51 37l-9-6"/></svg><h3>Describe it</h3><p>Connect documents, owners, builders and events, each with its own source.</p></div>
+    <div class="st4" data-at="3"><i>4</i><svg class="ic" viewBox="0 0 64 48"><path class="s" d="M8 40V18l12-8 12 8v22M6 40h28"/><path class="s" d="M40 40V14h18v26M38 40h22M44 20h10M44 26h10M44 32h10"/><path class="a" d="M24 26c6-8 12-8 18-4" stroke-dasharray="3 3"/></svg><h3>Connect it</h3><p>Cite the source, link to libraries, archives and museums, and it is on the platform.</p></div>
+  </div>
+  <div class="small mut" data-at="3" style="text-align:center">The moment it is saved, it is on the public map, credited to whoever entered it. No programmers in the loop.</div>
+  <aside class="notes">
+    <p data-k="0">How does a building get onto the map? Four steps. First, a historical map, for example the Austrian land survey of Venice of 1838 to 1841, is georeferenced: laid exactly over a modern base map, so that every point on it has real-world coordinates.</p>
+    <p data-k="1">Second, we retrace the buildings from that historical map in a GIS: each building becomes a polygon, a shape with coordinates, with the years it stood.</p>
+    <p data-k="2">Third, we describe it: we connect the documents, the owners, the builders, the events, each with its own source.</p>
+    <p data-k="3">Fourth, we connect it: we cite the source and link to libraries, archives and museums that know more about the same people and places. The moment it is saved, it is on the platform, credited to whoever entered it. No programmer has to be in the loop.</p>
+  </aside>
+</section>
+<section class="slide" data-w="reel" data-title="The map, in four moves">
+  <div class="run"><span>part I · research</span><b>the map</b></div>
+  <h2>A familiar map, with <em>time</em> and <em>evidence</em> built in.</h2>
+  <div class="body">
+    <div class="col c1 mid rls">
+      <button class="rl" data-v="assets/video/s15-02.mp4" data-name="historical maps"><b>01</b><span>Lay historical maps over each other</span><i></i></button>
+      <button class="rl" data-v="assets/video/s15-03.mp4" data-name="past and present"><b>02</b><span>Compare past and present</span><i></i></button>
+      <button class="rl" data-v="assets/video/s15-04.mp4" data-name="year by year"><b>03</b><span>Watch the islands change, year by year</span><i></i></button>
+      <button class="rl" data-v="assets/video/s15-05.mp4" data-name="documents"><b>04</b><span>Open the documents behind a building</span><i></i></button>
+    </div>
+    <div class="col c2">
+      <div class="bwin vid"><div class="bbar"><i></i><i></i><i></i><span class="url">veniss.net · <span class="rl-name"></span></span></div><div class="bview"><video class="reel-v" muted playsinline preload="auto"></video></div></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>What does it look like? A familiar map, like the ones on your phone, with two things built in: time and evidence. Four short clips, recorded on the Venice platform; they play in order, or click one.</p>
+    <p>One: historical maps laid over each other. Two: past and present side by side. Three: drag the timeline and watch the islands change, year by year. Four: click a building and open the documents behind it.</p>
+  </aside>
+</section>
+<section class="slide" data-title="A living resource">
+  <div class="run"><span>part I · research</span><b>a living resource</b></div>
+  <div class="body">
+    <div class="col c15 mid" style="gap:26px">
+      <h2>From a printed book <em>to a resource that keeps growing</em>.</h2>
+      <p class="dek">Metapolis is where the research is done and where it is published: the same data, with nothing in between. A correction made this morning is online this afternoon.</p>
+    </div>
+    <div class="col c1 mid">
+      <div class="pts">
+        <div class="pt"><i>01</i><b>It grows</b><p>New sources, new buildings, new scholars, year after year.</p></div>
+        <div class="pt"><i>02</i><b>It is credited</b><p>Every entry carries the name of the person who made it.</p></div>
+        <div class="pt"><i>03</i><b>It can be cited</b><p>Stories on the map are publications in their own right.</p></div>
+        <div class="pt"><i>04</i><b>It lasts</b><p>Open data that will outlive any one piece of software.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>The most important idea is this: a printed book is finished the day it is printed. Metapolis is a resource that keeps growing. It is where the research is done and where it is published, the same data with nothing in between: a correction made this morning is online this afternoon.</p>
+    <p>It grows with every new source and every new scholar. Every entry is credited to the person who made it, which matters a great deal in academia. Stories written on the map can be cited like articles. And the data is open, in formats that will outlive any one piece of software, including ours.</p>
+  </aside>
+</section>
+<section class="slide full dark" data-title="VeNiss: Venice as an archipelago">
+  <img src="assets/img/venice_islands.jpg" alt="Islands of the Venetian lagoon in a historical painting">
+  <div class="over">
+    <div class="lab" style="color:#e9a3ad">project · Venice</div>
+    <h2>VeNiss: Venice <em>as an archipelago</em>.</h2>
+    <p class="dek" style="max-width:980px">“It is impossible to understand how the Republic of Venice worked without the lagoon as an archipelago.” Islands for food, defence, faith, quarantine and ceremony, from the 16th century to today.</p>
+    <div class="figs" style="margin-top:12px">
+      <div class="fg a"><span class="n">60+</span><span class="l">islands</span></div>
+      <div class="fg"><span class="n">5</span><span class="l">centuries</span></div>
+      <div class="fg"><span class="n">3</span><span class="l">research teams</span><p>Padua · Florence · I Tatti</p></div>
+      <div class="fg"><span class="n">2023–27</span><span class="l">European Research Council project</span></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Our first city: Venice. We all know Venice by its main island, and maybe Murano and Burano. But the Republic was really an archipelago: more than sixty islands that supplied food, defended the city, housed monasteries, hospitals and quarantine stations, and served as stages for ceremonies. As one of our historians puts it, it is impossible to understand how the Republic worked without the lagoon.</p>
+    <p>The project began in our lab as Archipelago, with Ludovica Galeazzo, then a researcher with us. In 2023 it became VeNiss, a five-year European Research Council project, led by Ludovica at the University of Padua, with the University of Florence and I Tatti. Our role: the platform where everything comes together.</p>
+  </aside>
+</section>
+<section class="slide" data-w="swipe" data-title="Then and now">
+  <div class="run"><span>part I · VeNiss</span><b>then and now</b></div>
+  <div class="body">
+    <div class="col c2"><div class="sw">
+      <img class="now" src="assets/img/madonna_now.jpg" alt="The island today">
+      <img class="then" src="assets/img/madonna_then.jpg" alt="The island in a historical view">
+      <i class="bar"></i><span class="swc l">then</span><span class="swc r">today</span>
+    </div></div>
+    <div class="col c1 mid" style="gap:22px">
+      <h2 style="font-size:38px">What happened <em>to the islands</em>?</h2>
+      <div class="sw-btns"><button class="on" data-then="assets/img/madonna_then.jpg" data-now="assets/img/madonna_now.jpg">Madonna del Monte</button><button data-then="assets/img/sangiacomo_then.jpg" data-now="assets/img/sangiacomo_now.jpg">San Giacomo in Paludo</button><button data-then="assets/img/certosa_then.jpg" data-now="assets/img/certosa_now.jpg">La Certosa</button></div>
+      <p>After the fall of the Republic in 1797, many islands were razed, sold or abandoned. Some now “lie abandoned at the mercy of the high and low tides”; San Clemente has been a luxury hotel since 2003.</p>
+      <div class="sw-btns"><button class="on" data-lens="swipe">swipe</button><button data-lens="spyglass">spyglass</button></div>
+      <p class="small mut">Drag across the picture. On the platform, the same gestures work on the map, over historical maps.</p>
+    </div>
+  </div>
+  <p class="cap">Historical views and photographs: VeNiss project.</p>
+  <aside class="notes">
+    <p>What happened to the islands? Drag across the picture to compare a historical view with today. After the fall of the Republic in 1797, many islands were razed, privatized or abandoned. Madonna del Monte and San Giacomo in Paludo, in the words of our colleagues, “lie abandoned at the mercy of the high and low tides”. San Clemente has been a luxury hotel since 2003, and a few islands are even for sale.</p>
+    <p>Switch to the spyglass and move the pointer: the past appears through a lens. The same two gestures work on the platform's map, over georeferenced historical maps.</p>
+  </aside>
+</section>
+<section class="slide" data-w="bars" data-title="From a database to a shared resource">
+  <div class="run"><span>part I · VeNiss</span><b>growth</b></div>
+  <h2>From one researcher's database <em>to a shared resource</em>.</h2>
+  <div class="body">
+    <div class="col c2 mid" style="gap:22px">
+      <div class="bps" data-set="growth">
+        <div class="bp" data-a="1863" data-b="131"><span class="l">documents</span><span class="tr"><i class="fb"></i><i class="fa"></i></span><span class="v"><b class="va"></b><span class="vb"></span></span></div>
+        <div class="bp" data-a="690" data-b="147"><span class="l">events</span><span class="tr"><i class="fb"></i><i class="fa"></i></span><span class="v"><b class="va"></b><span class="vb"></span></span></div>
+        <div class="bp" data-a="589" data-b="174"><span class="l">people</span><span class="tr"><i class="fb"></i><i class="fa"></i></span><span class="v"><b class="va"></b><span class="vb"></span></span></div>
+        <div class="bp" data-a="321" data-b="57"><span class="l">islands &amp; buildings</span><span class="tr"><i class="fb"></i><i class="fa"></i></span><span class="v"><b class="va"></b><span class="vb"></span></span></div>
+      </div>
+      <div class="legend"><span><i class="sw-a"></i>VeNiss, October 2026</span><span><i class="sw-i"></i>Archipelago, 2020</span></div>
+    </div>
+    <div class="col c1 mid" style="gap:26px">
+      <div class="fg a"><span class="n"><span data-count="7551">7,551</span></span><span class="l">entries, and growing</span><p>plus 2,203 images and 27 historical maps, entered by three teams.</p></div>
+    </div>
+  </div>
+  <p class="cap">veniss.net database overview, October 2026, including records in progress; Archipelago database, March 2020.</p>
+  <aside class="notes">
+    <p>Here is what a shared workspace does. In 2020, the Archipelago database held 131 documents, 147 events and 174 people. Today, VeNiss holds over 7,500 entries: nearly 1,900 documents, 690 events, almost 600 people, 59 islands and 262 buildings, plus 2,200 images and 27 historical maps. These counts include records still in progress, entered by three teams in Padua, Florence and at I Tatti, all working on the same map.</p>
+  </aside>
+</section>
+<section class="slide" data-title="Quarantine islands" data-steps="4">
+  <div class="run"><span>part I · VeNiss</span><b>a story on the map</b></div>
+  <h2>How isolation made the islands <em>the place for quarantine</em>.</h2>
+  <div class="body">
+    <div class="col c15">
+      <div class="bwin vid"><div class="bbar"><i></i><i></i><i></i><span class="url">veniss.net · Lazzaretto Vecchio, in 3D</span><span class="tag a" style="margin-left:auto">in progress</span></div><div class="bview"><video data-src="assets/video/lazzaretto_3d.mp4" poster="assets/video/posters/lazzaretto_3d.jpg" muted playsinline loop data-auto></video></div></div>
+      <p class="cap">The Lazzaretto Vecchio: buildings surveyed by our partners, rebuilt in 3D, following the timeline.</p>
+    </div>
+    <div class="col c1 mid">
+      <div class="pts dimpast">
+        <div class="pt" data-at="1"><i>1423</i><b>A hospital for the plague-stricken</b><p>The Senate founds the Lazzaretto Vecchio.</p></div>
+        <div class="pt" data-at="2"><i>1468</i><b>A second island, to prevent contagion</b><p>The Lazzaretto Nuovo: quarantine before disease.</p></div>
+        <div class="pt" data-at="3"><i>1575</i><b>Nine islands become hospitals</b><p>In the great plague of 1575–77, a cordon around the city.</p></div>
+        <div class="pt" data-at="4"><i>→</i><b>Every sentence, one click from its source</b><p>The story is written on the map, by the historians.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p data-k="0">Data becomes a story. One of the stories on the platform asks how isolation made the islands the place for quarantine. On the left, the Lazzaretto Vecchio, surveyed by our partners and rebuilt in 3D; the buildings follow the timeline. This is work in progress.</p>
+    <p data-k="1">In 1423 the Senate founds a hospital for the plague-stricken on this island.</p>
+    <p data-k="2">In 1468 a second island, the Lazzaretto Nuovo, is used for something new: quarantine, to prevent contagion before it starts.</p>
+    <p data-k="3">In the great plague of 1575 to 1577, nine islands become plague hospitals, a cordon around the city. After the last few years, this story needs no explanation.</p>
+    <p data-k="4">And every sentence of the story is one click from the document behind it.</p>
+  </aside>
+</section>
+<section class="slide" data-title="Florentia Illustrata: Florence, 1835">
+  <div class="run"><span>part I · research</span><b>project · Florence</b></div>
+  <div class="body">
+    <div class="col c15">
+      <figure class="grow"><div class="im"><img src="assets/img/florence.jpg" alt="A painted view of Florence"></div></figure>
+      <p class="cap">Florence in a painted view. Florentia Illustrata maps the city from its 1835 land survey.</p>
+    </div>
+    <div class="col c1 mid" style="gap:24px">
+      <div class="lab a">Florentia Illustrata</div>
+      <h2 style="font-size:42px">Florence, <em>parcel by parcel</em>, in 1835.</h2>
+      <p>The Catasto Generale Toscano is the first precise survey of the whole city: every plot of land, its owners and what stood on it. We start there because it is so precise; then we move backwards in time, mapping older plans that cover parts of the city.</p>
+      <div class="figs">
+        <div class="fg a"><span class="n"><span data-count="17681">17,681</span></span><span class="l">parcels</span><p>each linked to its owners and its use</p></div>
+      </div>
+      <p class="small mut">A partnership with scholars of Renaissance Florence, founded in 2018. Data: Belli, Lucchesi, Raggi (Firenze University Press, 2022).</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Our second city: Florence. Florentia Illustrata started in 2018 as a partnership of scholars working on the city. Its backbone is the 1835 land survey of Florence, the Catasto Generale Toscano: the first precise survey of the whole city, every plot of land, its owners, and what stood on it. Colleagues published it as tables in a book, in 2022. We turned the tables into a map: 17,681 parcels, each linked to its owners and its use.</p>
+    <p>We start from 1835 precisely because it is so accurate. The idea is then to move backwards in time, mapping older and smaller plans that represent only portions of the city, and anchoring them to this one.</p>
+    <p>One example of what that allows: click the church of Santa Croce, and every building the Franciscans owned in Florence lights up, with the total area.</p>
+  </aside>
+</section>
+<section class="slide" data-w="bars" data-bars-at="3" data-title="A question the source never asked" data-steps="3">
+  <div class="run"><span>part I · Florentia Illustrata</span><b>a new question</b></div>
+  <h2>How many women owned property in 1835 Florence? <em>The survey never says.</em></h2>
+  <div class="body">
+    <div class="col c1 mid">
+      <div class="pts">
+        <div class="pt"><i>01</i><b>The survey has no column for gender</b><p>Owners are listed by name, father's name, title.</p></div>
+        <div class="pt" data-at="1"><i>02</i><b>Follow the clues</b><p>“Moglie di”, wife of; first names that are always female; “widow”, “nun”.</p></div>
+        <div class="pt" data-at="2"><i>03</i><b>A new map</b><p>Women alone, shared ownership, men alone, institutions: one question, one layer.</p></div>
+      </div>
+      <p class="small mut" data-at="2">Andreose, Grillo, Spinaci, “Beyond Spatial Data”, AIUCD 2026. Estimates, not certainties.</p>
+    </div>
+    <div class="col c15 mid">
+      <div class="bps" data-set="cat">
+        <div class="bp" data-a="1076" data-b="9197"><span class="l">homes &amp; buildings</span><span class="tr"><i class="fb"></i><i class="fa"></i></span><span class="v"><b class="va"></b><span class="vb"></span></span></div>
+        <div class="bp" data-a="15" data-b="115"><span class="l">shops &amp; trades</span><span class="tr"><i class="fb"></i><i class="fa"></i></span><span class="v"><b class="va"></b><span class="vb"></span></span></div>
+        <div class="bp" data-a="5" data-b="46"><span class="l">open spaces</span><span class="tr"><i class="fb"></i><i class="fa"></i></span><span class="v"><b class="va"></b><span class="vb"></span></span></div>
+        <div class="bp" data-a="2" data-b="5"><span class="l">religious buildings</span><span class="tr"><i class="fb"></i><i class="fa"></i></span><span class="v"><b class="va"></b><span class="vb"></span></span></div>
+      </div>
+      <div class="legend" data-at="3"><span><i class="sw-a"></i>parcels owned by women</span><span><i class="sw-i"></i>by men</span></div>
+      <p class="dek" data-at="3" style="font-size:21px">Among parcels held by individuals, women owned about one in ten, in every category; in numbers, mostly homes.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p data-k="0">Once the survey is connected data, you can ask it questions it was never designed to answer. Here is one our team asked: how many women owned property in Florence in 1835? The survey does not record gender at all: owners are listed by name, father's name, title.</p>
+    <p data-k="1">So we followed the clues. An owner described as “moglie di”, wife of someone, is a woman. Some first names are always female. Some owners are widows, some are nuns.</p>
+    <p data-k="2">The result is a new layer on the map: parcels owned by women alone, shared, by men alone, or by institutions. This is a paper by Erica Andreose, a former intern of ours, with Remo and Gianmarco, presented this year. These are estimates, not certainties, and the paper says so.</p>
+    <p data-k="3">What did women own? Among parcels held by individuals, about one in ten belonged to women, and that share is roughly the same in every category. In numbers, mostly homes: about 1,100, against some 9,200 held by men. A gender history of property, from a source that never mentions gender, without changing the data at all.</p>
+  </aside>
+</section>
+<section class="slide chap" data-title="II · From archives to data">
+  <div class="ct">
+    <div class="run" style="border:0"><span>part II</span><b>archives to data</b></div>
+    <div>
+      <div class="num">II</div>
+      <h2>From archives <em>to data</em></h2>
+      <p class="dek">How we digitize a whole archive, and how artificial intelligence reads what is written on it, and describes what it shows.</p>
+      <div class="toc"><span>digitizing the photo archive</span><span>joining up forty years of cataloguing</span><span>reading the backs, describing the images</span><span>how we check</span></div>
+    </div>
+    <span></span>
+  </div>
+  <div class="ci print"><img src="assets/img/costa_portrait.jpg" alt="A photograph from the Fototeca Berenson: Lorenzo Costa, portrait of a lady"><p class="cap">From Berenson&rsquo;s photo archive: Lorenzo Costa, portrait of a lady (Currier Gallery of Art, Manchester, N.H.).</p></div>
+  <aside class="notes"><p>So in this next section we will show an example of how we get from archives to data, using Berenson's photograph study collection. He annotated his photographs with provenance, literature and exhibition histories, along with his own thoughts about attribution.</p><p>Here we will focus on two things: first the digitization, and then how AI can assist with transcription and captioning.</p></aside>
+</section>
+<section class="slide" data-title="A digital twin of the archive" data-steps="2">
+  <div class="run"><span>part II · archives to data</span><b>digitization</b></div>
+  <div class="body">
+    <div class="col c1 mid" style="gap:18px">
+      <h2 style="font-size:38px">A digital twin of the archive, <em>open to the whole world</em>.</h2>
+      <div class="pts nonum">
+        <div class="pt"><b>The whole archive, as Berenson arranged it</b><p>Every photograph, front and back, in its exact place: box, folder, and order within the folder.</p></div>
+        <div class="pt" data-at="1"><b>From anywhere</b><p>For most scholars Florence is the other side of the world. Online, the whole collection is a click away.</p></div>
+        <div class="pt" data-at="2"><b>Evidence found nowhere else</b><p>Attributions, owners, sales, condition, and photographs of works since lost or damaged: knowledge that adds to what museums and scholars know about these works.</p></div>
+      </div>
+    </div>
+    <div class="col c15">
+      <div class="bwin vid"><div class="bbar"><i></i><i></i><i></i><span class="url">Digiteca · the scanning station, time-lapse</span></div><div class="bview"><video data-src="assets/video/scanning.mp4" poster="assets/img/scanning_still.jpg" muted playsinline loop data-auto></video></div></div>
+      <p class="cap">The scanning station at I Tatti: off-the-shelf scanners, and our own software, which reads a barcode on the back and files both sides in the right folder.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p data-k="0">With the digitization, our goal was not just to scan photographs, but to create a digital twin of the archive: every photograph, front and back, recorded in its exact location, the box, the folder, even its order within the folder, so that the archive can be explored online exactly as Berenson arranged it. What you see is a time-lapse of the scanning station: off-the-shelf Epson scanners that provide FADGI 4-star reproduction, two to three at a time, and our own software (this one here is a much older version), which reads a barcode on the back of each photograph, crops and straightens, and files both sides automatically.</p>
+    <p data-k="1">For most of the scholars who need this archive, Florence is on the other side of the world. With a digital twin, the entire collection can be consulted remotely.</p>
+    <p data-k="2">And this archive holds historical data found nowhere else. On the backs of these photographs, Berenson, his staff and the photographers recorded attributions and changes of mind, who owned a picture and when, sales, condition; and for many works that have since been damaged, destroyed or lost, these photographs are the best record that survives. Put together, this information contributes to a body of knowledge about these works that museums and scholars can build on.</p>
+  </aside>
+</section>
+
+<section class="slide" data-title="One operator, four years, the whole archive">
+  <div class="run"><span>part II · archives to data</span><b>digitization</b></div>
+  <h2>One operator, four years, <em>the whole archive</em>.</h2>
+  <div class="body">
+    <div class="col c1 mid">
+      <div class="figs fig2">
+        <div class="fg a" style="grid-column:span 2"><span class="n">€85,928</span><span class="l">to scan the entire archive</span><p>about 230,000 photographs, front and back</p></div>
+        <div class="fg"><span class="n"><span data-count="458988">458,988</span></span><span class="l">scans</span><p>3,906 hours of scanning</p></div>
+        <div class="fg"><span class="n">€0.19</span><span class="l">per scan</span><p>31 seconds each, everything included</p></div>
+      </div>
+    </div>
+    <div class="col c15 mid">
+      <div class="lab">historical photographs scanned per year</div>
+      <div class="scan">
+        <div class="sc-row"><span class="sc-y">2009</span><span class="sc-b old" style="--w:3.9%"></span><span class="sc-v">2,840</span></div>
+        <div class="sc-row"><span class="sc-y">2010</span><span class="sc-b old" style="--w:13.2%"></span><span class="sc-v">9,687</span></div>
+        <div class="sc-row"><span class="sc-y">2011</span><span class="sc-b old" style="--w:13.3%"></span><span class="sc-v">9,742</span></div>
+        <div class="sc-row"><span class="sc-y">2012</span><span class="sc-b old" style="--w:6.4%"></span><span class="sc-v">4,671</span></div>
+        <div class="sc-gap">…</div>
+        <div class="sc-row"><span class="sc-y">2021</span><span class="sc-b" style="--w:86.2%"></span><span class="sc-v">63,129</span></div>
+        <div class="sc-row"><span class="sc-y">2022</span><span class="sc-b" style="--w:100%"></span><span class="sc-v">73,299</span></div>
+        <div class="sc-row"><span class="sc-y">2023</span><span class="sc-b" style="--w:88.5%"></span><span class="sc-v">64,860</span></div>
+        <div class="sc-row"><span class="sc-y">2024</span><span class="sc-b part" style="--w:64.9%"></span><span class="sc-v">47,595*</span></div>
+      </div>
+      <div class="legend" style="margin-top:14px"><span><i style="background:var(--faint)"></i>earlier digitization</span><span><i class="sw-a"></i>our scanning station</span><span>* to October 2024</span></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>A single scanning operator did this work, and we digitized the entire collection in four years. The system recorded very granular statistics: including the ancillary work, fetching the boxes, putting them back, applying the barcodes, it averaged about 31 seconds per scan, at about 19 euro cents per image. In total, scanning the entire archive, almost 459,000 scans, front and back, in about 3,900 hours, cost about 86,000 euros.</p>
+    <p>On the right, the comparison with our previous digitization initiative, on which roughly the same amount of time was spent: at most about ten thousand photographs a year, against sixty to seventy thousand. The gains came from eliminating post-processing, manual linking to the archival inventory and file renaming, and from running several scanners in parallel. If we were to do it again today, we would probably build a team of robotic arms that would scan the photographs, and have the scanning operator just move the photographs to the scanner.</p>
+  </aside>
+</section>
+
+<section class="slide" data-title="Reading the backs of photographs" data-steps="3">
+  <div class="run"><span>part II · archives to data</span><b>transcription</b></div>
+  <h2>Reading the backs of photographs, <em>then checking every line</em>.</h2>
+  <div class="body">
+    <div class="col c1"><figure class="grow"><div class="im contain" style="background:none"><img src="assets/img/kc/sig_verso_full.jpg" alt="The back of the Signorelli photograph"></div></figure><p class="cap"><b>Verso</b> Signorelli, <i>Flight into Egypt; Christ among the Doctors</i>.</p></div>
+    <div class="col c1 mid">
+      <div class="rec">
+        <div class="rec-h"><span>record · read from the photograph</span><span>32044156765802</span></div>
+        <dl>
+          <dt>artist</dt><dd>Luca Signorelli</dd>
+          <dt>title</dt><dd>Flight into Egypt &amp; Christ among Doctors</dd>
+          <dt>type</dt><dd>panel painting, poplar, 21.6 × 67.9 cm</dd>
+          <dt>owners</dt><dd>Countess Vosdari, Ferrara → S.H. Kress Coll. 1950 → National Gallery, Washington</dd>
+          <dt>shown</dt><dd>Cortona – Florence 1953, no. 56</dd>
+          <dt>today</dt><dd class="acc">Nelson-Atkins Museum of Art, Kansas City</dd>
+        </dl>
+      </div>
+      <p class="small mut">Each record: artist, title, place, date, materials, inscriptions, stamps, owners and exhibitions, kept apart from the record of the photograph itself.</p>
+    </div>
+    <div class="col c1 mid">
+      <div class="tline">
+        <div class="tl-i" data-at="1"><span class="lab a">June 2025 · first batch</span><b>112,395 photographs, front and back</b><p>Read in about nine hours, for under a cent each: some $900 for the first 100,000. 99.8% processed without error.</p></div>
+        <div class="tl-i" data-at="2"><span class="lab a">now</span><b>Redone with a newer model</b><p>Claude Opus 5.5: so far we have not found a single mistake. A second leading model differs only in how it structures the data.</p></div>
+        <div class="tl-i" data-at="3"><span class="lab a">February</span><b>Public</b><p>Once our catalogers finish grouping photographs of the same artwork into one record, the collection opens to everyone.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p data-k="0">The value of this archive is as much on the back as on the front. So we sent each photograph, front and back together, to an AI model, which returns a structured record: artist, title, place, date, materials, inscriptions, stamps, owners and exhibitions.</p>
+    <p data-k="1">Our first batch, in June 2025, covered 112,000 photographs using the Gemini 2.5 Pro model. It ran in about nine hours, at under a cent per photograph, around nine hundred dollars for the first hundred thousand, and 99.8 percent were processed without error. Before that run we compared five AI systems against answers checked by hand.</p>
+    <p data-k="2">The models have improved so quickly that we have since redone the transcription with Claude Opus 5.5, and so far we have not found a single mistake. Benchmarking it against GPT Astra 6, there were only minor differences between them, and those differences were only in how each structured the data; neither was objectively wrong.</p>
+    <p data-k="3">The collection is scheduled to be made public in February, once our catalogers complete a manual review, grouping multiple photographs of the same artwork into a single record.</p>
+  </aside>
+</section>
+<section class="slide" data-title="How we use AI, and how we check it">
+  <div class="run"><span>part II · archives to data</span><b>how we check</b></div>
+  <h2>How we use AI, <em>and how we check it</em>.</h2>
+  <div class="rules">
+    <div class="ru"><i>01</i><h3>The source decides</h3><p>Every statement links to the page, letter or photograph it came from. Readers never have to take our word for it.</p></div>
+    <div class="ru"><i>02</i><h3>We measure first</h3><p>Before a large run, we test several AI systems against answers checked by hand, and publish the results.</p></div>
+    <div class="ru"><i>03</i><h3>Uncertainty stays visible</h3><p>Illegible words are flagged; approximate dates stay approximate; conflicting sources are both kept.</p></div>
+    <div class="ru"><i>04</i><h3>People decide</h3><p>A person reviews every edge case that may need more complex reasoning.</p></div>
+    <div class="ru"><i>05</i><h3>We preserve</h3><p>Websites disappear: for one 2017 project, 97% of our links were dead five years later. We now archive every page we cite, more than 21,000 so far.</p></div>
+  </div>
+  <aside class="notes">
+    <p>Because AI runs through many of our processes, we did want to mention how we use it with caution.</p>
+    <p>One of our guiding principles is that the source decides, whether the material is processed in some way by AI tools or by scholars. One of the great advantages of working in the digital humanities is that we can easily link to the original source material. Every statement is tied to the page, letter or photograph it came from, so any reader can check it.</p>
+    <p>Two: we measure before we rely. We build test sets with known answers, compare several AI systems, and publish the numbers, including when AI is not good enough.</p>
+    <p>Three: uncertainty stays visible. Illegible words are flagged, approximate dates stay approximate, and when sources conflict, both are kept.</p>
+    <p>Four: people make the critical judgments. A person reviews every edge case that may require more complex reasoning.</p>
+    <p>Five: we preserve. For many of our past projects, the websites we linked to went offline: for an older project from 2017, 97 percent of the links were dead after five years. We now use Harvard's Perma.cc service to web-archive the pages we cite, more than 21,000 so far.</p>
+  </aside>
+</section>
+<section class="slide" data-title="What AI does well now">
+  <div class="run"><span>part II · archives to data</span><b>as of October 2026</b></div>
+  <h2>What artificial intelligence <em>now does well for us</em>.</h2>
+  <div class="cards ai5">
+    <div class="card"><svg class="ic" viewBox="0 0 56 56"><path class="s" d="M10 40c6-14 10 4 16-8s8 6 12-4 6 2 8-2"/><path class="a" d="M10 48h36"/></svg><h3>Reading handwriting</h3><p>Diaries, letters, and the notes on the backs of photographs.</p></div>
+    <div class="card"><svg class="ic" viewBox="0 0 56 56"><path class="s" d="M8 12h18M8 18h16M8 24h18M8 30h12"/><path class="a" d="M30 21h6l-3-3M36 21l-3 3"/><rect class="s" x="38" y="10" width="12" height="28"/><path class="s" d="M38 17h12M38 24h12M38 31h12"/></svg><h3>Turning books into data</h3><p>A catalogue's pages become artists, works, places and dates.</p></div>
+    <div class="card"><svg class="ic" viewBox="0 0 56 56"><path class="s" d="M28 48s14-14 14-24a14 14 0 0 0-28 0c0 10 14 24 14 24z"/><circle class="a" cx="28" cy="24" r="5"/></svg><h3>Finding places</h3><p>“The main museum in Bologna” becomes a point on a map.</p></div>
+    <div class="card"><svg class="ic" viewBox="0 0 56 56"><rect class="s" x="6" y="12" width="20" height="26"/><rect class="s" x="30" y="12" width="20" height="26"/><path class="a" d="M10 32l5-8 4 5 3-3 2 6M34 32l5-8 4 5 3-3 2 6"/></svg><h3>Analyzing images</h3><p>Finding matching images, and writing captions that only describe what is seen.</p></div>
+    <div class="card"><svg class="ic" viewBox="0 0 56 56"><circle class="s" cx="28" cy="28" r="18"/><path class="s" d="M10 28h36M28 10c-6 6-6 30 0 36M28 10c6 6 6 30 0 36"/><circle class="af" cx="40" cy="16" r="3"/></svg><h3>Researching the web</h3><p>Checking a name, a date or a museum record across many sources.</p></div>
+  </div>
+  <aside class="notes">
+    <p>Right now, in October 2026, we feel safe to say that there are five things AI does well for us. It reads some handwriting very well: diaries, letters, the notes on the backs of photographs. It can read a book and produce structured data: a catalogue's pages become artists, works, places and dates. It finds places on a map remarkably well, even from a phrase like “the main museum in Bologna”, which Berenson assumed every reader would know means the Pinacoteca. It can analyze images and provide matching images, as well as captions that are purely observational. And it does web research: checking a name, a date or a museum record across many sources.</p>
+  </aside>
+</section>
+<section class="slide chap" data-title="III · From data to discovery">
+  <div class="ct">
+    <div class="run" style="border:0"><span>part III</span><b>data to discovery</b></div>
+    <div>
+      <div class="num">III</div>
+      <h2>From data <em>to discovery</em></h2>
+      <p class="dek">The platforms we build on that data, for scholars and for everyone. Shown live.</p>
+      <div class="toc"><span>Fototeca Berenson</span><span>the Bruno Zanardi archive</span><span>Italian Pictures of the Renaissance</span><span>The Geography of Taste: Mary's diaries</span><span>three travel books, mapped</span><span>Floreat Musica</span><span>Africa and the Renaissance: Art in Ivory</span></div>
+    </div>
+    <span></span>
+  </div>
+  <div class="ci"><img src="assets/img/live/fototeca-map.jpg" alt="A dark map of Europe dotted with the places where the works in Berenson's photographs are kept" style="object-position:55% 50%"><p class="cap">Where the works in Berenson's photographs are today: the Fototeca explorer.</p></div>
+  <aside class="notes"><p>In this last part, we wanted to demo some of the platforms we build on these data, and we will start with the Fototeca Berenson, the digital twin of Berenson's historic photo archive.</p></aside>
+</section>
+<section class="slide demo" data-w="live" data-title="Fototeca Berenson, live">
+  <div class="run"><span>part III · data to discovery</span><b>fototeca berenson</b></div>
+  <div class="dhead">
+    <div><div class="lab a">Fototeca Berenson · preview</div><h2>Berenson's photo archive, <em>walked through as he arranged it</em>.</h2><p class="dek">Box by box and folder by folder, front and back side by side, or on a world map of where the works are now.</p></div>
+    <div class="dfigs"><div class="fg a"><span class="n">112,423</span><span class="l">photographs online</span></div><div class="fg"><span class="n">57,609</span><span class="l">works of art</span></div><div class="fg"><span class="n">~5,000</span><span class="l">museums &amp; collections</span></div></div>
+  </div>
+  <div class="bwin big" data-live="https://fototeca.itatti.net/" data-autolive><div class="bbar"><i></i><i></i><i></i><span class="url">fototeca.itatti.net</span><span class="tag a">preview</span><button data-act="live">live</button><a href="https://fototeca.itatti.net/" target="_blank" rel="noopener">open ↗</a><button data-act="max">⤢</button></div><div class="bview"><img data-src="assets/img/live/fototeca-home.jpg" alt=""></div></div>
+  <aside class="notes">
+    <p>Our Fototeca Berenson collection explorer lets users walk through the archive the way Berenson arranged it, school by school, box by box, folder by folder, with the front and back of each photograph side by side, or on a world map of where the works are today. It holds 112,000 photographs of nearly 58,000 works, about half the archive, from close to five thousand museums and collections.</p>
+    <p class="cue">live (open ↗, new tab): fototeca.itatti.net · Map view → Kansas City → Nelson-Atkins · open the Signorelli · flip to the back (the transcribed record may not show the 52.1952 line)</p>
+  </aside>
+</section>
+<section class="slide" data-title="One photograph" data-steps="3">
+  <div class="run"><span>part III · data to discovery</span><b>one photograph</b></div>
+  <h2>From Florence to Kansas City, <em>in one photograph</em>.</h2>
+  <div class="body">
+    <div class="col c2" style="gap:14px">
+      <figure class="grow"><div class="im contain" style="background:none"><img src="assets/img/kc/sig_panel.jpg" alt="The Signorelli panel, in the Fototeca photograph"></div></figure>
+      <p class="cap"><b>Recto</b> Luca Signorelli and assistant, <i>The Flight into Egypt; Christ Among the Doctors</i>, c. 1520, poplar, 21.6 × 67.9 cm.</p>
+    </div>
+    <div class="col c1" style="gap:14px">
+      <figure class="grow"><div class="im contain" style="background:none"><img src="assets/img/kc/sig_verso_full.jpg" alt="The back of the photograph, with stamps and handwritten notes"></div></figure>
+      <p class="cap"><b>Verso</b> the back of the same print: the archive's stamp, and notes in pencil.</p>
+    </div>
+    <div class="col c15 mid">
+      <div class="pts">
+        <div class="pt"><i>01</i><b>A photograph in Berenson's archive</b><p>One of hundreds of thousands he collected to study Italian painting.</p></div>
+        <div class="pt" data-at="1"><i>02</i><b>On the back, in pencil: “Kansas City (Mo.)”</b><p>“Kress Gift (K 1736) · 52.1952 · W. R. Nelson … Kansas City”: 52.1952 is the number Berenson cites for the panel in <i>Italian Pictures of the Renaissance</i> (1968).</p></div>
+        <div class="pt" data-at="2"><i>03</i><b>A journey, written in the record</b><p>A countess's collection in Ferrara, the Kress Collection (1950), the National Gallery in Washington, and then Kansas City.</p></div>
+        <div class="pt" data-at="3"><i>04</i><b>One object, many threads</b><p>A painting, a photograph, a book, a journey. <strong>Connecting them is our work.</strong></p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p data-k="0">Now, as promised, back to the photograph on our title slide. It comes from the Fototeca Berenson, the photo archive that Bernard Berenson built at I Tatti to study Italian painting. It shows a long, narrow panel by Luca Signorelli and his workshop: the Flight into Egypt and Christ among the Doctors, around 1520.</p>
+    <p data-k="1">Turn the photograph over and the back tells you where the painting went. Written in pencil: “Kress Gift, K 1736”, the number 52.1952, and “W. R. Nelson … Kansas City, Missouri”. 52.1952 is the number Berenson cites for this panel in the last edition of his Lists, <em>Italian Pictures of the Renaissance</em>, in 1968.</p>
+    <p data-k="2">Our record of this photograph follows the painting: from a countess's collection in Ferrara, to the Samuel H. Kress Collection in 1950, through the National Gallery in Washington, to the Nelson-Atkins.</p>
+    <p data-k="3">One object, and already four threads: a painting in your museum, a photograph in our archive, a line in a book, and a journey across two continents. Following threads like these, and making them visible to everyone, is what our lab does. That is what we mean by mapping connections.</p>
+  </aside>
+</section>
+<section class="slide" data-title="The Nelson-Atkins, seen from I Tatti">
+  <div class="run"><span>part III · data to discovery</span><b>your museum in our archive</b></div>
+  <h2>The Nelson-Atkins, <em>seen from I Tatti</em>.</h2>
+  <div class="body">
+    <div class="col c2">
+      <div class="wall w6">
+        <figure><img src="assets/img/kc/32044155978257.jpg" alt=""><figcaption>Titian</figcaption></figure>
+        <figure><img src="assets/img/kc/32044157064692.jpg" alt=""><figcaption>Caravaggio</figcaption></figure>
+        <figure><img src="assets/img/kc/32044157476763.jpg" alt=""><figcaption>Giovanni Bellini</figcaption></figure>
+        <figure><img src="assets/img/kc/32044155740392.jpg" alt=""><figcaption>Bronzino</figcaption></figure>
+        <figure><img src="assets/img/kc/32044156282949.jpg" alt=""><figcaption>Francesco Guardi</figcaption></figure>
+        <figure><img src="assets/img/kc/32044156608531.jpg" alt=""><figcaption>Pesellino</figcaption></figure>
+        <figure><img src="assets/img/kc/32044156828147.jpg" alt=""><figcaption>Giovanni di Paolo</figcaption></figure>
+        <figure><img src="assets/img/kc/32044156910382.jpg" alt=""><figcaption>Simone Martini</figcaption></figure>
+        <figure><img src="assets/img/kc/32044157149626.jpg" alt=""><figcaption>Workshop of Daddi</figcaption></figure>
+        <figure><img src="assets/img/kc/32044157156761.jpg" alt=""><figcaption>Jacopo del Casentino</figcaption></figure>
+        <figure><img src="assets/img/kc/32044157253873.jpg" alt=""><figcaption>Bargello Tondo Master</figcaption></figure>
+        <figure><img src="assets/img/kc/32044157502360.jpg" alt=""><figcaption>Venetian, c. 1505</figcaption></figure>
+      </div>
+    </div>
+    <div class="col c1 mid" style="gap:28px">
+      <div class="fg a"><span class="n">~<span data-count="55">55</span></span><span class="l">works recorded at the Nelson-Atkins</span><p>on the photographs in the half of Berenson's archive catalogued so far. Many are still there; some have since moved on.</p></div>
+      <p class="dek" style="font-size:22px">Ten years ago, finding them meant opening boxes, one folder at a time. Today it is one search.</p>
+      <p class="small mut">Every photograph is scanned front and back; what is written on it becomes data; each museum is placed on a map.</p>
+    </div>
+  </div>
+  <p class="cap">Photographs from the Fototeca Berenson, Villa I Tatti, of works in the Nelson-Atkins Museum of Art today, with the museum's current attributions. Source: fototeca.itatti.net.</p>
+  <aside class="notes">
+    <p>And the Signorelli is not alone. In the half of the photo archive catalogued so far, about fifty-five photographed works are recorded on the photographs as being at the Nelson-Atkins. Many are still there: Titian's portrait of Granvelle, Caravaggio's Saint John the Baptist, Giovanni Bellini, Bronzino, Guardi, and a Simone Martini that Berenson's generation gave to Lippo Memmi. Some have since moved on: the archive also remembers pictures that were in Kansas City for a time, such as Kress paintings later given to other museums, and a portrait the museum sold in the 1980s. Berenson's Lists, for their part, record 32 works in Kansas City.</p>
+    <p>Ten years ago this question would have meant days in the archive, opening boxes folder by folder, because the photographs are filed by artist and school, not by where the paintings are today. Today it takes a second, because each photograph has been scanned, front and back, and what is written on it has been turned into data, including the museum, which we can place on a map.</p>
+    <p>A search like that is exactly what digitizing and reading the whole archive makes possible.</p>
+  </aside>
+</section>
+<section class="slide" data-title="From a folder label to every slide" data-steps="1">
+  <div class="run"><span>part III · data to discovery</span><b>captioning</b></div>
+  <h2>From a label on a folder <em>to a description of every slide</em>.</h2>
+  <div class="caps3">
+    <figure><div class="im"><img src="assets/img/zanardi_000148723.jpg" alt="Mosaic face, Santa Maria Maggiore, Rome"></div><figcaption><div class="had"><span class="lab">what we had · folder 26</span><p>Roma: S. Maria Maggiore – Mosaici XIII secolo – Cantiere Torriti e arco trionfale V secolo</p></div><div class="added" data-at="1"><span class="lab a">AI caption</span><q>Close view of a mosaic face, with the contours of the eyes, nose and mouth built from tesserae.</q><div class="tags"><span class="tag">mosaic detail</span><span class="tag">tesserae</span></div></div></figcaption></figure>
+    <figure><div class="im"><img src="assets/img/zanardi_000149368.jpg" alt="Mosaic portrait, Sancta Sanctorum, Rome"></div><figcaption><div class="had"><span class="lab">what we had · folder 34</span><p>Roma – S. Giovanni in Laterano: Cappella del Sancta Sanctorum – lato est: presbiterio mosaico “Il Salvatore entro clipeo sostenuto da quattro angeli”</p></div><div class="added" data-at="1"><span class="lab a">AI caption</span><q>A dark mosaic portrait of a bearded haloed man, surrounded by gold tesserae.</q><div class="tags"><span class="tag">mosaic detail</span><span class="tag">comparison</span></div></div></figcaption></figure>
+    <figure><div class="im"><img src="assets/img/zanardi_000149753.jpg" alt="Painted ornament and scaffold, Sancta Sanctorum, Rome"></div><figcaption><div class="had"><span class="lab">what we had · folder 36</span><p>Roma – S. Giovanni in Laterano: Cappella del Sancta Sanctorum – parete nord: “Il martirio di S. Agnese” e “il miracolo di S. Niccola”</p></div><div class="added" data-at="1"><span class="lab a">AI caption</span><q>A painted vase and scrolling foliage beside part of a narrative scene, partly crossed by scaffold tubing.</q><div class="tags"><span class="tag">painting detail</span><span class="tag">scaffold</span></div></div></figcaption></figure>
+  </div>
+  <p class="small mut">36,631 slides arrived with only the handwritten label of their folder: nothing on the individual slides. Captions and categories are AI drafts awaiting curatorial review.</p>
+  <aside class="notes">
+    <p data-k="0">Before we look at the Zanardi archive live, here is what we started with. 36,631 slides arrived with only the handwritten label of the folder they were in: the city, the monument, sometimes the campaign or the wall. Nothing about the individual slides. Here are three of those folder labels.</p>
+    <p data-k="1">And here is what AI adds: a description of each slide, and categories such as “mosaic detail” or “scaffold”. Notice the third: it noticed the scaffold tubing, which matters a great deal in a restorer's archive. These are drafts, awaiting curatorial review. I will show you the other AI-related aspects live in the demo.</p>
+  </aside>
+</section>
+<section class="slide demo" data-w="live" data-title="Bruno Zanardi archive, live">
+  <div class="run"><span>part III · data to discovery</span><b>bruno zanardi</b></div>
+  <div class="dhead">
+    <div><div class="lab a">from boxes to a platform</div><h2>Bruno Zanardi: <em>the restorer's eye</em>.</h2><p class="dek">Four decades on the scaffolds of Italy's great monuments: the Upper Church at Assisi, Parma, the Sancta Sanctorum, Trajan's Column, the Ara Pacis.</p></div>
+    <div class="dfigs"><div class="fg a"><span class="n">36,631</span><span class="l">slides, digitized</span></div><div class="fg"><span class="n">40</span><span class="l">years on the scaffold</span></div></div>
+  </div>
+  <div class="bwin big" data-live="https://zanardi.itatti.net/" data-autolive style="--z:.62"><div class="bbar"><i></i><i></i><i></i><span class="url">zanardi.itatti.net</span><button data-act="live">live</button><a href="https://zanardi.itatti.net/" target="_blank" rel="noopener">open ↗</a><button data-act="max">⤢</button></div><div class="bview"><img data-src="assets/img/live/zanardi-home.jpg" alt=""></div></div>
+  <aside class="notes">
+    <p>From boxes to a platform. Bruno Zanardi is one of the most influential, and outspoken, conservators of our time. He spent four decades on the scaffolds of Italy's great monuments: the Upper Church of San Francesco at Assisi, whose famous cycle he argued was painted largely by Roman masters rather than Giotto; Parma; the Sancta Sanctorum in Rome; the spiral reliefs of Trajan's Column. A camera was always on the scaffold.</p>
+    <p> His archive of 36,631 slides is in the Berenson Library at I Tatti, and the entire collection is online: by place, by work, by original folder, on a map of the campaigns, with deep zoom into every scan. For art historians these slides are evidence of how medieval and Renaissance works were made: the joins where one day's painting met the next, cracks, losses, old repairs. One feature we love: “Looking twice”, two slides of the same surface aligned point by point, so you can move from one to the other and see what changed.</p>
+    <p class="cue">live: zanardi.itatti.net · Map · or Comparisons</p>
+  </aside>
+</section>
+<section class="slide" data-title="The Berensons' world, reassembled">
+  <div class="run"><span>part III · data to discovery</span><b>the Berensons' world</b></div>
+  <h2>The Berensons' world, <em>reassembled</em>.</h2>
+  <p class="dek">Their photographs, books, diaries and letters sit in different rooms, catalogued by different people at different times. We are putting them back together, in four strands.</p>
+  <div class="strands">
+    <div class="sd seen"><i>1</i><h3>What they collected</h3><p>Berenson's photo archive, read front and back.</p><span class="lab a">Fototeca Berenson</span></div>
+    <div class="sd"><i>2</i><h3>What they studied</h3><p>His famous Lists of who painted what, and where.</p><span class="lab a">Italian Pictures of the Renaissance</span></div>
+    <div class="sd"><i>3</i><h3>Where they went</h3><p>Mary's diaries, and three travel books, as maps.</p><span class="lab a">The Geography of Taste · three atlases</span></div>
+    <div class="sd"><i>4</i><h3>Whom they knew</h3><p>Letters from New York to Tokyo.</p><span class="lab a">Belle da Costa Greene · Yukio Yashiro</span></div>
+  </div>
+  <aside class="notes">
+    <p>You have just seen the first strand of a larger story. Between 1891 and 1937 Mary Berenson wrote down, almost every day, where she was and whom she saw. Bernard built an archive of photographs, more than 230,000 prints, with notes on their backs. Out of that looking came his Lists of who painted what. And in between, thousands of letters, from the Morgan Library in New York to Tokyo.</p>
+    <p>Each of these collections tells part of one story: how a couple in a villa above Florence came to shape the way the world sees Italian art. None tells the whole of it. They sit in different rooms, in different formats. We are putting them back together, in four strands: what they collected, what they studied, where they went, and whom they knew.</p>
+  </aside>
+</section>
+<section class="slide demo" data-w="live" data-title="Italian Pictures of the Renaissance, live">
+  <div class="run"><span>part III · data to discovery</span><b>italian pictures</b></div>
+  <div class="dhead">
+    <div><div class="lab a">2 · what they studied</div><h2>Berenson's Lists, <em>from heavy volumes to a living edition</em>.</h2><p class="dek">Every page searchable; each work Berenson listed linked to its record in museums around the world today.</p></div>
+    <div class="dfigs"><div class="fg a"><span class="n">21,829</span><span class="l">works listed</span></div><div class="fg"><span class="n">~16,000</span><span class="l">linked to museums today</span></div><div class="fg"><span class="n">32</span><span class="l">in Kansas City</span></div></div>
+  </div>
+  <div class="bwin big" data-live="https://italian-pictures.itatti.net/" data-autolive><div class="bbar"><i></i><i></i><i></i><span class="url">italian-pictures.itatti.net</span><button data-act="live">live</button><a href="https://italian-pictures.itatti.net/" target="_blank" rel="noopener">open ↗</a><button data-act="max">⤢</button></div><div class="bview"><img data-src="assets/img/live/ip.jpg" alt=""></div></div>
+  <aside class="notes">
+    <p>Strand two: what they studied. Berenson's Lists are his catalogues of which Italian Renaissance painter made which picture, and where each picture could be found. For much of the twentieth century they were the reference: they shaped attributions, museum labels and the art market. Until now they existed only as heavy printed volumes.</p>
+    <p>Today the final editions, Venetian 1957, Florentine 1963, Central and North Italian 1968, are a searchable edition: 4,312 pages, 506 artists, 21,829 works, each tied to the printed page it came from. AI read every page directly from the image, and the results were checked against the books' own logic: plate numbers must run without gaps, artists must be in alphabetical order, the city indexes must agree. Then the ambitious part: about sixteen thousand works, three quarters, are now linked to their records in museums today. The rule is strict: a shared name or number is never enough; 875 coincidental matches were rejected.</p>
+    <p>For Kansas City: the Lists record 32 works here, by 27 artists, and almost all are now linked to their current records, most at the Nelson-Atkins.</p>
+    <p class="cue">live: italian-pictures.itatti.net · Map → Kansas City · or search “Kansas City”</p>
+  </aside>
+</section>
+<section class="slide demo" data-w="live" data-title="Mary Berenson's diaries, live">
+  <div class="run"><span>part III · data to discovery</span><b>the geography of taste</b></div>
+  <div class="dhead">
+    <div><div class="lab a">3 · where they went</div><h2><i>The Geography of Taste</i>: <em>Mary's diaries, on a map</em>.</h2><p class="dek">Scroll the years and follow her across Europe; click a day and read the entry beside her handwritten page.</p></div>
+    <div class="dfigs"><div class="fg a"><span class="n">7,536</span><span class="l">days, 1891–1937</span></div><div class="fg"><span class="n">~575</span><span class="l">places</span></div><div class="fg"><span class="n">26,000</span><span class="l">mentions of people</span></div></div>
+  </div>
+  <div class="bwin big" data-live="https://travels.itatti.net/" data-autolive><div class="bbar"><i></i><i></i><i></i><span class="url">travels.itatti.net</span><button data-act="live">live</button><a href="https://travels.itatti.net/" target="_blank" rel="noopener">open ↗</a><button data-act="max">⤢</button></div><div class="bview"><img data-src="assets/img/live/travels2.jpg" alt=""></div></div>
+  <aside class="notes">
+    <p>Strand three: where they went. Mary Berenson kept a diary almost every day for forty-six years. She recorded where she went, whom she met and what she saw, and because Bernard was the leading connoisseur of his age, her diaries map where the taste, scholarship and art market of the time were made. Just as importantly, this project puts Mary herself at the centre, as narrator rather than footnote.</p>
+    <p>7,536 days, from 1891 to 1937, about 575 places, some 26,000 mentions of people. You scroll a timeline and the map follows Mary across Europe; colours show whether she travelled alone, with Bernard, or Bernard alone; click a day and read her entry next to the handwritten page. Checking matters here too: one verification pass found that eight diaries had been linked to the wrong volume's images, and fixed them.</p>
+    <p class="cue">live: travels.itatti.net · pick a year · click a day · pick a person</p>
+  </aside>
+</section>
+<section class="slide" data-title="Three travel books, mapped">
+  <div class="run"><span>part III · data to discovery</span><b>three atlases</b></div>
+  <h2>Three travel books, <em>mapped page by page</em>.</h2>
+  <div class="atl books">
+    <figure><div class="bk"><img src="assets/img/books/tentative.jpg" alt="The cover of a library copy of A Tentative List of Italian Pictures Worth Seeing, and its first page, Italy: Ancona to Assisi"></div><figcaption><b>Mary Berenson, 1908</b><i>A Tentative List of Italian Pictures Worth Seeing</i>: 1,146 pictures in 351 collections, the Edwardian traveller's must-see list.</figcaption></figure>
+    <figure><div class="bk"><img src="assets/img/books/pilgrimage.jpg" alt="Frontispiece of the Temple of Bacchus at Baalbek, and the title page of A Modern Pilgrimage"></div><figcaption><b>Mary Berenson, 1933</b><i>A Modern Pilgrimage</i>: a 1929 journey through the Middle East, 150 documented stages.</figcaption></figure>
+    <figure><div class="bk"><img src="assets/img/books/forty.jpg" alt="Frontispiece photograph of Nicky Mariano and Bernard Berenson, 1954, and the title page of Forty Years with Berenson"></div><figcaption><b>Nicky Mariano, 1966</b><i>Forty Years with Berenson</i>: 570 events at 381 places, checked against Mary's diaries.</figcaption></figure>
+  </div>
+  <p class="small mut">Every point on these maps is tied to a quotation and a page image. They are labelled as machine-assisted drafts, inviting expert review.</p>
+  <aside class="notes">
+    <p>Three more books, mapped the same way and published last month. Mary's 1908 Tentative List of Italian Pictures Worth Seeing: 1,146 pictures in 351 collections, in effect the Edwardian connoisseur's itinerary. Her 1933 book A Modern Pilgrimage: a journey through the Middle East in 1929, 150 documented stages. And Nicky Mariano's memoir, Forty Years with Berenson: 570 events at 381 places, cross-checked against Mary's diaries.</p>
+    <p>Every point on these maps is tied to a quotation and a page image, and the sites say clearly that they are machine-assisted drafts that invite expert review. Let me show each of them.</p>
+  </aside>
+</section>
+
+<section class="slide demo" data-w="live" data-title="A Tentative List, live">
+  <div class="run"><span>part III · data to discovery</span><b>three atlases</b></div>
+  <div class="dhead">
+    <div><div class="lab a">Mary Berenson · 1908</div><h2><i>A Tentative List of Italian Pictures Worth Seeing</i>, <em>mapped</em>.</h2></div>
+    <div class="dfigs"><div class="fg a"><span class="n">1,146</span><span class="l">pictures</span></div><div class="fg"><span class="n">351</span><span class="l">collections</span></div><div class="fg"><span class="n">45</span><span class="l">scanned pages</span></div></div>
+  </div>
+  <div class="bwin big" data-live="https://tentative-list.itatti.net/" data-autolive><div class="bbar"><i></i><i></i><i></i><span class="url">tentative-list.itatti.net</span><button data-act="live">live</button><a href="https://tentative-list.itatti.net/" target="_blank" rel="noopener">open ↗</a><button data-act="max">⤢</button></div><div class="bview"><img data-src="assets/img/live/tent.jpg" alt=""></div></div>
+  <aside class="notes">
+    <p>Mary's Tentative List of 1908: 1,146 pictures in 351 collections, the pictures an Edwardian traveller in Italy should not miss. Each entry is placed on the map, and each links back to the page it was printed on.</p>
+  </aside>
+</section>
+
+<section class="slide demo" data-w="live" data-title="A Modern Pilgrimage, live">
+  <div class="run"><span>part III · data to discovery</span><b>three atlases</b></div>
+  <div class="dhead">
+    <div><div class="lab a">Mary Berenson · 1933</div><h2><i>A Modern Pilgrimage</i>: <em>a 1929 journey through the Middle East</em>.</h2></div>
+    <div class="dfigs"><div class="fg a"><span class="n">150</span><span class="l">documented stages</span></div></div>
+  </div>
+  <div class="bwin big" data-live="https://modern-pilgrimage.itatti.net/" data-autolive><div class="bbar"><i></i><i></i><i></i><span class="url">modern-pilgrimage.itatti.net</span><button data-act="live">live</button><a href="https://modern-pilgrimage.itatti.net/" target="_blank" rel="noopener">open ↗</a><button data-act="max">⤢</button></div><div class="bview"><img data-src="assets/img/live/pilg.jpg" alt=""></div></div>
+  <aside class="notes">
+    <p>A Modern Pilgrimage, Mary's account of the Berensons' journey through the Middle East in 1929: 150 documented stages, which you can follow step by step, with the passage from the book behind each one.</p>
+  </aside>
+</section>
+
+<section class="slide demo" data-w="live" data-title="Forty Years with Berenson, live">
+  <div class="run"><span>part III · data to discovery</span><b>three atlases</b></div>
+  <div class="dhead">
+    <div><div class="lab a">Nicky Mariano · 1966</div><h2><i>Forty Years with Berenson</i>: <em>a memoir on the map</em>.</h2></div>
+    <div class="dfigs"><div class="fg a"><span class="n">570</span><span class="l">events</span></div><div class="fg"><span class="n">381</span><span class="l">places</span></div></div>
+  </div>
+  <div class="bwin big" data-live="https://forty-years.itatti.net/" data-autolive><div class="bbar"><i></i><i></i><i></i><span class="url">forty-years.itatti.net</span><button data-act="live">live</button><a href="https://forty-years.itatti.net/" target="_blank" rel="noopener">open ↗</a><button data-act="max">⤢</button></div><div class="bview"><img data-src="assets/img/live/forty.jpg" alt=""></div></div>
+  <aside class="notes">
+    <p>And Nicky Mariano's memoir, Forty Years with Berenson: 570 events at 381 places. Memory is not always reliable, so the dates were cross-checked against Mary's diaries, and the site shows how each date was established.</p>
+  </aside>
+</section>
+<section class="slide" data-title="4 · Whom they knew">
+  <div class="run"><span>part III · data to discovery</span><b>letters</b></div>
+  <h2>Whom they knew: <em>letters from New York to Tokyo</em>.</h2>
+  <div class="body">
+    <div class="col c1">
+      <figure class="grow"><div class="im"><img src="assets/img/projects/bellegreene.jpg" alt="A letter of Belle da Costa Greene"></div></figure>
+      <h3>Belle da Costa Greene</h3>
+      <p class="small">J. P. Morgan's librarian from 1905, and from 1924 to 1948 the first director of the Morgan Library: one of the most powerful women in the American art world. Her letters to Berenson, lively and sharp, over four decades; edited with staff of the Morgan Library &amp; Museum.</p>
+      <div class="tags"><span class="tag a">4,131 letter pages</span><span class="tag">1,008 people</span></div>
+    </div>
+    <div class="col c1">
+      <figure class="grow"><div class="im"><img src="assets/img/projects/yashiro.jpg" alt="Yukio Yashiro"></div></figure>
+      <h3>Yukio Yashiro</h3>
+      <p class="small">He studied with Berenson in Florence, wrote a landmark book on Botticelli, and became a leading figure of Japanese art history. Their friendship, in letters from 1923 to 1959, spanned two cultures and a world war.</p>
+      <div class="tags"><span class="tag a">114 letters</span><span class="tag">moving to our shared platform</span></div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Strand four: whom they knew. Belle da Costa Greene was J. P. Morgan's librarian from 1905, and from 1924 to 1948 the first director of the Morgan Library: one of the most powerful women in the American art world. Her letters to Berenson are lively, intimate, intellectually sharp. Our favourite line, from 1911: “J.P. is so well trained now that he rarely ever buys a book or mss without consulting me by cable or letter first.” The edition, 4,131 letter pages with 1,008 people identified, was produced with staff of the Morgan Library &amp; Museum.</p>
+    <p>And Yukio Yashiro, who studied with Berenson in Florence, wrote a landmark book on Botticelli, and became a leading figure of Japanese art history: 114 letters, from 1923 to 1959, an intellectual friendship across two cultures and a world war.</p>
+  </aside>
+</section>
+<section class="slide" data-title="One painting, four records" data-steps="2">
+  <div class="run"><span>part III · data to discovery</span><b>one object</b></div>
+  <h2>Today, four records in four places. <em>Tomorrow, one object with a history.</em></h2>
+  <div class="four">
+    <div class="fr"><span class="lab">the Lists</span><p>Berenson's attribution, and the collection where he recorded the picture.</p></div>
+    <div class="fr"><span class="lab">the photo archive</span><p>His pencilled notes on the back: an earlier attribution, a sale.</p></div>
+    <div class="fr"><span class="lab">Mary's 1908 guide</span><p>The picture as worth a detour.</p></div>
+    <div class="fr"><span class="lab">Mary's diary</span><p>The day they stood in front of it, and with whom.</p></div>
+  </div>
+  <div class="one" data-at="1"><span class="br-line"></span><div><b>One object, on a map and a timeline.</b> Exactly what Metapolis was built to do: the Berensons' story is its richest test.</div></div>
+  <div class="qs" data-at="2">
+    <p>Which pictures did Mary recommend in 1908 that Bernard later reattributed?</p>
+    <p>Whom did the Berensons see in the weeks before a change of mind?</p>
+    <p>How did the paintings they studied move from Italian churches into American museums?</p>
+  </div>
+  <aside class="notes">
+    <p data-k="0">Here is where the two halves of our work meet. A single painting might appear in four places: as an entry in Berenson's Lists, with his attribution; in a photograph in the archive, with his pencilled notes on the back about an earlier attribution or a sale; in Mary's 1908 guide, as a picture worth a detour; and in her diary, on the day the two of them stood in front of it, and with whom.</p>
+    <p data-k="1">Today those are four records in four places. On one platform they become one object with a history, on a map and a timeline. That is exactly what Metapolis, from the first half of this talk, was built to do. The Berensons' story is its richest test.</p>
+    <p data-k="2">And it makes new questions possible. Which pictures did Mary recommend in 1908 that Bernard later reattributed? Whom did they see in the weeks before a change of mind? And, not an abstract question in Kansas City: how did the paintings they studied move from Italian churches and palaces into the museums of America?</p>
+  </aside>
+</section>
+<section class="slide" data-title="Music and the global Renaissance">
+  <div class="run"><span>part III · data to discovery</span><b>music · the global Renaissance</b></div>
+  <h2>Beyond painting: <em>music, and the global Renaissance</em>.</h2>
+  <div class="body">
+    <div class="col c1">
+      <div class="bwin" data-live="https://floreatmusica.itatti.net/"><div class="bbar"><i></i><i></i><span class="url">floreatmusica.itatti.net</span><span class="tag a">preview</span><button data-act="live">live</button><a href="https://floreatmusica.itatti.net/" target="_blank" rel="noopener">open ↗</a><button data-act="max">⤢</button></div><div class="bview"><img data-src="assets/img/live/fm.jpg" alt="Floreat Musica"></div></div>
+      <h3>Floreat Musica</h3>
+      <p class="small">A pilot digital library of Florence's Renaissance music manuscripts: 1,775 pieces, 7,500 page images. Open a song and <strong>listen to it</strong>. Out of the box, AI reads only about a third of the notes correctly, so we say so, and built a test to measure it.</p>
+    </div>
+    <div class="col c1">
+      <div class="bwin" data-live="https://bassani.itatti.net/"><div class="bbar"><i></i><i></i><span class="url">bassani.itatti.net</span><button data-act="live">live</button><a href="https://bassani.itatti.net/" target="_blank" rel="noopener">open ↗</a><button data-act="max">⤢</button></div><div class="bview"><img data-src="assets/img/live/bassani.jpg" alt="Africa and the Renaissance: Art in Ivory"></div></div>
+      <h3>Africa and the Renaissance: Art in Ivory</h3>
+      <p class="small">Ivories carved in present-day Sierra Leone, the Kingdom of Benin (present-day Nigeria) and the Kongo for European patrons: the classic 1988 catalogue, out of print, now online. 501 objects, each mapped from where it was made to where it is held today.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Two more, to show the range. Floreat Musica, led by I Tatti and its Morrill Music Library: a pilot digital library of Florence's Renaissance music manuscripts, 1,775 pieces and 7,500 page images. For selected pages you can listen: an AI transcription is played back with period instruments, at Renaissance pitch. And we are honest about it: out of the box, AI reads only about a third of the notes correctly; a hybrid method roughly doubles that, still far below the 95% an edition needs. So we present it as a way to hear the music, not as an edition, and the benchmark we built is a contribution in itself.</p>
+    <p>And Africa and the Renaissance: ivories carved in present-day Sierra Leone, the Kingdom of Benin in present-day Nigeria, and the Kongo for European patrons, among the earliest works of art from sustained contact between Africa and Europe. The 1988 catalogue by Bassani and Fagg has long been out of print; now it is online, 501 objects, each mapped from where it was made to where it is held today.</p>
+  </aside>
+</section>
+
+<section class="slide demo" data-w="live" data-title="Floreat Musica, live">
+  <div class="run"><span>part III · data to discovery</span><b>music</b></div>
+  <div class="dhead">
+    <div><div class="lab a">Floreat Musica · preview</div><h2>Florence's Renaissance music manuscripts, <em>to read and to hear</em>.</h2></div>
+    <div class="dfigs"><div class="fg a"><span class="n">1,775</span><span class="l">pieces</span></div><div class="fg"><span class="n">7,500</span><span class="l">page images</span></div><div class="fg"><span class="n">37</span><span class="l">manuscripts</span></div></div>
+  </div>
+  <div class="bwin big" data-live="https://floreatmusica.itatti.net/" data-autolive><div class="bbar"><i></i><i></i><i></i><span class="url">floreatmusica.itatti.net</span><span class="tag a">preview</span><button data-act="live">live</button><a href="https://floreatmusica.itatti.net/" target="_blank" rel="noopener">open ↗</a><button data-act="max">⤢</button></div><div class="bview"><img data-src="assets/img/live/fm.jpg" alt=""></div></div>
+  <aside class="notes">
+    <p>Floreat Musica: browse the manuscripts page by page, find a piece, and see all its voice parts side by side. For selected pages you can listen: an AI transcription played back with period instruments, at Renaissance pitch. A way to hear the music, not yet an edition.</p>
+    <p class="cue">live: floreatmusica.itatti.net · Browse Manuscripts · open a piece · play</p>
+  </aside>
+</section>
+
+<section class="slide demo" data-w="live" data-title="Africa and the Renaissance, live">
+  <div class="run"><span>part III · data to discovery</span><b>the global Renaissance</b></div>
+  <div class="dhead">
+    <div><div class="lab a">a digital edition · out of print since 1988</div><h2><i>Africa and the Renaissance: Art in Ivory</i>, <em>online</em>.</h2></div>
+    <div class="dfigs"><div class="fg a"><span class="n">501</span><span class="l">objects</span></div><div class="fg"><span class="n">516</span><span class="l">images</span></div><div class="fg"><span class="n">256</span><span class="l">pages</span></div></div>
+  </div>
+  <div class="bwin big" data-live="https://bassani.itatti.net/" data-autolive><div class="bbar"><i></i><i></i><i></i><span class="url">bassani.itatti.net</span><button data-act="live">live</button><a href="https://bassani.itatti.net/" target="_blank" rel="noopener">open ↗</a><button data-act="max">⤢</button></div><div class="bview"><img data-src="assets/img/live/bassani.jpg" alt=""></div></div>
+  <aside class="notes">
+    <p>The digital edition of Africa and the Renaissance: Art in Ivory. Every object from the catalogue, with its images and its text, searchable, and each one mapped from where it was carved to the museum that holds it today.</p>
+    <p class="cue">live: bassani.itatti.net · Gallery · open an object · Map</p>
+  </aside>
+</section>
+<section class="slide" data-title="Why so much is still behind the scenes">
+  <div class="run"><span>part III · data to discovery</span><b>behind the scenes</b></div>
+  <div class="body">
+    <div class="col c1 mid" style="gap:24px">
+      <h2>Why so much is <em>still behind the scenes</em>.</h2>
+      <p class="dek">Much of what you have seen is not yet public. For two reasons we take seriously.</p>
+    </div>
+    <div class="col c1 mid">
+      <div class="pts">
+        <div class="pt"><i>01</i><b>Rights</b><p>Photographs from studios and museums, books still in copyright, images with their own licences: cleared case by case. Where we cannot show an image, we link to its owner.</p></div>
+        <div class="pt"><i>02</i><b>Verification</b><p>Every project is reviewed and tested at length, so that the data and the connections are correct. Much of that time goes into the source material itself: images scanned at the wrong rotation, page numbers that slip out of line.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>You may wonder why so much of this is still behind the scenes. Two reasons, both of which we take seriously. Rights: the archive contains photographs from studios and museums, several of these books are still in copyright, museum images carry their own licences; we clear them case by case, and where we cannot show an image, we link to its owner. And verification: we need to review and test each project extensively, to make sure all of the data and the connections between them are correct. A lot of that time goes into the source material itself: correcting image rotation, page numbers that get misaligned with the scans, and other issues that come from the originals.</p>
+  </aside>
+</section>
+<section class="slide" data-title="The projects, live">
+  <div class="run"><span>part III · data to discovery</span><b>all the sites</b></div>
+  <h2>The projects, <em>live</em>.</h2>
+  <div class="links">
+    <a href="https://fototeca.itatti.net/" target="_blank" rel="noopener"><img data-src="assets/img/live/fototeca-home.jpg" alt=""><b>Fototeca Berenson</b><span>fototeca.itatti.net</span></a>
+    <a href="https://italian-pictures.itatti.net/" target="_blank" rel="noopener"><img data-src="assets/img/live/ip.jpg" alt=""><b>Italian Pictures of the Renaissance</b><span>italian-pictures.itatti.net</span></a>
+    <a href="https://travels.itatti.net/" target="_blank" rel="noopener"><img data-src="assets/img/live/travels2.jpg" alt=""><b>The Geography of Taste</b><span>travels.itatti.net</span></a>
+    <a href="https://tentative-list.itatti.net/" target="_blank" rel="noopener"><img data-src="assets/img/live/tent.jpg" alt=""><b>Italian Pictures Worth Seeing</b><span>tentative-list.itatti.net</span></a>
+    <a href="https://modern-pilgrimage.itatti.net/" target="_blank" rel="noopener"><img data-src="assets/img/live/pilg.jpg" alt=""><b>A Modern Pilgrimage</b><span>modern-pilgrimage.itatti.net</span></a>
+    <a href="https://forty-years.itatti.net/" target="_blank" rel="noopener"><img data-src="assets/img/live/forty.jpg" alt=""><b>Forty Years with Berenson</b><span>forty-years.itatti.net</span></a>
+    <a href="https://artistsim.itatti.net/" target="_blank" rel="noopener"><img data-src="assets/img/live/aim.jpg" alt=""><b>Artists in Motion</b><span>artistsim.itatti.net</span></a>
+    <a href="https://zanardi.itatti.net/" target="_blank" rel="noopener"><img data-src="assets/img/live/zanardi-home.jpg" alt=""><b>Bruno Zanardi archive</b><span>zanardi.itatti.net</span></a>
+    <a href="https://floreatmusica.itatti.net/" target="_blank" rel="noopener"><img data-src="assets/img/live/fm.jpg" alt=""><b>Floreat Musica</b><span>floreatmusica.itatti.net</span></a>
+    <a href="https://bassani.itatti.net/" target="_blank" rel="noopener"><img data-src="assets/img/live/bassani.jpg" alt=""><b>Africa and the Renaissance</b><span>bassani.itatti.net</span></a>
+    <a href="https://veniss.net/" target="_blank" rel="noopener"><img data-src="assets/img/veniss_platform.jpg" alt=""><b>VeNiss</b><span>veniss.net</span></a>
+    <a href="https://florentiaillustrata.net/" target="_blank" rel="noopener"><img data-src="assets/img/florence.jpg" alt=""><b>Florentia Illustrata</b><span>florentiaillustrata.net</span></a>
+  </div>
+  <aside class="notes"><p>A launch pad for the live demos: click any card to open the site in a new tab. Suggested order: Fototeca (Kansas City on the map, the Signorelli, flip to the back) → Italian Pictures (Kansas City) → Mary's diaries (pick a year, a day) → Zanardi (map, Looking twice). VeNiss and Florentia need a login.</p></aside>
+</section>
+<section class="slide" data-title="Why it matters beyond I Tatti">
+  <div class="run"><span>closing</span><b>beyond I Tatti</b></div>
+  <div class="body">
+    <div class="col c1 mid" style="gap:24px">
+      <h2>What a small lab gives back <em>to everyone</em>.</h2>
+      <p class="dek">Everything we build is free to use and open to reuse. A scholar in Padua, a student in Tokyo and a curator in Kansas City all start from the same place.</p>
+    </div>
+    <div class="col c1 mid">
+      <div class="pts">
+        <div class="pt"><i>01</i><b>Open sources</b><p>Collections that only a few could visit, now available to anyone with a browser.</p></div>
+        <div class="pt"><i>02</i><b>Shared tools</b><p>Software that other projects use, so they don't have to start from nothing.</p></div>
+        <div class="pt"><i>03</i><b>New scholars</b><p>Fellows and interns who learn these methods with us and take them home.</p></div>
+        <div class="pt"><i>04</i><b>Lasting results</b><p>Data that keeps its value after a project, a grant, or a piece of software ends.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Why does this matter beyond our villa? Because everything we build is free and open. A scholar in Padua, a student in Tokyo and a curator in Kansas City all start from the same place.</p>
+    <p>We open sources that only a few could visit. We share tools, so other projects don't start from nothing. We train new scholars: fellows and interns who learn these methods with us and take them home. And we make results that last beyond a project, a grant, or a piece of software.</p>
+    <p>And there is much more we would like to do: finish reading the photo archive, bring scholars in to check what the machines have read, and bring all of these pieces together on one platform.</p>
+  </aside>
+</section>
+<section class="slide dark" data-title="Thank you · questions">
+  <div class="run"><span>Mapping Connections</span><b>thank you</b></div>
+  <div class="body">
+    <div class="col c15 mid" style="gap:30px">
+      <h1 style="font-size:84px">Thank you.</h1>
+      <p class="dek" style="font-size:28px">Questions, about anything, including how it all works.</p>
+      <div class="thanks"><span class="lab">with special thanks</span><p>To <strong>Jonathan Kemper and the Kemper family</strong>, whose support of I Tatti's Digital Humanities Lab made much of this work possible.</p></div>
+      <div class="who dark-who">
+        <div><b>Lukas Klic</b><span>Head of Digital Humanities Research</span></div>
+        <div><b>Remo Grillo</b><span>Digital Humanities Research Software Engineer</span></div>
+        <div><b>Gianmarco Spinaci</b><span>Digital Humanities Research Software Engineer</span></div>
+      </div>
+    </div>
+    <div class="col c1 end" style="gap:18px">
+      <div class="pts">
+        <div class="pt"><i>→</i><b>dh.itatti.harvard.edu</b><p>the lab and its projects</p></div>
+        <div class="pt"><i>→</i><b>itatti.harvard.edu</b><p>I Tatti, the Harvard University Center for Italian Renaissance Studies</p></div>
+      </div>
+      <span class="dt" style="color:#f3efe7;margin-top:18px"><svg viewBox="0 0 220 224"><use href="#dt-arc"/></svg><span><b>digiTatti</b><small>the Harvard<br>digital humanities lab<br>for early modern studies</small></span></span>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Before your questions, a special thank-you to Jonathan Kemper and the Kemper family. Much of what you have seen today, the digitization, the platforms, the people who built them, was made possible by your support of the lab. (Speaker: confirm beforehand how Jonathan prefers the support to be acknowledged, e.g. the family, the William T. Kemper Foundation, or both, and whether to mention the Harvard internships.)</p>
+    <p>Thank you. We would love to take your questions, about anything, including how any of this works under the hood: that is the part we promised to keep out of the talk.</p>
+    <p>(Useful for answers: Metapolis is built on ResearchSpace, open-source software from the British Museum, funded by the Mellon Foundation; data is published as Linked Open Data; geometries are drawn in QGIS and live in a spatial database; AI work uses large language models for transcription and structured extraction, always with human review. The Metapolis chapter: doi.org/10.30687/978-88-6969-919-1/004.)</p>
+  </aside>
+</section>
+
+
+</div><!-- #stage -->
+
+<div id="track"><div id="bar"></div></div>
+<div class="ctl"><button id="pb" title="Presenter mode: drive the slides together with the other presenters (P)">present</button><button id="nb" title="Presenter notes (N)">notes</button><button id="gb" title="All slides (G)">slides</button></div>
+<div id="live" hidden></div>
+<div id="pn"></div>
+<div id="overview"></div>
+<div id="toast"></div>
+<script src="widgets.js"></script>
+<script src="engine.js"></script>
+<script src="sync.js"></script>
+</body>
+</html>

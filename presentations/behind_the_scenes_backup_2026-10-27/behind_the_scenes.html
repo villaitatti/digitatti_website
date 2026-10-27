@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapping Connections · Behind the Scenes</title>
+<!--
+  Mapping Connections: Behind the Scenes at the I Tatti Digital Humanities Lab · webinar, 28 October 2026
+  Metapolis: Spatializing Histories Through Archival Sources
+  Built from presentation_template/digitatti_presentation_template.html; pictures and clips in ./assets.
+
+  Keys: → / space next · ← back · N speaker notes (the script) · F fullscreen · Home / End.
+  Live demos: Florentia Illustrata needs a login, so present through the demo server:
+    node demo-server.mjs          (in this folder), then open the address it prints;
+  opened as a file, the slides check for it and offer to start it. VeNiss needs a login too.
+  On demo slides → first walks through the steps on the rail above the frame, then moves on.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,800;0,900;1,400;1,600&family=IBM+Plex+Mono:wght@400;500&family=Source+Code+Pro:wght@300;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --ink:#0d0d0d; --muted:#7a7a7a; --faint:#c9c9c9;
+  --accent:#a51c30;   /* Harvard crimson */
+  --wash:#f3f2ef; --wash2:#e7e5e0; --soft:rgba(165,28,48,.12);
+  --sans:"Inter Tight","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --pad:4.5vmin;
+  --t:2.5vmin;      /* body text */
+  --tm:1.65vmin;    /* mono labels */
+  --tc:1.9vmin;     /* code */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink)}
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased}
+
+.slide{
+  position:absolute;inset:0;display:flex;flex-direction:column;gap:3vmin;padding:var(--pad);
+  opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s;background:var(--bg);color:var(--ink)
+}
+.slide.active{opacity:1;visibility:visible}
+/* on black the crimson is lifted, so accents stay readable */
+.slide.dark{background:var(--ink);color:#fff;--muted:#8d8d8d;--faint:#3a3a3a;--wash:#1a1a1a;--wash2:#262626;--accent:#d6324a;--soft:rgba(214,50,74,.24)}
+.slide.red{background:var(--accent);color:#fff;--muted:rgba(255,255,255,.72);--faint:rgba(255,255,255,.38)}
+
+/* fit: the box grows to fill the slide; JS sizes the type to fill the box */
+.fit{flex:1 1 auto;min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;
+  font-weight:800;line-height:.95;letter-spacing:-.035em;font-size:40px;padding-bottom:.12em}
+.fit.top{justify-content:flex-start}
+.fit>*{flex-shrink:0}
+.fit p{margin:0}
+.fit .reg{font-weight:400}
+.fit .semi{font-weight:600}
+
+.lab{font-family:var(--mono);font-size:clamp(11px,1.7vmin,17px);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:2em;flex:0 0 auto}
+.src{font-family:var(--mono);font-size:clamp(11px,1.6vmin,16px);color:var(--muted);flex:0 0 auto}
+.acc{color:var(--accent)}
+.red .acc{color:var(--ink)}
+.dim{color:var(--faint)}
+.mut{color:var(--muted)}
+i,em{font-style:italic}
+.q{font-weight:400;letter-spacing:-.02em;line-height:1.08}
+.q .mark{color:var(--accent);font-weight:800}
+.q b{font-weight:800}
+
+.notes{display:none}
+body.show-notes .slide.active .notes{
+  display:block;position:fixed;left:0;right:0;bottom:0;max-height:34vh;overflow:auto;
+  background:rgba(13,13,13,.95);color:#eee;font-family:var(--sans);font-size:16px;line-height:1.5;
+  padding:18px 22px;z-index:5
+}
+.lab.part{font-size:clamp(18px,3.6vmin,36px);color:inherit;letter-spacing:.02em}
+#track{position:fixed;left:0;right:0;bottom:0;height:7px;background:rgba(0,0,0,.08);z-index:6}
+#bar{position:absolute;left:0;top:0;bottom:0;background:var(--accent);width:0;transition:width .3s ease}
+#pn{position:fixed;right:var(--pad);bottom:calc(var(--pad) - .2em);font-family:var(--mono);font-size:clamp(12px,1.8vmin,18px);color:var(--muted);z-index:6;letter-spacing:.04em}
+body.bg-dark #track{background:rgba(255,255,255,.14)}
+body.bg-dark #bar{background:#d6324a}
+body.bg-dark #pn{color:#8d8d8d}
+body.bg-red #track{background:rgba(0,0,0,.18)}
+body.bg-red #bar{background:#fff}
+body.bg-red #pn{color:rgba(255,255,255,.75)}
+body.first #pn{display:none}
+
+/* ---------- title slide: logos + presenters ---------- */
+.logos{display:flex;align-items:center;gap:3.4vmin;flex:0 0 auto;height:9vmin}
+.logos img{display:block;width:auto}
+.logos .lg-it{height:9vmin}
+.logos .lg-hv{height:6.6vmin}
+.logos .sep{align-self:stretch;width:1.5px;background:var(--faint);font-style:normal}
+/* the digiTatti lockup, as on dh.itatti.harvard.edu: line arc, wordmark and tagline in Source Code Pro */
+.dt{display:flex;align-items:center;gap:2vmin;height:9vmin;color:var(--ink)}
+.dark .dt{color:#fff}
+.dt svg{height:100%;width:auto;display:block;overflow:visible}
+.dt>span{display:flex;flex-direction:column;justify-content:center;gap:.7vmin;font-family:"Source Code Pro",var(--mono)}
+.dt b{font-weight:500;font-size:4.4vmin;letter-spacing:0;line-height:1}
+.dt small{font-weight:300;font-size:1.35vmin;line-height:1.3}
+.who{display:grid;grid-template-columns:repeat(3,1fr);gap:3.5vmin;flex:0 0 auto}
+.who div{border-top:1.5px solid var(--faint);padding-top:1.1vmin;display:flex;flex-direction:column;gap:.4vmin}
+.who b{font-weight:800;font-size:3.2vmin;letter-spacing:-.025em;line-height:1.05}
+.who span{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+
+/* ---------- dense content slides ---------- */
+.c{padding-bottom:calc(var(--pad) + 2.6vmin)}
+.h{font-weight:800;font-size:5.3vmin;line-height:1.02;letter-spacing:-.035em;flex:0 0 auto}
+.h .dim{color:var(--faint)}
+.h.s{font-size:4.4vmin}
+.body{flex:1 1 auto;min-height:0;display:flex;gap:4.5vmin;align-items:stretch}
+.body.v{flex-direction:column;gap:2.6vmin}
+.col{display:flex;flex-direction:column;gap:2.4vmin;min-width:0}
+.g1{flex:1 1 0}.g2{flex:2 1 0}.g3{flex:3 1 0}.g15{flex:1.5 1 0}
+.mid{justify-content:center}
+.end{justify-content:flex-end}
+.fig{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
+.fig>svg{width:100%;height:100%;display:block;overflow:visible}
+.fig>img{width:100%;height:100%;object-fit:contain;display:block}
+.fig.g1{flex:1 1 0;min-width:0}.fig.g15{flex:1.5 1 0;min-width:0}.fig.g2{flex:2 1 0;min-width:0}.fig.g3{flex:3 1 0;min-width:0}
+.pts.lg{gap:3vmin}.pts.lg .pt p{font-size:3.1vmin;max-width:36ch}.pts.lg .pt b{font-size:1.85vmin;margin-bottom:.8vmin}
+.body.v.mid{justify-content:center}
+
+.pts{display:flex;flex-direction:column;gap:2.1vmin}
+.pt{border-top:1.5px solid var(--faint);padding-top:1.1vmin}
+.pt b{display:block;font-family:var(--mono);font-weight:500;font-size:var(--tm);letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin-bottom:.5vmin}
+.pt p{font-size:var(--t);line-height:1.22;max-width:40ch}
+.pt p strong{font-weight:700}
+.pt.k b{color:var(--muted)}
+.red .pt b{color:#fff}
+
+.row{display:flex;gap:3.5vmin;min-height:0}
+.row>*{flex:1 1 0;min-width:0}
+
+.code{font-family:var(--mono);font-size:var(--tc);line-height:1.5;background:var(--wash);padding:1.8vmin 2.4vmin;white-space:pre;overflow:hidden;border-left:3px solid var(--accent);color:var(--ink)}
+.dark .code{color:#eee}
+.code .k{color:var(--accent)}
+.code .cm{color:var(--muted)}
+.code .b{font-weight:500;background:var(--soft)}
+.code.sm{font-size:1.65vmin}
+.mono{font-family:var(--mono)}
+code{font-family:var(--mono);font-size:.86em;background:var(--wash);padding:.05em .3em}
+
+.tb{border-collapse:collapse;font-size:var(--t);width:100%}
+.tb th{font-family:var(--mono);font-weight:400;font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;padding:.7vmin 1.2vmin;border-bottom:1.5px solid currentColor;white-space:nowrap}
+.tb td{padding:.85vmin 1.2vmin;border-bottom:1px solid var(--faint);vertical-align:baseline}
+.tb td.n,.tb th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tb tr.hl td{font-weight:700}
+.tb.sm{font-size:2.15vmin}
+
+.stat{font-weight:900;letter-spacing:-.045em;line-height:.88;font-size:14vmin;font-variant-numeric:tabular-nums}
+.stat small{display:block;font-family:var(--mono);font-weight:400;font-size:var(--tm);letter-spacing:.03em;line-height:1.35;color:var(--muted);margin-top:1.4vmin;text-transform:uppercase}
+
+.tag{display:inline-block;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;padding:.35vmin .9vmin;border:1.5px solid currentColor;line-height:1.2}
+.tag.f{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tag.a{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* step-through fragments: elements with data-at="n" appear at step n */
+[data-at]{opacity:0;transform:translateY(1.2vmin);transition:opacity .45s ease,transform .45s ease}
+[data-at].on{opacity:1;transform:none}
+svg [data-at]{transform:none}
+[data-at].ghost{opacity:.18}
+
+/* interactive widgets */
+.ctl{display:flex;align-items:center;gap:1.6vmin;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--muted);flex-wrap:wrap}
+.ctl output,.ctl .v{color:var(--ink);font-size:2.6vmin;font-weight:500;min-width:5ch;text-transform:none}
+.dark .ctl output,.dark .ctl .v{color:#fff}
+input[type=range]{-webkit-appearance:none;appearance:none;width:26vmin;height:3vmin;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:.45vmin;background:var(--faint)}
+input[type=range]::-moz-range-track{height:.45vmin;background:var(--faint)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:2.4vmin;height:2.4vmin;border-radius:50%;background:var(--accent);margin-top:-1vmin;border:0}
+input[type=range]::-moz-range-thumb{width:2.4vmin;height:2.4vmin;border-radius:50%;background:var(--accent);border:0}
+.btn{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;padding:.5vmin 1.1vmin;background:transparent;color:inherit;border:1.5px solid var(--faint);cursor:pointer}
+.btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.dark .btn.on{background:#fff;color:var(--ink);border-color:#fff}
+
+/* svg helpers */
+svg text{font-family:var(--sans);fill:currentColor}
+svg .m{font-family:var(--mono)}
+svg .mu{fill:var(--muted)}
+svg .ac{fill:var(--accent)}
+svg .st{stroke:currentColor;fill:none}
+svg .sa{stroke:var(--accent);fill:none}
+svg .sf{stroke:var(--faint);fill:none}
+svg .bxw{fill:var(--wash)}
+svg .bxa{fill:var(--accent)}
+svg .bxi{fill:currentColor}
+svg .wt{fill:#fff}
+.dark svg .wt{fill:var(--ink)}
+
+/* marching edges */
+.flow{stroke-dasharray:1.2 7;stroke-linecap:round;animation:march 1s linear infinite}
+@keyframes march{to{stroke-dashoffset:-8.2}}
+@keyframes pop{from{opacity:0;transform:translateY(1vmin)}}
+
+/* agenda */
+.agenda{display:flex;width:100%;height:100%;align-items:stretch;gap:.5vmin}
+.agenda>div{display:flex;flex-direction:column;justify-content:flex-end;gap:1.2vmin;min-width:0;position:relative}
+.agenda .blk{height:0;background:var(--ink);transition:height .8s cubic-bezier(.2,.8,.2,1)}
+.agenda .blk.a{background:var(--accent)}
+.agenda .blk.w{background:var(--wash2)}
+.slide.active .agenda .blk{height:var(--h)}
+.agenda .nm{font-weight:700;font-size:2.3vmin;line-height:1.1;letter-spacing:-.01em}
+.agenda .tm{font-family:var(--mono);font-size:var(--tm);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+
+/* the plan: one bar per item; a part's width follows its number of items (data-n overrides) */
+.plan{flex:1 1 auto;min-height:0;display:flex;gap:3.5vmin}
+.plan .grp{display:flex;flex-direction:column;gap:2vmin;min-width:18vmin}
+.plan .gh{border-top:5px solid var(--ink);padding-top:1.4vmin;display:flex;flex-direction:column;gap:.6vmin}
+.plan .grp.a .gh{border-top-color:var(--accent)}
+.plan .grp.w .gh{border-top-color:var(--wash2)}
+.plan .gh b{font-weight:800;font-size:3.6vmin;letter-spacing:-.03em;line-height:1.05}
+.plan .gh span{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--muted);line-height:1.35}
+/* names, notes and bars share rows, so a name on two lines does not push its bar down */
+.plan .agenda{flex:1 1 auto;height:auto;min-height:0;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;grid-template-rows:auto auto 1fr;gap:.6vmin 1.2vmin}
+.plan .agenda>div{grid-row:1/4;display:grid;grid-template-rows:subgrid;justify-content:stretch;gap:.6vmin}
+.plan .agenda .tm{min-height:2.6em;margin-bottom:.6vmin}
+.plan .blk{transform:scaleY(0);transform-origin:bottom;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.slide.active .plan .blk{height:auto;transform:none}
+.day{flex:1 1 0;min-height:0;display:flex;gap:2.4vmin;align-items:stretch}
+.day .agenda{flex:1 1 auto;height:auto}
+.dh{flex:0 0 17vmin;display:flex;flex-direction:column;justify-content:flex-end;gap:.4vmin;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.dh b{font-family:var(--sans);font-weight:800;font-size:4vmin;letter-spacing:-.03em;text-transform:none;color:var(--ink)}
+
+/* cards, appearing one after the other */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:2vmin;flex:0 0 auto;margin:auto 0;align-items:stretch}
+.cd{background:var(--wash);padding:2.2vmin;display:flex;flex-direction:column;gap:1.5vmin;min-height:44vmin;opacity:0;transform:translateY(1.5vmin)}
+.slide.active .cd{animation:cdin .5s ease forwards;animation-delay:var(--d)}
+@keyframes cdin{to{opacity:1;transform:none}}
+.cd>b{font-family:var(--mono);font-weight:500;font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;color:var(--accent)}
+.cd h5{font-weight:800;font-size:3.4vmin;letter-spacing:-.025em;line-height:1.05}
+.cd p{font-size:2.3vmin;line-height:1.28}
+.cd .ft{margin-top:auto;display:flex;gap:1vmin;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:1.6vmin;color:var(--muted)}
+.cd.a{background:var(--accent);color:#fff}
+.cd.a>b,.cd.a .ft{color:rgba(255,255,255,.8)}
+
+/* big numbers */
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:4vmin;flex:1 1 auto;min-height:0;align-items:stretch;align-content:center}
+.nums>div{display:flex;flex-direction:column;gap:2vmin;border-top:5px solid var(--ink);padding-top:2vmin}
+.nums>div.a{border-top-color:var(--accent)}
+.nums>div.a .stat{color:var(--accent)}
+.nums .stat{font-size:17vmin}
+.nums p{font-size:var(--t);line-height:1.25;max-width:30ch}
+
+/* big letters */
+.big3{display:flex;gap:4vmin;align-items:flex-end}
+.letter{font-weight:900;font-size:34vmin;line-height:.78;letter-spacing:-.05em}
+.lt{display:flex;flex-direction:column;gap:2vmin;flex:1 1 0;min-width:0}
+.lt p{font-size:3vmin;line-height:1.22;max-width:30ch}
+.lt b{font-family:var(--mono);font-weight:500;font-size:var(--tm);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+
+/* animated pipeline: stages from the HTML, a packet travels through them */
+.pipe{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4vmin;flex:0 0 auto;position:relative}
+.ps{position:relative;background:var(--wash);padding:1.5vmin 1.8vmin 1.7vmin;display:flex;flex-direction:column;gap:.5vmin;border-top:4px solid var(--faint);transition:background .35s,color .35s,border-color .35s}
+.ps em{font-style:normal;font-family:var(--mono);font-size:var(--tm);color:var(--muted)}
+.ps b{font-weight:800;font-size:3.2vmin;letter-spacing:-.025em;line-height:1.05}
+.ps span{font-family:var(--mono);font-size:var(--tm);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.ps.done{border-top-color:var(--ink)}
+.ps.on{background:var(--ink);color:#fff;border-top-color:var(--accent)}
+.ps.on em,.ps.on span{color:#aaa}
+.ps:not(:last-child)::after{content:"";position:absolute;left:100%;top:50%;width:4vmin;height:2px;background:repeating-linear-gradient(90deg,var(--faint) 0 .6vmin,transparent .6vmin 1.2vmin)}
+.ps.done::after{background:repeating-linear-gradient(90deg,var(--accent) 0 .6vmin,transparent .6vmin 1.2vmin);animation:dash .5s linear infinite}
+@keyframes dash{from{background-position:0 0}to{background-position:1.2vmin 0}}
+.pp-lane{position:relative;flex:1 1 auto;min-height:22vmin}
+.pk{position:absolute;top:4vmin;left:0;width:30vmin;margin-left:-15vmin;display:flex;flex-direction:column;align-items:center;gap:1vmin;transition:left .8s cubic-bezier(.4,0,.2,1),opacity .3s ease}
+.pk.jump{transition:none}
+.pk::before{content:"";position:absolute;left:50%;top:-4vmin;height:3.2vmin;border-left:2px solid var(--accent)}
+.pk svg{width:100%;height:18vmin;display:block;overflow:visible;animation:pop .4s ease}
+.pk i{font-style:normal;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--accent);white-space:nowrap}
+
+/* graph built step by step */
+.kgs text{paint-order:stroke;stroke:var(--bg);stroke-width:6px;stroke-linejoin:round}
+.kgs .nl{font-weight:700;font-size:18px;stroke:none}
+.kgs .el{font-family:var(--mono);font-size:13px;fill:var(--muted)}
+.kgs .ge{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .8s ease .15s}
+.kgs [data-at].on .ge{stroke-dashoffset:0}
+
+/* split slide: black half / crimson half */
+.slide.duo{flex-direction:row;gap:0;padding:0}
+.duo .half{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:3vmin;padding:var(--pad);padding-bottom:calc(var(--pad) + 2.6vmin)}
+.duo .half.hd{background:var(--ink);color:#fff;--muted:#8d8d8d;--faint:#3a3a3a;--wash:#1a1a1a;--wash2:#262626;--accent:#d6324a}
+.duo .half.hd .acc{color:var(--accent)}
+.duo .half .h{font-size:4.6vmin}
+.wrows{flex:1 1 auto;display:flex;flex-direction:column;min-height:0}
+.wr{flex:1 1 0;display:grid;grid-template-columns:14vmin 1fr 4vmin;align-items:center;gap:1.6vmin;border-top:1.5px solid rgba(255,255,255,.3);font-size:2.4vmin;line-height:1.2}
+.hd .wr{border-top-color:#3a3a3a}
+.wk{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.75)}
+.wr p{font-weight:500}
+.wr p small{display:block;font-family:var(--mono);font-weight:400;font-size:1.6vmin;opacity:.75;margin-top:.3vmin}
+.hd .wk{color:#8d8d8d}
+.wv{font-style:normal;font-weight:900;font-size:3.4vmin;text-align:right;color:#fff}
+.hd .wv{color:var(--accent)}
+
+/* milestones / takeaways */
+.ms{display:flex;flex-direction:column;flex:1 1 auto;justify-content:center}
+.msr{display:grid;grid-template-columns:10vmin 34vmin 1fr;gap:2vmin;align-items:baseline;border-top:1.5px solid var(--faint);padding:1.5vmin 0}
+.msr .mt{font-family:var(--mono);font-size:2.2vmin;color:var(--accent)}
+.msr b{font-weight:800;font-size:3.2vmin;letter-spacing:-.02em}
+.msr p{font-size:var(--t);line-height:1.25}
+.msr.acc b{color:var(--accent)}
+
+/* live demo: a web page inside the slide */
+.dwin{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;border:2px solid var(--ink);background:var(--bg);outline:3px solid transparent;outline-offset:3px;transition:outline-color .2s}
+body.in-frame .slide.active .dwin{outline-color:var(--accent)}
+.dbar{display:flex;align-items:center;gap:1vmin;padding:.8vmin 1.2vmin;background:var(--ink);color:#bbb;font-family:var(--mono);font-size:var(--tm);flex:0 0 auto}
+.dbar>i{width:1.2vmin;height:1.2vmin;border-radius:50%;background:#555;flex:none}
+.dbar>i:first-child{background:#d6324a;animation:blink 1.4s steps(1) infinite}
+@keyframes blink{50%{opacity:.25}}
+.durl{margin-left:1vmin;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 auto}
+.dhint{color:#8d8d8d;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;margin-right:1vmin}
+.dhint .in,body.in-frame .dhint .out{display:none}
+body.in-frame .dhint .in{display:inline;color:#d6324a}
+.dbar .btn{color:#ddd;border-color:#444;padding:.3vmin .9vmin;text-decoration:none;white-space:nowrap}
+.dbar .btn.on{background:#fff;color:var(--ink);border-color:#fff}
+.dbar .sep{width:1px;align-self:stretch;background:#444;margin:0 .4vmin;font-style:normal}
+.dview{position:relative;flex:1 1 auto;min-height:0;overflow:hidden;background:var(--wash)}
+.dview iframe{position:absolute;left:0;top:0;width:100%;height:100%;border:0;transform-origin:0 0}
+.dfall{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vmin;text-align:center;padding:4vmin;color:var(--muted)}
+.dfall b{font-weight:800;font-size:3.4vmin;letter-spacing:-.025em;color:var(--ink)}
+.dfall p{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;max-width:60ch;line-height:1.5}
+.dwin.max{position:fixed;inset:0;z-index:30;border:0;outline:0}
+/* demo server notice, when the slides are opened as a file */
+#ds{position:fixed;left:var(--pad);bottom:calc(var(--pad) + 1vmin);z-index:25;max-width:min(120vmin,88vw);display:none;align-items:center;gap:1.4vmin;
+  background:var(--ink);color:#ddd;border-left:4px solid #d6324a;padding:1.2vmin 1.4vmin 1.2vmin 1.8vmin;font-family:var(--mono);font-size:clamp(11px,1.6vmin,16px);line-height:1.45;box-shadow:0 1vmin 3vmin rgba(0,0,0,.25)}
+#ds.on{display:flex}
+#ds>b{color:#d6324a;font-weight:500;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+#ds>span{flex:1 1 auto;min-width:0}
+#ds code{background:#262626;color:#fff;font-size:1em}
+#ds .btn{color:#fff;border-color:#555;padding:.3vmin .9vmin}
+#ds .btn.go{background:#d6324a;border-color:#d6324a}
+#ds .x{border:0;color:#8d8d8d;font-size:1.4em;line-height:1;padding:0 .3vmin;margin-left:auto}
+
+/* modal */
+.why{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;padding:.2vmin .9vmin;margin-left:.6vmin;background:var(--accent);color:#fff;border:0;cursor:pointer;vertical-align:.2vmin}
+.modal{position:fixed;inset:0;z-index:20;background:rgba(13,13,13,.55);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.modal.open{opacity:1;visibility:visible}
+.mbox{position:relative;background:var(--bg);color:var(--ink);width:min(150vmin,92vw);max-height:88vh;overflow:auto;padding:4vmin 4.5vmin;border-top:6px solid var(--accent);display:flex;flex-direction:column;gap:2.4vmin}
+.mbox h3{font-weight:800;font-size:4.2vmin;line-height:1.05;letter-spacing:-.03em}
+.mrows{display:grid;grid-template-columns:1fr 1fr;gap:2.4vmin 4vmin}
+.mclose{position:absolute;right:2vmin;top:1.4vmin;background:none;border:0;font-size:5vmin;line-height:1;cursor:pointer;color:var(--muted)}
+@media (max-aspect-ratio:1/1){.mrows{grid-template-columns:1fr}}
+
+/* misc */
+.legend{display:flex;gap:2.4vmin;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--muted);flex-wrap:wrap;align-items:center}
+.legend i{display:inline-block;width:1.8vmin;height:1.8vmin;vertical-align:-.25vmin;margin-right:.7vmin;font-style:normal}
+.sw-a{background:var(--accent)}.sw-i{background:var(--ink)}.sw-w{background:var(--wash2)}.sw-f{background:var(--faint)}
+.dark .sw-i{background:#fff}
+/* ---------- behind the scenes: components added for this deck ---------- */
+[hidden]{display:none!important}
+.kgs .ph,.kgs .pn{transition:opacity .4s ease}
+
+/* full-bleed picture (or live page) behind a slide */
+.bgimg,.bgframe{position:absolute;inset:0;width:100%;height:100%;border:0;background-size:cover;background-position:center;z-index:0}
+.bgimg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,13,13,.9) 0%,rgba(13,13,13,.62) 55%,rgba(13,13,13,.3) 100%)}
+.bgimg.light::after{background:rgba(255,255,255,.88)}
+.bgframe{opacity:.45;pointer-events:none;filter:grayscale(1) invert(1) brightness(.85)}   /* a light map turned into a night map */
+.bgvid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:0 50%;transform:scale(1.55);transform-origin:0 50%;opacity:.3;filter:grayscale(.4);pointer-events:none;z-index:0}
+.slide.bg>*:not(.bgimg):not(.bgframe):not(.bgvid):not(.mosaic):not(.notes){position:relative;z-index:1}
+/* a wall of project pictures behind a slide */
+.mosaic{position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:1fr;gap:2px;z-index:0;overflow:hidden}
+.mosaic img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1);opacity:.32}
+.mosaic::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,13,13,.92) 0%,rgba(13,13,13,.7) 60%,rgba(13,13,13,.45) 100%)}
+/* lab cards: four, with a picture and the projects in the footer */
+.cards.c4p .cd{min-height:0}
+.cards.c4p .cd .ft{font-size:1.5vmin;line-height:1.35}
+/* funder logos under the numbers */
+.funders{display:flex;align-items:center;gap:3vmin;flex-wrap:wrap}
+.funders img{height:5.5vmin;width:auto;max-width:30%;object-fit:contain;display:block}
+.dark .nums>div{border-top-color:#fff}
+
+/* "not yet public": a small tag next to things shown behind the scenes */
+.wip{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;color:var(--accent);border:1.5px dashed var(--accent);padding:.2vmin .8vmin;vertical-align:.4vmin;margin-left:1vmin;white-space:nowrap;font-weight:500}
+.h .wip{font-size:1.6vmin;letter-spacing:.04em}
+
+/* a video in a browser-like frame */
+.vwin{flex:1 1 auto;min-height:0;min-width:0;display:flex;flex-direction:column;border:2px solid var(--ink);background:#111}
+.dark .vwin{border-color:#3a3a3a}
+.vwin video{flex:1 1 0;min-height:0;width:100%;object-fit:contain;display:block;background:#111}
+.vwin.g1{flex:1 1 0}.vwin.g15{flex:1.5 1 0}.vwin.g2{flex:2 1 0}
+
+/* feature reel: buttons that play one clip each */
+.rls{display:flex;flex-direction:column;gap:.6vmin}
+.rl{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:.35vmin;padding:1.1vmin 1.5vmin;border-left:3px solid var(--faint);position:relative;transition:border-color .3s,background .3s}
+.rl:focus-visible{outline:2px solid var(--accent)}
+.rl b{font-family:var(--mono);font-weight:500;font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.rl span{font-size:2.3vmin;line-height:1.2}
+.rl i{position:absolute;left:-3px;top:0;width:3px;height:0;background:var(--accent)}
+.rl.on{background:var(--wash)}
+.rl.on b{color:var(--accent)}
+
+/* paired bars: a against b, on one scale or as a share of the row */
+.bps{display:flex;flex-direction:column;gap:1.5vmin;width:100%}
+.bp{display:grid;grid-template-columns:var(--lw,22ch) 1fr var(--vw,17ch);align-items:center;gap:1.6vmin}
+.bp .l{font-size:2.3vmin;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bp .tr{position:relative;height:4.4vmin;background:var(--wash)}
+.bp i{position:absolute;display:block;transition:width .8s cubic-bezier(.2,.8,.2,1),left .8s cubic-bezier(.2,.8,.2,1),top .5s ease,height .5s ease}
+.bp .fa{background:var(--accent)}
+.bp .fb{background:var(--ink)}
+.bp .vl{font-family:var(--mono);font-size:1.9vmin;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+.bp .vl b{font-weight:500;color:var(--accent)}
+
+/* then / now: swipe or spyglass between two pictures */
+.sw{position:relative;width:100%;max-height:100%;aspect-ratio:3/2;overflow:hidden;cursor:ew-resize;touch-action:none;background:var(--ink);--x:50%;--y:50%}
+.sw img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.sw .then{clip-path:inset(0 calc(100% - var(--x)) 0 0)}
+.sw .bar{position:absolute;top:0;bottom:0;left:var(--x);width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.sw .bar::after{content:"‹ ›";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--accent);color:#fff;font-family:var(--mono);font-size:1.8vmin;padding:.5vmin 1vmin;border-radius:2vmin;white-space:nowrap}
+.sw.spy{cursor:crosshair}
+.sw.spy .then{clip-path:circle(15vmin at var(--x) var(--y))}
+.sw.spy .bar{display:none}
+.sw .cap{position:absolute;bottom:1.4vmin;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;color:#fff;background:rgba(13,13,13,.65);padding:.3vmin .8vmin}
+.sw .cap.l{left:1.4vmin}.sw .cap.r{right:1.4vmin}
+
+/* timeline of events, step by step */
+.tl{position:relative;flex:1 1 auto;min-height:0;margin:0 1vmin 0 2vmin}
+.tl-axis{position:absolute;left:0;right:0;top:56%;border-top:3px solid currentColor}
+.tl-axis span{position:absolute;top:1.2vmin;transform:translateX(-50%);font-family:var(--mono);font-size:var(--tm);color:var(--muted)}
+.tle{position:absolute;left:var(--x);width:34vmin;padding:0 0 0 1.6vmin;border-left:2px solid var(--accent);display:flex;flex-direction:column;gap:.5vmin}
+.tle::before{content:"";position:absolute;left:-1vmin;width:1.8vmin;height:1.8vmin;border-radius:50%;background:var(--accent)}
+.tle.up{bottom:44%;padding-bottom:3vmin}.tle.up::before{bottom:-1vmin}
+.tl-axis i{position:absolute;top:-3px;height:3px;background:var(--bg);border-top:3px dashed var(--faint)}
+.tle.rt{left:auto;right:calc(100% - var(--x));padding:0 1.6vmin 0 0;border-left:0;border-right:2px solid var(--accent);text-align:right;align-items:flex-end}
+.tle.rt::before{left:auto;right:-1vmin}
+.tle.up.rt{padding-bottom:3vmin}
+.tle.dn{top:56%;padding-top:5vmin}.tle.dn::before{top:-1vmin}
+.tle b{font-weight:900;font-size:6vmin;line-height:.9;letter-spacing:-.04em;color:var(--accent)}
+.tle p{font-size:2.2vmin;line-height:1.25}
+.tle em{font-style:normal;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+
+/* demo rail: the steps of a live demo, advanced with → */
+.rail{display:flex;gap:.7vmin;list-style:none;counter-reset:r;flex:0 0 auto;flex-wrap:wrap;align-items:center}
+.rail li{counter-increment:r;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:.45vmin 1.1vmin;border:1.5px solid var(--faint);transition:background .3s,color .3s,border-color .3s}
+.rail li::before{content:counter(r) " · "}
+.rail li.done{color:var(--ink);border-color:var(--ink)}
+.rail li.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.rail .rh{font-family:var(--mono);font-size:var(--tm);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-right:.6vmin;list-style:none;counter-increment:none;border:0;padding:0}
+.rail .rh::before{content:none}
+
+/* cards with a picture */
+.cd>img{width:calc(100% + 4.4vmin);margin:-2.2vmin -2.2vmin .4vmin;aspect-ratio:16/9;object-fit:cover;display:block}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.cards.c3 .cd{min-height:0}
+.cards.short .cd{min-height:30vmin}
+/* records that become a web of relations: the table makes room for the graph */
+.rg{gap:3vmin}
+.rg .recs{flex:3 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden;transition:flex .9s cubic-bezier(.6,0,.2,1)}
+.rg .rgg{flex:.001 1 0;min-width:0;opacity:0;transition:flex .9s cubic-bezier(.6,0,.2,1),opacity .6s ease .5s}
+.slide[data-k="2"] .rg .recs,.slide[data-k="3"] .rg .recs{flex:1 1 0}
+.slide[data-k="2"] .rg .rgg,.slide[data-k="3"] .rg .rgg{flex:1.45 1 0;opacity:1}
+.slide[data-k="2"] .rt .c3,.slide[data-k="3"] .rt .c3{display:none}
+.slide[data-k="2"] .rt,.slide[data-k="3"] .rt{font-size:1.8vmin}
+.rt td{white-space:nowrap;transition:background .4s,color .4s,box-shadow .4s}
+.rt td.n0{font-family:var(--mono);color:var(--muted)}
+.slide:not([data-k="0"]) .rt .nm{background:var(--soft);color:var(--accent);font-weight:700}
+.slide:not([data-k="0"]) .rt .wf{color:var(--accent)}
+.slide:not([data-k="0"]) .rt .s1{box-shadow:inset 0 -3px 0 #9a9a9a}
+.slide:not([data-k="0"]) .rt .s2{box-shadow:inset 0 -3px 0 var(--ink)}
+/* data model: the Wikipedia example belongs to step 3 only; step 4 is the Florentia example */
+.dm .ext[data-at]{transition:opacity .45s ease}
+.slide[data-k="4"] .dm .ext{opacity:0}
+/* three outputs that come together: the outer cards glide in at the last step */
+.tw .tool{transition:transform 1s cubic-bezier(.6,0,.2,1)}
+.slide[data-k="3"] .tw .tool.l{transform:translateX(70px)}
+.slide[data-k="3"] .tw .tool.r{transform:translateX(-70px)}
+.slide[data-k="3"] .tw .q{opacity:0}
+.tw .join[data-at]{transition:opacity .5s ease .8s}
+/* extend, don't rebuild: a footprint is drawn, the ghost idea fades, the bridge is built, the footprint travels across */
+.brg2 .drawn{stroke-dasharray:1;stroke-dashoffset:1}
+.slide.active .brg2 .drawn{animation:drawin 1.4s ease .4s forwards}
+@keyframes drawin{to{stroke-dashoffset:0}}
+.brg2 .fillin{opacity:0}
+.slide.active .brg2 .fillin{animation:cdin .6s ease 1.6s forwards}
+.brg2 .ghost{transition:opacity .5s ease}
+.slide[data-k="1"] .brg2 .ghost,.slide[data-k="2"] .brg2 .ghost{opacity:0}
+.brg2 .deck{transform-box:fill-box;transform-origin:left center;transform:scaleX(0);transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.brg2 .bridge.on .deck{transform:none}
+@keyframes trav{0%,10%{transform:translate(0,0)}75%{transform:translate(500px,0)}100%{transform:translate(580px,-67px)}}
+.slide[data-k="2"] .brg2 .trav{animation:trav 2.4s cubic-bezier(.5,0,.3,1) forwards}
+.brg2 .land[data-at]{transition:opacity .5s ease 2.2s}
+@keyframes tlh{to{transform:translateX(126px)}}
+.slide[data-k="2"] .brg2 .tl-hand{animation:tlh 3s ease-in-out 2.8s infinite alternate}
+/* today / what we want: on the dark half the crosses stay grey, crimson is kept for the aim */
+.now-aim .hd .wv{color:#8d8d8d}
+.cd>svg.ic{width:100%;height:11vmin;display:block;margin-bottom:.6vmin}
+
+/* a register scrolls by, slows down and stops on one name, which opens into its record */
+.lg-wrap{position:relative}
+.ledger{position:absolute;inset:0;display:flex;flex-direction:column;border:2px solid var(--ink);background:var(--bg);transition:opacity .6s ease}
+.ledger .lg-h{display:flex;justify-content:space-between;gap:2vmin;background:var(--ink);color:#fff;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;padding:1vmin 1.6vmin}
+.lg-v{position:relative;flex:1 1 auto;overflow:hidden;-webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent)}
+.lg-in{position:absolute;left:0;right:0;top:0;will-change:transform}
+.lg-r{display:grid;grid-template-columns:7ch 1.5fr .9fr 1.3fr;gap:1.4vmin;align-items:baseline;padding:.6vmin 1.6vmin;font-size:2vmin;line-height:1.25;border-bottom:1px solid var(--wash2);transform-origin:0 50%;transition:opacity .5s ease,transform .6s ease,color .3s,background .3s}
+.lg-r i{font-style:normal;font-family:var(--mono);font-size:1.6vmin;color:var(--muted)}
+.lg-r b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg-r span,.lg-r em{font-style:normal;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ledger.focus .lg-r{opacity:.1}
+.ledger.focus .lg-r.me{opacity:1;color:var(--accent);background:var(--soft);transform:scale(1.1)}
+.ledger.focus .lg-r.me i,.ledger.focus .lg-r.me span,.ledger.focus .lg-r.me em{color:var(--accent)}
+.lg-wrap.done .ledger{opacity:0;pointer-events:none}
+.lg-wrap .rec{transition:opacity .5s ease}
+.lg-wrap:not(.done) .rec{opacity:0}
+.slide.active .lg-wrap:not(.done) .rec .f{animation:none}
+
+/* "why it matters": archives that appear one by one, an archival record filled in field by field */
+.kgs .arch{opacity:0}
+.slide.active .kgs .arch{animation:cdin .6s ease forwards;animation-delay:var(--d)}
+.rec{width:100%;border:2px solid var(--ink);background:var(--bg);display:flex;flex-direction:column}
+.rec .rh{display:flex;justify-content:space-between;gap:2vmin;background:var(--ink);color:#fff;font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;padding:1vmin 1.6vmin}
+.rec .f{display:grid;grid-template-columns:16ch 1fr;gap:1.6vmin;align-items:baseline;padding:1.5vmin 1.6vmin;border-top:1px solid var(--faint);opacity:0;transform:translateX(-1vmin)}
+.slide.active .rec .f{animation:cdin .5s ease forwards;animation-delay:var(--d)}
+.rec .f span{font-family:var(--mono);font-size:var(--tm);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.rec .f b{font-size:3vmin;font-weight:700;letter-spacing:-.015em;line-height:1.2}
+.rec .f b em{font-style:normal;font-weight:400;color:var(--muted)}
+.rec .f.hl b{color:var(--accent)}
+
+/* "extend, don't rebuild": the bridge opens between the two blocks */
+.brg .bridge rect{transform-box:fill-box;transform-origin:center;transform:scaleX(0);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.brg .bridge.on rect{transform:none}
+/* a place as a network: footprints of other phases disappear, events not yet happened fade, the city appears */
+.pl .ph.off{opacity:0}
+.pl .row.ahead{opacity:.14!important}
+.pl-net{transform-box:view-box;transform-origin:500px 65px;transition:transform 1.3s cubic-bezier(.6,0,.2,1),opacity .7s ease .5s}
+.pl-net.out{opacity:0}
+.pl-city[data-at]{transition:opacity .8s ease .6s}
+.pl-city .bld{fill:var(--wash2);stroke:#bdbab3;stroke-width:1}
+.pl-city .home{fill:var(--soft);stroke:var(--accent);stroke-width:2.5}
+.pl-city .mini{opacity:0;transition:opacity .5s ease}
+.pl-city.on .mini{opacity:1;transition-delay:var(--d)}
+
+@media (max-aspect-ratio:3/2){.code{font-size:1.68vmin}.code.sm{font-size:1.5vmin}}
+@media (max-aspect-ratio:1/1){.body{flex-direction:column}.cards,.nums,.who{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0d0d0d"/></marker>
+    <marker id="aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#a51c30"/></marker>
+    <marker id="ahw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#fff"/></marker>
+    <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#9a9a9a"/></marker>
+    <!-- digiTatti arc, drawn in currentColor so it works on any background -->
+    <symbol id="dt-arc" viewBox="0 0 220 224"><path fill="none" stroke="currentColor" stroke-width=".9" vector-effect="non-scaling-stroke" d="M0 223L146 223M1.2 200.2L146.4 215.4M4.8 177.6L147.6 207.9M10.7 155.5L149.5 200.6M18.9 134.1L152.3 193.5M29.3 113.8L155.7 186.8M41.7 94.6L159.8 180.4M56.1 76.8L164.6 174.5M72.3 60.6L170 169.1M90.1 46.2L175.9 164.3M109.2 33.8L182.2 160.2M129.6 23.4L189 156.8M151 15.2L196.1 154M173.1 9.3L203.4 152.1M195.7 5.7L210.9 150.9M218.5 4.5L218.5 150.5M64.5 223L65.3 206.9M67.9 191L72 175.4M77.8 160.4L85.1 146M93.9 132.5L104.1 120M115.5 108.6L128 98.4M141.5 89.6L155.9 82.3M170.9 76.5L186.5 72.4M202.4 69.8L218.5 69"/></symbol>
+  </defs>
+</svg>
+
+<!-- ================= OPENING ================= -->
+<section class="slide">
+  <div class="logos">
+    <img class="lg-it" src="assets/itatti_logo.png" alt="I Tatti, The Harvard University Center for Italian Renaissance Studies">
+    <i class="sep"></i>
+    <img class="lg-hv" src="assets/harvard_logo.svg" alt="Harvard University">
+    <i class="sep"></i>
+    <span class="dt" role="img" aria-label="digiTatti, the Harvard digital humanities lab for early modern studies"><svg viewBox="0 0 220 224"><use href="#dt-arc"/></svg><span><b>digiTatti</b><small>the Harvard<br>digital humanities lab<br>for early modern studies</small></span></span>
+  </div>
+  <div class="fit"><p>Mapping Connections: Behind the Scenes <span class="dim">at the</span> <span class="acc">I Tatti</span> <span class="dim">Digital Humanities Lab.</span></p></div>
+  <div class="who">
+    <div><b>Lukas Klic</b><span>Head of Digital Humanities Research</span></div>
+    <div><b>Remo Grillo</b><span>Digital Humanities Research Software Engineer</span></div>
+    <div><b>Gianmarco Spinaci</b><span>Digital Humanities Research Software Engineer</span></div>
+  </div>
+  <div class="lab"><span>Webinar · 8:30 am</span><span>Wednesday 28 October 2026</span></div>
+  <aside class="notes">Mapping Connections: Behind the Scenes at the I Tatti Digital Humanities Lab. This part: Metapolis, Spatializing Histories Through Archival Sources. Behind the scenes: much of what we show today is work in progress, not yet public. Keys: → next (on demo slides → first walks through the demo steps), ← back, N notes, F fullscreen. Florentia and VeNiss both need a login: present through the demo server (node demo-server.mjs in this folder) and log in inside the frames.</aside>
+</section>
+
+<section class="slide c" data-w="plan">
+  <div class="lab"><span>today</span><span>introduction · projects · Q&amp;A</span></div>
+  <h2 class="h">The plan.</h2>
+  <div class="plan">
+    <div class="grp" data-n="1.6">
+      <div class="gh"><b>I · Introduction</b><span>the lab</span></div>
+      <div class="agenda">
+        <div><div class="nm">Who we are</div><div class="tm">mission · our work · how the lab grew</div><div class="blk"></div></div>
+      </div>
+    </div>
+    <div class="grp a">
+      <div class="gh"><b>II · The projects</b><span>for each: the problem it solves, the idea, a live look</span></div>
+      <div class="agenda">
+        <div><div class="nm">Metapolis</div><div class="tm">places through time</div><div class="blk a"></div></div>
+        <div><div class="nm">Florentia Illustrata</div><div class="tm">Florence, 1835</div><div class="blk a"></div></div>
+        <div><div class="nm">VeNiss</div><div class="tm">the Venetian lagoon</div><div class="blk a"></div></div>
+      </div>
+    </div>
+    <div class="grp w" data-n=".8">
+      <div class="gh"><b>III · Q&amp;A</b><span>&nbsp;</span></div>
+      <div class="agenda">
+        <div><div class="nm mut">Questions</div><div class="tm">&nbsp;</div><div class="blk w"></div></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Three parts. First, the lab: our mission, the kind of work we do, and how the lab has grown. Then the projects, one at a time; for each, the problem it solves that nobody had solved before, the idea behind it, why it matters, and a look at it live. We close with questions. (Editing: each project is one bar in part II and the part widens by itself, so add a project by copying a bar; Metapolis, Florentia Illustrata and VeNiss are three separate projects, more will follow.)</aside>
+</section>
+
+<!-- ================= PART I · THE LAB ================= -->
+<section class="slide red">
+  <div class="lab part"><span>part one</span><span>I / III</span></div>
+  <div class="fit" style="font-weight:900"><p>the lab</p></div>
+</section>
+
+<section class="slide dark bg">
+  <div class="mosaic" aria-hidden="true"><img src="assets/img/projects/Metapolis.jpg" alt=""><img src="assets/img/projects/ailibris.jpg" alt=""><img src="assets/img/projects/florentia_illustrata.jpg" alt=""><img src="assets/img/projects/bellegreene.jpg" alt=""><img src="assets/img/projects/Archipelago.jpg" alt=""><img src="assets/img/projects/repim.jpg" alt=""><img src="assets/img/projects/vision.jpg" alt=""><img src="assets/img/projects/florentine_drawings.jpg" alt=""><img src="assets/img/projects/pharos.jpg" alt=""><img src="assets/img/projects/cria.jpg" alt=""><img src="assets/img/projects/yashiro.jpg" alt=""><img src="assets/img/projects/GestureinItalianEarlyRenaissanceArt.jpg" alt=""><img src="assets/img/projects/ner.jpg" alt=""><img src="assets/img/projects/artcollection.jpg" alt=""><img src="assets/img/projects/toweringrome.jpg" alt=""><img src="assets/img/projects/semantic-publishing.jpg" alt=""><img src="assets/img/projects/BuildingBaroqueRome2.jpg" alt=""><img src="assets/img/projects/mappingsculture.jpg" alt=""><img src="assets/img/projects/saphir.jpg" alt=""><img src="assets/img/projects/cidocperiodictable.jpg" alt=""><img src="assets/img/projects/MappingtheMedievalWoman.jpg" alt=""><img src="assets/img/projects/catherinaafterlife.jpg" alt=""><img src="assets/img/projects/Metapolis.jpg" alt=""><img src="assets/img/projects/repim.jpg" alt=""></div>
+  <div class="lab"><span>the lab · 01</span><span>our mission</span></div>
+  <div class="fit"><p><span class="reg">The Digital Humanities Lab is an</span> incubator <span class="reg">of new ideas and methods that use</span> <span class="acc">technology</span> <span class="reg">to answer broader questions about the</span> <span class="acc">history of culture</span> <span class="reg">in the early modern period.</span></p></div>
+  <div class="lab"><span>digiTatti · the Harvard digital humanities lab for early modern studies · dh.itatti.harvard.edu</span></div>
+  <aside class="notes">Our mission, in the words of our website: the Digital Humanities Lab at I Tatti is an incubator of new ideas and methods that use technology to answer broader questions about the history of culture in the early modern period. Behind the text, the projects the lab has worked on.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>the lab · 02</span><span>what we do</span></div>
+  <h2 class="h">Four kinds of work, <span class="acc">one aim</span>.</h2>
+  <div class="cards c4p">
+    <div class="cd" style="--d:.1s"><img src="assets/img/projects/Metapolis.jpg" alt="Metapolis: a historical map with linked sources"><b>01 · places through time</b><h5>Mapping the past</h5><p>Cities and landscapes rebuilt on the map, year by year, with the evidence attached.</p><div class="ft">Metapolis · Florentia Illustrata · VeNiss · Towering over Rome</div></div>
+    <div class="cd" style="--d:.3s"><img src="assets/img/projects/ailibris.jpg" alt="AI-Libris: a page of a printed catalogue turned into data"><b>02 · books to data</b><h5>Reading at scale</h5><p>AI that turns printed books, letters and catalogues into data scholars can search and question.</p><div class="ft">AI-Libris · Named Entity Recognition · Belle da Costa Greene letters</div></div>
+    <div class="cd" style="--d:.5s"><img src="assets/img/projects/vision.jpg" alt="Linked Open Images: visually similar artworks"><b>03 · seeing</b><h5>Computers that look</h5><p>Visual similarity, gesture and iconography: new ways to study images and works of art.</p><div class="ft">Linked Open Images · Gesture in Renaissance Art · SAPHIR</div></div>
+    <div class="cd a" style="--d:.7s"><img src="assets/img/projects/pharos.jpg" alt="PHAROS: photo archives of art history"><b>04 · shared infrastructure</b><h5>Open, connected collections</h5><p>Archives and collections published as linked open data, built to be reused by others.</p><div class="ft">PHAROS · Berenson Art Collection · REPIM · CRIA</div></div>
+  </div>
+  <aside class="notes">What we do falls into four kinds of work. Mapping the past: rebuilding places through time, with the sources attached; Metapolis, Florentia Illustrata and VeNiss, which we will see today, belong here. Reading at scale: AI that turns books, letters and catalogues into data, as in AI-Libris, which turned Berenson's catalogue of Italian painters into a searchable website. Seeing: computers that help study images, from visual similarity to gesture. And shared infrastructure: archives and collections published as linked open data, such as PHAROS, the consortium of photo archives. One aim across all four: new questions about early modern culture.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>the lab · 03</span><span>how the lab grew · step through with →</span></div>
+  <h2 class="h">From fellowships <span class="acc">to research infrastructure</span>.</h2>
+  <div class="tl">
+    <div class="tl-axis"></div>
+    <div class="tle up" data-at="1" style="--x:3%"><b>2016</b><p>The first Digital Humanities fellows, supported by Mellon and Kress.</p><em>fellowships</em></div>
+    <div class="tle dn" data-at="2" style="--x:20%"><b>2018</b><p>Florentia Illustrata founded: shared research on Renaissance Florence.</p><em>partnerships</em></div>
+    <div class="tle up" data-at="3" style="--x:32%"><b>2019</b><p>Archipelago: the lab's own team maps the islands of the Venetian lagoon.</p><em>in-house research</em></div>
+    <div class="tle dn" data-at="4" style="--x:58%"><b>2022</b><p>NEH grant for Metapolis, an open platform for mapping history.</p><em>infrastructure</em></div>
+    <div class="tle up rt" data-at="5" style="--x:72%"><b>2023</b><p>VeNiss: a European Research Council grant grows out of the lab.</p><em>major funding</em></div>
+    <div class="tle up rt" data-at="6" style="--x:95%"><b>2026</b><p>22 projects and 12 fellows, on one shared platform.</p><em>today</em></div>
+  </div>
+  <aside class="notes">How the lab grew. (DRAFT: dates taken from the website and this deck; check them and add the lab's founding and other milestones.) It began in 2016 with fellowships: scholars who came to I Tatti with a digital project. In 2018 Florentia Illustrata brought partners together around Renaissance Florence. From 2019 the lab ran its own research, Archipelago, mapping the islands of the Venetian lagoon. In 2022 an NEH grant funded Metapolis, a platform others can build on. In 2023 VeNiss, a European Research Council grant, grew out of that work. Today: 22 projects and 12 fellows.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>the lab · 04</span><span>in numbers</span></div>
+  <h2 class="h">The lab <span class="acc">in numbers</span>.</h2>
+  <div class="nums">
+    <div class="a"><div class="stat"><span data-count="22">22</span><small>projects</small></div><p>Mapping, AI, images and open collections, from Florence and Venice to Rome.</p></div>
+    <div><div class="stat"><span data-count="12">12</span><small>fellows since 2016</small></div><p>Scholars who came to I Tatti with a digital question, and left with a project.</p></div>
+    <div><div class="stat"><span data-count="3">3</span><small>major funders</small></div><p>The National Endowment for the Humanities, the Kress Foundation and the European Research Council.</p><div class="funders"><img src="assets/img/neh_logo.jpg" alt="National Endowment for the Humanities"><img src="assets/img/kress_logo.png" alt="Samuel H. Kress Foundation"><img src="assets/img/erc_logo.png" alt="European Research Council"></div></div>
+  </div>
+  <aside class="notes">The lab in numbers: 22 projects, 12 Digital Humanities fellows since 2016, and support from the National Endowment for the Humanities, the Kress Foundation and the European Research Council. (Figures from dh.itatti.harvard.edu; update if they have changed.)</aside>
+</section>
+
+<!-- ================= PART II · THE PROJECTS · METAPOLIS ================= -->
+<section class="slide red">
+  <div class="lab part"><span>part two · the projects · 01</span><span>II / III</span></div>
+  <div class="fit" style="font-weight:900"><p>metapolis</p></div>
+  <div class="lab" style="color:#fff"><span>NEH Digital Humanities Advancement Grant · built on an open-source research platform</span></div>
+</section>
+
+<section class="slide c" data-w="ledger">
+  <div class="lab"><span>metapolis · why it matters · 01</span><span>Florence, 1835 · step through with →</span></div>
+  <h2 class="h">Behind every record, <span class="acc">a life</span>.</h2>
+  <div class="body">
+    <div class="col g15 mid lg-wrap">
+      <div class="ledger" aria-hidden="true">
+        <div class="lg-h"><span>Catasto Generale Toscano · Florence</span><span>1835</span></div>
+        <div class="lg-v"><div class="lg-in"><div class="lg-r"><i>1</i><b>Calamai, Costanza</b><span>casa</span><em>Via Faenza</em></div><div class="lg-r"><i>88</i><b>Piatti, Costantino</b><span>casa</span><em>Via Evangelista</em></div><div class="lg-r"><i>178</i><b>Pecchioli, Giuseppe</b><span>ingresso</span><em>Via Panicale</em></div><div class="lg-r"><i>276</i><b>Masini, Pietro</b><span>ingresso</span><em>Via Chiara</em></div><div class="lg-r"><i>371</i><b>Capacci, Celso</b><span>bottega e corte</span><em>Via dei Ginori</em></div><div class="lg-r"><i>459</i><b>Bacci, Alessandro</b><span>bottega</span><em>Via delle Cantonelle</em></div><div class="lg-r"><i>573</i><b>Nencioni, Pietro</b><span>bottega</span><em>Via Porciaia</em></div><div class="lg-r"><i>672</i><b>Melani, Antonio Maria</b><span>casa</span><em>Via Romita</em></div><div class="lg-r"><i>765</i><b>Valenti, Giovacchino</b><span>ingresso e corte</span><em>Via della Stipa</em></div><div class="lg-r"><i>859</i><b>Gargani, Vincenzo</b><span>ingresso</span><em>Campo Corbolini</em></div><div class="lg-r"><i>947</i><b>Moulinier, Bernardo</b><span>casa</span><em>Via dell&#x27;Amorino</em></div><div class="lg-r"><i>1033</i><b>Pieri, Gaspero</b><span>bottega</span><em>Via dei Cenni</em></div><div class="lg-r"><i>1160</i><b>Bolognesi, Gaetano</b><span>casa</span><em>Borgo S. Lorenzo</em></div><div class="lg-r"><i>1255</i><b>Margiacchi, Giovan Battista</b><span>bottega</span><em>Via Panzani</em></div><div class="lg-r"><i>1349</i><b>Mazzoni, Bonfilia</b><span>casa</span><em>Via Vigna Nuova</em></div><div class="lg-r"><i>1438</i><b>Santini, Maria Anna</b><span>bottega</span><em>Via del Parione</em></div><div class="lg-r"><i>1535</i><b>Federighi, Cassandra Ottavia Gaspera</b><span>casa</span><em>Via dei Federighi</em></div><div class="lg-r"><i>1633</i><b>Gherardi, Giuseppe</b><span>bottega</span><em>Via della Spada</em></div><div class="lg-r"><i>1721</i><b>Benassi, Luisa</b><span>casa</span><em>Piazza S. Maria Novella</em></div><div class="lg-r"><i>1818</i><b>Gondi Cerretani, Vincenzo</b><span>fabbricato e corte</span><em>Piazza Vecchia di S. M. Novella</em></div><div class="lg-r"><i>1908</i><b>Ceccherelli, Domenico</b><span>orto</span><em>Via Faenza</em></div><div class="lg-r"><i>2004</i><b>Pieri, Agostino</b><span>casa</span><em>Via Valfonda</em></div><div class="lg-r"><i>2094</i><b>Strozzi, Carlo</b><span>casa e fabbricato</span><em>Via Nuova</em></div><div class="lg-r"><i>2284</i><b>Pampaloni, Luigi</b><span>casa</span><em>Sul Prato</em></div><div class="lg-r"><i>2373</i><b>Morandi, Bini</b><span>casa e corte</span><em>Via Palazzuolo</em></div><div class="lg-r"><i>2481</i><b>Luib, Antonio</b><span>orto</span><em>Via Nuova</em></div><div class="lg-r"><i>2597</i><b>Meini, Pasquale</b><span>casa</span><em>Borgo Ognissanti</em></div><div class="lg-r"><i>2687</i><b>Branconi, Giovanni</b><span>casa</span><em>Borgo Ognissanti</em></div><div class="lg-r"><i>2778</i><b>Balocchi, Giuseppe</b><span>casa</span><em>Via Gora</em></div><div class="lg-r"><i>2880</i><b>Nobili, Teresa</b><span>orto</span><em>Borgo Ognissanti</em></div><div class="lg-r"><i>3010</i><b>Baldesi, Giuliano</b><span>ingresso</span><em>Via Palazzuolo</em></div><div class="lg-r"><i>3097</i><b>Masini, Bernardo</b><span>ingresso</span><em>Via Palazzuolo</em></div><div class="lg-r"><i>3193</i><b>Benelli, Giovan Antonio</b><span>casa</span><em>Via dell&#x27;Albero</em></div><div class="lg-r"><i>3299</i><b>Tommasini, Gaetano</b><span>orto</span><em>Via della Scala</em></div><div class="lg-r"><i>3404</i><b>Lascialfare, Colomba</b><span>casa</span><em>Sul Prato</em></div><div class="lg-r"><i>3519</i><b>Durazzini, Giuseppe</b><span>orto</span><em>Via della Scala</em></div><div class="lg-r"><i>3638</i><b>Picchianti, Giovan Battista</b><span>casa</span><em>Via Valfonda</em></div><div class="lg-r"><i>3726</i><b>Stiozzi Ridolfi, Giuseppe Bartolomeo al Sacrofonte già Girolamo da Cepparello</b><span>lavorativo vitato, fruttato</span><em>Via della Scala</em></div><div class="lg-r"><i>3817</i><b>Albizzi, Amerigo</b><span>casa e corte</span><em>Borgo degli Albizzi</em></div><div class="lg-r"><i>3907</i><b>Carocci, Ferdinando</b><span>bottega</span><em>Via dello Sprone e Via del Fosso</em></div><div class="lg-r"><i>3993</i><b>Torricelli, Andrea</b><span>bottega</span><em>Mercato di S. Piero</em></div><div class="lg-r"><i>4083</i><b>Pomi, Luisa</b><span>bottega</span><em>Via del Proconsolo</em></div><div class="lg-r"><i>4169</i><b>Buzzegoli, Alberto</b><span>casa</span><em>Via delle Badesse</em></div><div class="lg-r"><i>4261</i><b>Gondi, Cassandra</b><span>casa</span><em>Via Vigna Vecchia</em></div><div class="lg-r"><i>4351</i><b>Lenzoni, Francesco</b><span>palazzo</span><em>Via del Diluvio</em></div><div class="lg-r"><i>4462</i><b>Barducci, Francesco</b><span>rimessa</span><em>Borgo dei Greci</em></div><div class="lg-r"><i>4548</i><b>Frastaglini, Antonio</b><span>casa</span><em>Via delle Serve Smarrite</em></div><div class="lg-r"><i>4638</i><b>Gori, Agostino</b><span>casa</span><em>Via dei Leoni</em></div><div class="lg-r"><i>4724</i><b>Chiari, Luisa</b><span>casa</span><em>Via de Rustici</em></div><div class="lg-r"><i>4811</i><b>Bichi, Gaetano</b><span>bottega</span><em>Via de Neri</em></div><div class="lg-r"><i>4897</i><b>Grassi, Antonio</b><span>fabbricato e corte</span><em>Via dei Vagellai</em></div><div class="lg-r"><i>5003</i><b>Gazzeri, Cosimo</b><span>casa</span><em>Via dei Saponai</em></div><div class="lg-r"><i>5092</i><b>Moriani, Vincenzo</b><span>casa</span><em>Via del Moro</em></div><div class="lg-r"><i>5205</i><b>Filippi, Angiola</b><span>fabbricato</span><em>Via Baldracca</em></div><div class="lg-r"><i>5307</i><b>Dell&#x27;Imperatore, Ferdinando</b><span>bottega</span><em>Ponte Vecchio</em></div><div class="lg-r"><i>5399</i><b>Bracci, Pietro</b><span>bottega</span><em>Via Lambertesca</em></div><div class="lg-r"><i>5494</i><b>Andreini, Gaetano</b><span>casa e corte</span><em>Chiasso del Buco</em></div><div class="lg-r"><i>5584</i><b>Quadri, Natale</b><span>bottega</span><em>Via Por S. Maria</em></div><div class="lg-r"><i>5677</i><b>Guadagni, Giuseppe</b><span>casa</span><em>Via Terma</em></div><div class="lg-r"><i>5768</i><b>Torrigiani, Pietro</b><span>casa</span><em>Via delle Bombarde</em></div><div class="lg-r"><i>5854</i><b>Piatti, Guglielmo</b><span>magazzino</span><em>Chiasso del Panico</em></div><div class="lg-r"><i>5949</i><b>Naldini, Giovanni Evangelista</b><span>casa</span><em>Via Calimaruzza</em></div><div class="lg-r"><i>6050</i><b>Perfetti, Giuseppe</b><span>casa</span><em>Via del Braccio</em></div><div class="lg-r"><i>6139</i><b>Buoni, Gaetano</b><span>banco</span><em>Piazza del Gran Duca</em></div><div class="lg-r"><i>6225</i><b>Ciarpaglini, Francesca</b><span>casa</span><em>Sdrucciolo S. Michele</em></div><div class="lg-r"><i>6311</i><b>Uguccioni, Giovanni Fabio</b><span>magazzino</span><em>Via degli Antellesi</em></div><div class="lg-r"><i>6418</i><b>Palagi, Pietro</b><span>bottega</span><em>Via dei Cerchi e Via dei Cimatori</em></div><div class="lg-r"><i>6511</i><b>Baldocci, Francesco</b><span>bottega</span><em>Via Calimara</em></div><div class="lg-r"><i>6597</i><b>Petrioli, Luigi</b><span>bottega</span><em>Via Pellicceria</em></div><div class="lg-r"><i>6683</i><b>Strozzi, Filippo</b><span>casa</span><em>Chiasso dei Limonai</em></div><div class="lg-r"><i>6770</i><b>Strozzi, Emilio</b><span>bottega</span><em>Via delle Cipolle</em></div><div class="lg-r"><i>6859</i><b>Grassi, Antonio</b><span>bottega</span><em>Via Pellicceria</em></div><div class="lg-r me"><i>6949</i><b>Morelli, Rosa</b><span>bottega</span><em>Piazza S. Andrea</em></div><div class="lg-r"><i>6951</i><b>Quercioli, Serafino</b><span>fabbricato</span><em>Mercato</em></div><div class="lg-r"><i>6952</i><b>Strozzi, Filippo</b><span>magazzino</span><em>Mercato</em></div><div class="lg-r"><i>6953</i><b>Lascialfare, Vincenzo</b><span>fabbricato</span><em>Mercato</em></div><div class="lg-r"><i>6954</i><b>Lascialfare, Vincenzo</b><span>bottega</span><em>Mercato</em></div><div class="lg-r"><i>6955</i><b>Lascialfare, Vincenzo</b><span>bottega e fabbricato</span><em>Mercato</em></div><div class="lg-r"><i>6956</i><b>Bigalli, Giovanni</b><span>fabbricato</span><em>Mercato</em></div><div class="lg-r"><i>6957</i><b>Santini, Giuseppe</b><span>bottega</span><em>Mercato</em></div><div class="lg-r"><i>6958</i><b>Paoli, Giovan Gualberto</b><span>fabbricato</span><em>Via Calimara</em></div><div class="lg-r"><i>6959</i><b>Bucciolini, Carlo</b><span>fabbricato</span><em>Via Calimara</em></div></div></div>
+      </div>
+      <div class="rec">
+        <div class="rh"><span>Catasto Generale Toscano · Florence</span><span>1835</span></div>
+        <div class="f" style="--d:.2s"><span>owner</span><b>Rosa Morelli</b></div>
+        <div class="f hl" style="--d:.55s"><span>recorded as</span><b>“moglie di Jacopo Mosel” <em>· wife of Jacopo Mosel</em></b></div>
+        <div class="f" style="--d:.9s"><span>property</span><b>a shop <em>· bottega</em></b></div>
+        <div class="f" style="--d:1.25s"><span>where</span><b>Piazza S. Andrea, in the Old Market</b></div>
+      </div>
+    </div>
+    <div class="col g1 pts mid">
+      <div class="pt" data-at="1"><b>named through her husband</b><p>The register calls her “wife of”: a woman owner, visible almost by accident.</p></div>
+      <div class="pt" data-at="2"><b>an owner of shops</b><p>Six properties in her name: three shops, one of them a silversmith's, and three buildings.</p></div>
+      <div class="pt" data-at="3"><b>a vanished place</b><p>The Old Market was demolished at the end of the century. Today it is Piazza della Repubblica.</p></div>
+      <div class="pt k" data-at="4"><b>why it matters</b><p>Archives hold thousands of lives like hers, scattered across records that nobody has connected.</p></div>
+    </div>
+  </div>
+  <div class="src">Catasto Generale Toscano, 1835 · as modelled in Florentia Illustrata.</div>
+  <aside class="notes">Start with a crowd: the register of the 1835 Florentine cadastre scrolls by, real names, one after another, parcel after parcel. In a list they mean little. Then it slows down and stops on one of them. Start with a person. In 1835 the Florentine cadastre lists a shop in Piazza S. Andrea, in the Old Market, owned by Rosa Morelli. The register does not describe her on her own terms: it calls her "moglie di Jacopo Mosel", wife of Jacopo Mosel. Yet her name leads to six properties: three shops, one of them a silversmith's, and three buildings. And the place itself is gone: the Old Market was demolished at the end of the nineteenth century to make room for today's Piazza della Repubblica. Press → four times. The point: archives hold thousands of lives like hers, but they are scattered across records that nobody has connected. That is what this work is about.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>metapolis · why it matters · 02</span><span>the problem</span></div>
+  <h2 class="h">History survives <span class="acc">in pieces</span>.</h2>
+  <div class="fig">
+    <svg viewBox="0 0 1000 470" class="kgs">
+        <g class="arch" style="--d:0.20s"><rect x="30" y="20" width="190" height="118" class="bxw"/><text class="el" x="44" y="44">STATE ARCHIVE</text><rect x="63" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M68 91h14M68 98h14M68 105h9" stroke="#9a9a9a" stroke-width="1.5"/><rect x="113" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M118 91h14M118 98h14M118 105h9" stroke="#9a9a9a" stroke-width="1.5"/><rect x="163" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M168 91h14M168 98h14M168 105h9" stroke="#9a9a9a" stroke-width="1.5"/></g>
+        <g class="arch" style="--d:0.55s"><rect x="405" y="10" width="190" height="118" class="bxw"/><text class="el" x="419" y="34">LIBRARY</text><rect x="439" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M444 71v34" stroke="#fff" stroke-width="1.5"/><rect x="489" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M494 71v34" stroke="#fff" stroke-width="1.5"/><rect x="539" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M544 71v34" stroke="#fff" stroke-width="1.5"/></g>
+        <g class="arch" style="--d:0.90s"><rect x="780" y="20" width="190" height="118" class="bxw"/><text class="el" x="794" y="44">MUSEUM</text><rect x="810" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M816 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/><rect x="860" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M866 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/><rect x="910" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M916 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/></g>
+        <g class="arch" style="--d:1.25s"><rect x="90" y="330" width="190" height="118" class="bxw"/><text class="el" x="104" y="354">PHOTO ARCHIVE</text><rect x="121" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="141" cy="404" r="3" style="fill:#fff"/><path d="M121 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/><rect x="171" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="191" cy="404" r="3" style="fill:#fff"/><path d="M171 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/><rect x="221" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="241" cy="404" r="3" style="fill:#fff"/><path d="M221 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/></g>
+        <g class="arch" style="--d:1.60s"><rect x="700" y="330" width="190" height="118" class="bxw"/><text class="el" x="714" y="354">A SCHOLAR'S NOTES</text><rect x="732" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M737 403h16M737 409h16M737 415h10" stroke="#9a9a9a" stroke-width="1.2"/><rect x="782" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M787 403h16M787 409h16M787 415h10" stroke="#9a9a9a" stroke-width="1.2"/><rect x="832" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M837 403h16M837 409h16M837 415h10" stroke="#9a9a9a" stroke-width="1.2"/></g>
+    </svg>
+  </div>
+  <div class="row" style="flex:0 0 auto">
+    <div class="pt"><b>scattered</b><p>Every archive, library and museum keeps its own piece of the story, in its own catalogue.</p></div>
+    <div class="pt k"><b>connected by hand</b><p>Scholars spend years linking the pieces, and the links end up in footnotes.</p></div>
+  </div>
+  <aside class="notes">The evidence about a city, a building or a person is never in one place. A deed is in a state archive, a book in a library, a drawing in a museum, a photograph in a photo archive, and the connections between them often only in a scholar's own notes. Each institution catalogues its own holdings, in its own way. Researchers spend years connecting the pieces by hand, and when the book is published, those connections end up in footnotes, where nobody else can build on them.</aside>
+</section>
+
+<section class="slide c" data-w="say">
+  <div class="lab"><span>metapolis · why it matters · 03</span><span>step through with →</span></div>
+  <h2 class="h">Bringing the pieces <span class="acc">together</span>.</h2>
+  <div class="ctl say"><span class="v" data-k="0">Today the pieces sit apart, each in its own archive.</span><span class="v" data-k="1" hidden>Connect: records from different archives point to the same people, buildings and events.</span><span class="v" data-k="2" hidden>Research together: scholars with different skills build on the same evidence.</span><span class="v" data-k="3" hidden>Tell stories: a narrative walks through the evidence, and every step leads back to a source.</span></div>
+  <div class="fig">
+    <svg viewBox="0 0 1000 470" class="kgs">
+        <g><rect x="30" y="20" width="190" height="118" class="bxw"/><text class="el" x="44" y="44">STATE ARCHIVE</text><rect x="63" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M68 91h14M68 98h14M68 105h9" stroke="#9a9a9a" stroke-width="1.5"/><rect x="113" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M118 91h14M118 98h14M118 105h9" stroke="#9a9a9a" stroke-width="1.5"/><rect x="163" y="82" width="24" height="32" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M168 91h14M168 98h14M168 105h9" stroke="#9a9a9a" stroke-width="1.5"/></g>
+        <g><rect x="405" y="10" width="190" height="118" class="bxw"/><text class="el" x="419" y="34">LIBRARY</text><rect x="439" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M444 71v34" stroke="#fff" stroke-width="1.5"/><rect x="489" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M494 71v34" stroke="#fff" stroke-width="1.5"/><rect x="539" y="71" width="22" height="34" style="fill:#9a9a9a"/><path d="M544 71v34" stroke="#fff" stroke-width="1.5"/></g>
+        <g><rect x="780" y="20" width="190" height="118" class="bxw"/><text class="el" x="794" y="44">MUSEUM</text><rect x="810" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M816 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/><rect x="860" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M866 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/><rect x="910" y="85" width="30" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M916 105l6-8 5 5 4-4 4 7" stroke="#9a9a9a" stroke-width="1.5" fill="none"/></g>
+        <g><rect x="90" y="330" width="190" height="118" class="bxw"/><text class="el" x="104" y="354">PHOTO ARCHIVE</text><rect x="121" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="141" cy="404" r="3" style="fill:#fff"/><path d="M121 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/><rect x="171" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="191" cy="404" r="3" style="fill:#fff"/><path d="M171 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/><rect x="221" y="396" width="28" height="24" style="fill:#c9c9c9"/><circle cx="241" cy="404" r="3" style="fill:#fff"/><path d="M221 420l9-9 7 7 5-4 7 6z" style="fill:#9a9a9a"/></g>
+        <g><rect x="700" y="330" width="190" height="118" class="bxw"/><text class="el" x="714" y="354">A SCHOLAR'S NOTES</text><rect x="732" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M737 403h16M737 409h16M737 415h10" stroke="#9a9a9a" stroke-width="1.2"/><rect x="782" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M787 403h16M787 409h16M787 415h10" stroke="#9a9a9a" stroke-width="1.2"/><rect x="832" y="395" width="26" height="26" style="fill:var(--wash2)" stroke="#9a9a9a" stroke-width="1.5"/><path d="M837 403h16M837 409h16M837 415h10" stroke="#9a9a9a" stroke-width="1.2"/></g>
+        <g data-at="1">
+        <path class="ge st" pathLength="1" d="M75 98 L430 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M175 98 L590 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M500 88 L430 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M875 98 L590 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M135 408 L590 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M235 408 L510 296" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M745 408 L510 296" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M845 408 L430 232" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M430 232 L510 296" stroke-width="1.3"/>
+        <path class="ge st" pathLength="1" d="M590 232 L510 296" stroke-width="1.3"/>
+        <circle cx="430" cy="232" r="14" class="bxi"/>
+        <text x="408" y="238" text-anchor="end" style="font-size:16px">a person</text>
+        <rect x="575" y="217" width="30" height="30" style="fill:var(--wash2)" class="st" stroke-width="2.5"/>
+        <text x="614" y="238" style="font-size:16px">a building</text>
+        <rect x="498" y="284" width="24" height="24" transform="rotate(45 510 296)" class="bxa"/>
+        <text x="510" y="332" text-anchor="middle" style="font-size:16px">an event</text>
+        </g>
+        <g data-at="2">
+        <path d="M300 170 L430 232" class="sa" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <path d="M720 170 L590 232" class="sa" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <path d="M360 300 L510 296" class="sa" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <circle cx="300" cy="161" r="8" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><path d="M287 184a13 12 0 0 1 26 0z" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><text x="300" y="204" text-anchor="middle" style="font-size:15px;fill:var(--accent)">a historian</text>
+        <circle cx="720" cy="161" r="8" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><path d="M707 184a13 12 0 0 1 26 0z" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><text x="720" y="204" text-anchor="middle" style="font-size:15px;fill:var(--accent)">an architect</text>
+        <circle cx="360" cy="291" r="8" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><path d="M347 314a13 12 0 0 1 26 0z" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><text x="360" y="334" text-anchor="middle" style="font-size:15px;fill:var(--accent)">a cartographer</text>
+        </g>
+        <g data-at="3">
+        <path class="ge sa" pathLength="1" d="M135 408 L590 232 L510 296 L430 232 L75 98" stroke-width="5" stroke-linejoin="round" style="opacity:.85"/>
+        <circle cx="135" cy="408" r="11" class="bxa" stroke="#fff" stroke-width="2"/><text x="135" y="413" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff;stroke:none">1</text>
+        <circle cx="590" cy="232" r="11" class="bxa" stroke="#fff" stroke-width="2"/><text x="590" y="237" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff;stroke:none">2</text>
+        <circle cx="510" cy="296" r="11" class="bxa" stroke="#fff" stroke-width="2"/><text x="510" y="301" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff;stroke:none">3</text>
+        <circle cx="430" cy="232" r="11" class="bxa" stroke="#fff" stroke-width="2"/><text x="430" y="237" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff;stroke:none">4</text>
+        <circle cx="75" cy="98" r="11" class="bxa" stroke="#fff" stroke-width="2"/><text x="75" y="103" text-anchor="middle" style="font-size:13px;font-weight:800;fill:#fff;stroke:none">5</text>
+        </g>
+    </svg>
+  </div>
+  <aside class="notes">The same archives as before. Press →: we connect them. A deed, a book, a drawing, a photograph, a note: once they point to the same person, the same building, the same event, the pieces start to talk to each other. Press →: scholars join, a historian, an architect, a cartographer, each adding what they know to the same shared evidence, and each credited for it. Press →: on top of this, we can tell stories, narratives that walk through the evidence step by step, where every sentence can be checked against its source.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>metapolis · why it matters · 04</span><span>the aim</span></div>
+  <h2 class="h">Three things <span class="acc">we want to make possible</span>.</h2>
+  <div class="cards c3">
+    <div class="cd" style="--d:.1s"><svg class="ic" viewBox="0 0 160 70"><rect x="20" y="16" width="30" height="40" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2.5"/><rect x="110" y="16" width="30" height="40" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2.5"/><path d="M50 36 H110" class="st" stroke-width="2.5"/><circle cx="80" cy="36" r="9" class="bxi"/></svg><b>01 · connect</b><h5>Archives that talk to each other</h5><p>Records kept in different places, linked to the same people, buildings and events.</p></div>
+    <div class="cd" style="--d:.35s"><svg class="ic" viewBox="0 0 160 70"><g class="sa" stroke-width="2.5" style="fill:var(--bg)"><circle cx="45" cy="24" r="8"/><path d="M31 54a14 13 0 0 1 28 0z"/><circle cx="80" cy="20" r="9"/><path d="M64 54a16 15 0 0 1 32 0z"/><circle cx="115" cy="24" r="8"/><path d="M101 54a14 13 0 0 1 28 0z"/></g></svg><b>02 · research together</b><h5>One shared body of evidence</h5><p>Scholars in different places and fields build on each other's work, and every contribution is credited.</p></div>
+    <div class="cd a" style="--d:.6s"><svg class="ic" viewBox="0 0 160 70"><path d="M20 50 L60 22 L100 46 L140 18" stroke="#fff" stroke-width="4" fill="none" stroke-linejoin="round"/><g style="fill:#fff"><circle cx="20" cy="50" r="7"/><circle cx="60" cy="22" r="7"/><circle cx="100" cy="46" r="7"/><circle cx="140" cy="18" r="7"/></g></svg><b>03 · tell stories</b><h5>Stories you can check</h5><p>Narratives built on data curated by specialists: every claim one click from its source, doubts stated, open to new questions.</p></div>
+  </div>
+  <aside class="notes">So the aim is threefold. Connect: let records held in different archives speak to each other, through the people, buildings and events they share. Research together: give a community of scholars, in different places and fields, one shared body of evidence, where each contribution is credited. Tell stories: let them publish narratives built on critically curated data, where every statement can be traced back to its source, uncertainties are stated, and readers can ask new questions of the same evidence. The next slides show what that means for a single building.</aside>
+</section>
+
+<section class="slide c bg" data-w="place">
+  <div class="bgimg light" style="background-image:url(assets/img/florence.jpg)"></div>
+  <div class="lab"><span>metapolis · why it matters · 05</span><span>an illustrative story · step through with →</span></div>
+  <h2 class="h">A place is <span class="acc">a network</span>, through time.</h2>
+  <div class="ctl"><span class="v pl-say" style="font-size:2.3vmin">&nbsp;</span></div>
+  <div class="fig">
+    <svg viewBox="0 0 1000 540" class="kgs pl">
+      <g class="pl-city" data-at="6"></g>
+      <g class="pl-net">
+        <!-- the building: its footprint changes with its history; the line below is its life -->
+        <path class="st" d="M500 100 V512" stroke-width="2"/>
+        <g class="ph" data-ph="A"><rect x="460" y="28" width="80" height="70" style="fill:var(--wash2)" class="st" stroke-width="2.5"/></g>
+        <g class="ph" data-ph="B"><path d="M460 28 H540 V58 H600 V98 H460 Z" style="fill:var(--wash2)" class="st" stroke-width="2.5"/></g>
+        <g class="ph" data-ph="C"><rect x="460" y="28" width="80" height="70" style="fill:var(--wash2)" class="st" stroke-width="2.5"/><path d="M540 58 H600 V98 H540" class="st" stroke-width="1.5" stroke-dasharray="5 5"/></g>
+        <text class="pl-year" x="620" y="74" style="font-size:30px;font-weight:900;fill:var(--accent)"></text>
+        <!-- the three kinds of node, with their colours -->
+        <g data-at="1" class="m" style="font-size:14px">
+          <circle cx="98" cy="136" r="7" class="bxi"/><text x="112" y="141" class="mu"><tspan style="fill:var(--ink);font-weight:500">ACTORS</tspan> · who</text>
+          <rect x="415" y="129" width="12" height="12" transform="rotate(45 421 135)" class="bxa"/><text x="436" y="141" class="mu"><tspan style="fill:var(--accent);font-weight:500">EVENTS</tspan> · what, when</text>
+          <rect x="752" y="126" width="12" height="16" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="1.5"/><text x="772" y="141" class="mu"><tspan style="fill:var(--ink);font-weight:500">SOURCES</tspan> · how we know</text>
+        </g>
+        <!-- one row per event: actors → event ← sources -->
+        <g class="row" data-at="1" data-year="1460">
+          <path class="st" d="M254 195 H482" stroke-width="1.5" marker-end="url(#ah)"/><text class="el" x="368" y="186" text-anchor="middle" style="fill:var(--ink)">commissions</text>
+          <circle cx="240" cy="195" r="11" class="bxi"/><text x="222" y="201" text-anchor="end" style="font-size:17px">a wool merchant</text>
+          <path d="M748 195 H520" stroke="#9a9a9a" stroke-width="1.5" stroke-dasharray="5 4" fill="none" marker-end="url(#ahm)"/><text class="el" x="634" y="186" text-anchor="middle">documents</text>
+          <rect x="750" y="182" width="20" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><text x="782" y="201" style="font-size:17px">a building contract</text>
+          <rect x="489" y="184" width="22" height="22" transform="rotate(45 500 195)" class="bxa"/><text x="500" y="168" text-anchor="middle" style="font-size:17px;font-weight:800;fill:var(--accent)">1460 · built</text>
+        </g>
+        <g class="row" data-at="2" data-year="1590">
+          <path class="st" d="M254 273 L482 284" stroke-width="1.5" marker-end="url(#ah)"/><text class="el" x="368" y="268" text-anchor="middle" style="fill:var(--ink)">sell</text>
+          <path class="st" d="M254 297 L482 286" stroke-width="1.5" marker-end="url(#ah)"/><text class="el" x="368" y="310" text-anchor="middle" style="fill:var(--ink)">buys</text>
+          <circle cx="240" cy="273" r="11" class="bxi"/><text x="222" y="279" text-anchor="end" style="font-size:17px">his heirs</text>
+          <circle cx="240" cy="297" r="11" class="bxi"/><text x="222" y="303" text-anchor="end" style="font-size:17px">a noble family</text>
+          <path d="M748 285 H520" stroke="#9a9a9a" stroke-width="1.5" stroke-dasharray="5 4" fill="none" marker-end="url(#ahm)"/><text class="el" x="634" y="276" text-anchor="middle">documents</text>
+          <rect x="750" y="272" width="20" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><text x="782" y="291" style="font-size:17px">a notarial deed</text>
+          <rect x="489" y="274" width="22" height="22" transform="rotate(45 500 285)" class="bxa"/><text x="500" y="258" text-anchor="middle" style="font-size:17px;font-weight:800;fill:var(--accent)">1590 · sold</text>
+        </g>
+        <g class="row" data-at="3" data-year="1720">
+          <path class="st" d="M254 375 H482" stroke-width="1.5" marker-end="url(#ah)"/><text class="el" x="368" y="366" text-anchor="middle" style="fill:var(--ink)">designs</text>
+          <circle cx="240" cy="375" r="11" class="bxi"/><text x="222" y="381" text-anchor="end" style="font-size:17px">an architect</text>
+          <path d="M748 375 H520" stroke="#9a9a9a" stroke-width="1.5" stroke-dasharray="5 4" fill="none" marker-end="url(#ahm)"/><text class="el" x="634" y="366" text-anchor="middle">documents</text>
+          <rect x="750" y="362" width="20" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><text x="782" y="381" style="font-size:17px">his drawing</text>
+          <rect x="489" y="364" width="22" height="22" transform="rotate(45 500 375)" class="bxa"/><text x="500" y="348" text-anchor="middle" style="font-size:17px;font-weight:800;fill:var(--accent)">1720 · a new wing</text>
+        </g>
+        <g class="row" data-at="4" data-year="1890">
+          <path class="st" d="M254 465 H482" stroke-width="1.5" marker-end="url(#ah)"/><text class="el" x="368" y="456" text-anchor="middle" style="fill:var(--ink)">orders</text>
+          <circle cx="240" cy="465" r="11" class="bxi"/><text x="222" y="471" text-anchor="end" style="font-size:17px">the City</text>
+          <path d="M748 465 H520" stroke="#9a9a9a" stroke-width="1.5" stroke-dasharray="5 4" fill="none" marker-end="url(#ahm)"/><text class="el" x="634" y="456" text-anchor="middle">documents</text>
+          <rect x="750" y="452" width="20" height="26" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><text x="782" y="471" style="font-size:17px">a photograph</text>
+          <rect x="489" y="454" width="22" height="22" transform="rotate(45 500 465)" class="bxa"/><text x="500" y="438" text-anchor="middle" style="font-size:17px;font-weight:800;fill:var(--accent)">1890 · wing demolished</text>
+        </g>
+        <!-- the clock that runs down the building's life -->
+        <g data-at="5"><g class="pl-hand"><circle cx="500" cy="0" r="9" class="bxa" stroke="#fff" stroke-width="2.5"/></g></g>
+      </g>
+    </svg>
+  </div>
+  <aside class="notes">An illustrative story, built one event at a time. On a map, a building is just a shape: that is what our tools see. Then its history: actors on the left (who), events in the middle on the building's life line (what happened, and when), sources on the right (how we know). Arrows go from the actors to the event they took part in, with what they did, and from each source to the event it documents. 1460, a wool merchant commissions the building, and a building contract documents it. 1590, his heirs sell it to a noble family: a notarial deed. 1720, an architect adds a new wing: his drawing survives. 1890, the City demolishes the wing for a new street: a photograph shows it. Press → again: a clock runs down the building's life, the footprint changes with each phase, and what has not happened yet is faded. Press → once more and zoom out: this is one building among many, each with a story like this one. Spoken line: "A city is more than shapes on a map. Conventional maps keep the shapes, and lose the people, the events and the evidence."</aside>
+</section>
+
+<section class="slide dark">
+  <div class="lab"><span>metapolis · why it matters · 06</span><span>&nbsp;</span></div>
+  <div class="fit"><p>A city is more than shapes on a map. <span class="acc">Conventional maps keep the shapes, and lose the people, the events and the evidence.</span></p></div>
+</section>
+
+<section class="slide c" data-w="say">
+  <div class="lab"><span>metapolis · why it matters · 07</span><span>how Archipelago and VeNiss started · step through with →</span></div>
+  <h2 class="h">Three experts, three outputs, <span class="acc">one connected result</span>.</h2>
+  <div class="ctl say"><span class="v" data-k="0">Many projects start like this: three experts, each with an output of their own.</span><span class="v" data-k="1" hidden>Each output is good at one thing, and misses the rest.</span><span class="v" data-k="2" hidden>Some questions can only be answered across the three outputs.</span><span class="v" data-k="3" hidden>Our aim: keep the three outputs connected, in one shared workspace.</span></div>
+  <div class="fig">
+    <svg viewBox="0 60 1000 340" class="kgs tw">
+      <g class="join" data-at="3">
+        <rect x="90" y="100" width="820" height="262" rx="16" class="sa" stroke-width="2.5"/>
+        <text class="m" x="500" y="90" text-anchor="middle" style="font-size:14px;fill:var(--accent)">ONE CONNECTED WORKSPACE</text>
+      </g>
+      <g class="tool l">
+        <rect x="40" y="120" width="220" height="222" class="bxw"/>
+        <text class="el" x="58" y="146">SOURCES</text>
+        <circle cx="74" cy="176" r="10" class="bxi"/><path d="M58 206a16 15 0 0 1 32 0z" class="bxi"/>
+        <rect x="88" y="186" width="16" height="21" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M92 193h8M92 199h8" stroke="#9a9a9a" stroke-width="1.5"/>
+        <text class="nl" x="118" y="190" style="font-size:19px">the historian</text>
+        <text class="el" x="118" y="210">documents</text>
+        <text class="el" x="58" y="246">OUTPUT</text><text x="58" y="268" style="font-size:17px">→ a database</text>
+        <g data-at="1" style="font-size:15px;fill:var(--accent)"><text class="ac" x="58" y="304">✕ no map</text><text class="ac" x="58" y="326">✕ not on the web</text></g>
+      </g>
+      <g class="tool">
+        <rect x="390" y="120" width="220" height="222" class="bxw"/>
+        <text class="el" x="408" y="146">MAPS</text>
+        <circle cx="424" cy="176" r="10" class="bxi"/><path d="M408 206a16 15 0 0 1 32 0z" class="bxi"/>
+        <path d="M438 206 L436 190 L452 184 L462 194 L456 207 Z" style="fill:var(--soft)" class="sa" stroke-width="2"/>
+        <text class="nl" x="468" y="190" style="font-size:19px">the mapmaker</text>
+        <text class="el" x="468" y="210">GIS specialist</text>
+        <text class="el" x="408" y="246">OUTPUT</text><text x="408" y="268" style="font-size:17px">→ a digital map</text>
+        <g data-at="1" style="font-size:15px;fill:var(--accent)"><text class="ac" x="408" y="304">✕ no links to sources</text><text class="ac" x="408" y="326">✕ time only as “layers”</text></g>
+      </g>
+      <g class="tool r">
+        <rect x="740" y="120" width="220" height="222" class="bxw"/>
+        <text class="el" x="758" y="146">NARRATIVE</text>
+        <circle cx="774" cy="176" r="10" class="bxi"/><path d="M758 206a16 15 0 0 1 32 0z" class="bxi"/>
+        <path d="M788 190 l9 3 v15 l-9 -3 z M797 193 l9 -3 v15 l-9 3 z" style="fill:var(--bg)" class="st" stroke-width="1.8"/>
+        <text class="nl" x="818" y="190" style="font-size:19px">the author</text>
+        <text class="el" x="818" y="210">the argument</text>
+        <text class="el" x="758" y="246">OUTPUT</text><text x="758" y="268" style="font-size:17px">→ a book</text>
+        <g data-at="1" style="font-size:15px;fill:var(--accent)"><text class="ac" x="758" y="304">✕ one fixed view</text><text class="ac" x="758" y="326">✕ no data to reuse</text></g>
+      </g>
+      <g class="q" data-at="2">
+        <path d="M262 205 H388M612 205 H738" stroke="#9a9a9a" stroke-width="2" stroke-dasharray="5 5" fill="none"/>
+        <circle cx="325" cy="205" r="17" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><text x="325" y="213" text-anchor="middle" style="font-size:22px;font-weight:800;fill:var(--accent);stroke:none">?</text>
+        <circle cx="675" cy="205" r="17" style="fill:var(--bg)" class="sa" stroke-width="2.5"/><text x="675" y="213" text-anchor="middle" style="font-size:22px;font-weight:800;fill:var(--accent);stroke:none">?</text>
+        <text class="el" x="325" y="376" text-anchor="middle">which document</text><text class="el" x="325" y="394" text-anchor="middle">describes this building?</text>
+        <text class="el" x="675" y="376" text-anchor="middle">where on the map</text><text class="el" x="675" y="394" text-anchor="middle">is this argument?</text>
+      </g>
+      <g class="join" data-at="3">
+        <path d="M330 205 H390M610 205 H670" class="sa" stroke-width="5"/>
+        <circle cx="360" cy="205" r="16" class="bxa" stroke="#fff" stroke-width="2.5"/><text x="360" y="212" text-anchor="middle" style="font-size:18px;font-weight:800;fill:#fff;stroke:none">✓</text>
+        <circle cx="640" cy="205" r="16" class="bxa" stroke="#fff" stroke-width="2.5"/><text x="640" y="212" text-anchor="middle" style="font-size:18px;font-weight:800;fill:#fff;stroke:none">✓</text>
+      </g>
+    </svg>
+  </div>
+  <div class="src">Archipelago, 2020: 131 sources, 147 events and 174 people in a database; the geometries in a separate map; the narrative in a text file.</div>
+  <aside class="notes">Three people, each doing good research, each producing an output. The historian collects sources in a database; the mapmaker, a GIS specialist, draws the geometries in a desktop GIS; the author writes the narrative for print. This is literally how Archipelago and then VeNiss started: a database for the sources, a GIS for the geometries, and nothing linking the two. Press →: what each output misses. We spent years experimenting with these tools, from desktop GIS to digital exhibits and story-map tools: each solves part of the problem, none covers the whole research cycle, from collecting sources, to drawing, to interpreting, to publishing something others can search and reinterpret. Press →: the questions that only the three outputs together can answer. You could not show a document next to the building it describes, or link a change in the urban fabric to the event and the people who caused it. Press → again: our aim, the three outputs kept connected in one shared workspace.</aside>
+</section>
+
+<section class="slide duo red now-aim">
+  <div class="half hd">
+    <div class="lab"><span>metapolis · why it matters · 08</span><span>today</span></div>
+    <h2 class="h">Today, the research <span class="mut">ends in a book</span>.</h2>
+    <div class="wrows">
+      <div class="wr"><span class="wk">sources</span><p>buried in footnotes<small>the reader cannot go back to the document</small></p><i class="wv">✕</i></div>
+      <div class="wr"><span class="wk">places</span><p>one fixed map<small>the author's view, printed once</small></p><i class="wv">✕</i></div>
+      <div class="wr"><span class="wk">questions</span><p>only the author's<small>a new question means starting over</small></p><i class="wv">✕</i></div>
+      <div class="wr"><span class="wk">data</span><p>locked away<small>in personal files and formats that age</small></p><i class="wv">✕</i></div>
+    </div>
+  </div>
+  <div class="half">
+    <div class="lab"><span>&nbsp;</span><span>what we want</span></div>
+    <h2 class="h">We want <span class="acc">a living resource</span>.</h2>
+    <div class="wrows">
+      <div class="wr"><span class="wk">sources</span><p>one click from every claim<small>anyone can check the evidence</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">places</span><p>a map that moves through time<small>explore it, change the view</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">questions</span><p>open to new ones<small>search by place and by time</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">data</span><p>open and lasting<small>reusable by others, for decades</small></p><i class="wv">✓</i></div>
+    </div>
+  </div>
+  <aside class="notes">Today, years of research usually end as a printed book or a flat dataset. The sources are buried in footnotes, and the reader cannot go back to the document. The map is the author's view, printed once. Readers cannot ask a different question without starting over, and the data stays locked in personal files and formats that age. The most valuable part of the work, the evidence, becomes secondary. What we want instead is a living resource: every claim one click from its source, a map that moves through time, open to new questions by place and by time, and data that others can reuse for decades.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>metapolis · 01</span><span>in one sentence</span></div>
+  <div class="body">
+    <div class="col g1" style="gap:3vmin">
+      <div class="fit"><p>A map-centric <span class="acc">research</span> and <span class="acc">publication</span> platform.</p></div>
+      <div class="pts" style="flex:0 0 auto">
+        <div class="pt"><b>one place</b><p>Archival, bibliographic and multimedia sources, linked to interpretation, on a map that moves through time.</p></div>
+        <div class="pt k"><b>for scholars</b><p>Designed for non-technical users.</p></div>
+      </div>
+    </div>
+    <div class="vwin g15">
+      <div class="dbar"><i></i><i></i><i></i><span class="durl">veniss.net · the platform at work</span></div>
+      <video src="assets/video/video01.mp4" muted playsinline loop preload="auto" data-auto></video>
+    </div>
+  </div>
+  <aside class="notes">Metapolis is a map-centric research and publication platform that links archival, bibliographic and multimedia sources to interpretation, on a map that moves through time, designed for non-technical users. Two words matter here: research and publication. Metapolis is where you do the work and where you show it: the same data, no export step in between.</aside>
+</section>
+
+<section class="slide c" data-w="say">
+  <div class="lab"><span>metapolis · 02</span><span>step through with →</span></div>
+  <h2 class="h">Extend, <span class="acc">don't rebuild</span>.</h2>
+  <div class="ctl say"><span class="v" data-k="0">The obvious idea: build a new map editor in the browser. It would take years, and never be as good.</span><span class="v" data-k="1" hidden>Instead: keep QGIS, and transform ResearchSpace from within, with maps, a timeline, new forms and stories, linked live to GIS. That is Metapolis.</span><span class="v" data-k="2" hidden>A footprint drawn in QGIS lands on the web map, linked to its people, events and sources, in its own years.</span></div>
+  <div class="fig">
+    <svg viewBox="0 30 1000 425" class="kgs brg2">
+      <!-- left: QGIS, where mapmakers draw -->
+      <rect x="20" y="50" width="300" height="300" style="fill:var(--bg)" class="st" stroke-width="2"/>
+      <rect x="20" y="50" width="300" height="26" class="bxi"/>
+      <g style="fill:#777"><circle cx="34" cy="63" r="4"/><circle cx="46" cy="63" r="4"/><circle cx="58" cy="63" r="4"/></g>
+      <text class="m" x="306" y="68" text-anchor="end" style="font-size:13px;fill:#fff;stroke:none">QGIS</text>
+      <rect x="21" y="76" width="59" height="273" style="fill:var(--wash2)"/>
+      <g style="fill:#c9c9c9"><rect x="30" y="92" width="42" height="9"/><rect x="30" y="110" width="42" height="9"/><rect x="30" y="128" width="42" height="9"/></g><rect x="30" y="146" width="42" height="9" style="fill:var(--soft)" class="sa" stroke-width="1.2"/>
+      <rect x="80" y="76" width="239" height="273" style="fill:#f7f6f2"/>
+      <path d="M80 160 H319 M200 76 V349 M80 280 H319" stroke="#e7e5e0" stroke-width="12" fill="none"/>
+      <g style="fill:#d9d6cf"><rect x="96" y="92" width="44" height="50"/><rect x="148" y="92" width="38" height="50"/><rect x="214" y="92" width="48" height="34"/><rect x="270" y="102" width="38" height="40"/><rect x="96" y="176" width="58" height="44"/><rect x="214" y="176" width="42" height="64"/><rect x="266" y="186" width="42" height="40"/><rect x="104" y="294" width="54" height="42"/><rect x="226" y="294" width="64" height="42"/></g>
+      <path class="fillin" d="M166 188 H194 V216 H184 V246 H166 Z" style="fill:var(--soft)"/>
+      <path class="drawn sa" pathLength="1" d="M166 188 H194 V216 H184 V246 H166 Z" stroke-width="2.5"/>
+      <path d="M204 252 L226 230 L232 236 L210 258 L201 261 Z" style="fill:var(--bg)" class="st" stroke-width="2"/>
+      <text class="m" x="20" y="374" style="font-size:13px;fill:var(--accent)">KEEP · where mapmakers draw</text>
+      <text x="20" y="398" style="font-size:16px">QGIS: free mapping software,</text><text x="20" y="418" style="font-size:16px">used by mapmakers worldwide</text>
+
+      <!-- right: ResearchSpace, where scholars describe, link and publish -->
+      <rect x="680" y="50" width="300" height="300" style="fill:var(--bg)" class="st" stroke-width="2"/>
+      <rect x="680" y="50" width="300" height="26" class="bxi"/>
+      <g style="fill:#777"><circle cx="694" cy="63" r="4"/><circle cx="706" cy="63" r="4"/><circle cx="718" cy="63" r="4"/></g>
+      <text class="m" x="966" y="68" text-anchor="end" style="font-size:13px;fill:#fff;stroke:none">ResearchSpace</text>
+      <rect x="692" y="88" width="150" height="132" fill="none" stroke="#c9c9c9" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text class="el" x="767" y="159" text-anchor="middle">no map</text>
+      <path d="M880 110 L915 178 M950 110 L915 178" class="st" stroke-width="1.3"/>
+      <circle cx="880" cy="110" r="10" class="bxi"/><text class="el" x="894" y="106" style="font-size:11px">person</text>
+      <rect x="941" y="98" width="18" height="24" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><text class="el" x="958" y="140" text-anchor="middle" style="font-size:11px">source</text>
+      <rect x="905" y="168" width="20" height="20" transform="rotate(45 915 178)" class="bxa"/><text class="el" x="915" y="210" text-anchor="middle">event</text>
+      <rect x="692" y="234" width="276" height="104" style="fill:var(--wash)"/>
+      <text x="706" y="256" style="font-size:14px;font-weight:700">Building</text>
+      <g style="fill:#d9d6cf"><rect x="706" y="268" width="150" height="8"/><rect x="706" y="284" width="110" height="8"/><rect x="706" y="300" width="170" height="8"/></g>
+      <rect x="900" y="312" width="56" height="18" class="bxa"/><text x="928" y="325" text-anchor="middle" style="font-size:11px;font-weight:700;fill:#fff;stroke:none">save</text>
+      <text class="m" x="680" y="374" style="font-size:13px;fill:var(--accent)">REUSE · where scholars describe and publish</text>
+      <text x="680" y="398" style="font-size:16px">ResearchSpace: open-source research</text><text x="680" y="418" style="font-size:16px">platform, created at the British Museum</text>
+
+      <!-- step 0: the idea we did not follow -->
+      <g class="ghost">
+        <rect x="360" y="150" width="280" height="130" rx="12" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2" stroke-dasharray="7 6"/>
+        <text x="500" y="196" text-anchor="middle" style="font-size:18px;font-weight:700;fill:var(--muted)">a new map editor</text>
+        <text x="500" y="220" text-anchor="middle" style="font-size:18px;font-weight:700;fill:var(--muted)">in the browser?</text>
+        <text class="el" x="500" y="254" text-anchor="middle">years of work, never as good</text>
+        <circle cx="636" cy="152" r="17" class="bxa"/><text x="636" y="159" text-anchor="middle" style="font-size:18px;font-weight:800;fill:#fff;stroke:none">✕</text>
+      </g>
+
+      <!-- step 1: the bridge -->
+      <g data-at="1" class="bridge">
+        <text class="m" x="500" y="176" text-anchor="middle" style="font-size:13px;fill:var(--accent)">ADD · the link to GIS</text>
+        <path class="arch sa" d="M330 300 Q500 196 670 300" stroke-width="3"/>
+        <g class="sa" stroke-width="3"><path d="M410 230 V266 M500 230 V246 M590 230 V266"/></g>
+        <rect class="deck bxa" x="320" y="200" width="360" height="30"/>
+        <text x="500" y="221" text-anchor="middle" style="font-size:19px;font-weight:800;fill:#fff;stroke:none">Metapolis</text>
+        <text class="m" x="500" y="324" text-anchor="middle" style="font-size:13px;fill:var(--accent)">geometries, read live</text>
+      </g>
+
+      <!-- step 1, inside: Metapolis transforms ResearchSpace; crimson marks what it adds -->
+      <g data-at="1" class="inside">
+        <rect x="680" y="50" width="300" height="300" fill="none" class="sa" stroke-width="3"/>
+        <rect x="680" y="50" width="300" height="26" class="bxa"/>
+        <g style="fill:#fff;opacity:.6"><circle cx="694" cy="63" r="4"/><circle cx="706" cy="63" r="4"/><circle cx="718" cy="63" r="4"/></g>
+        <text class="m" x="966" y="68" text-anchor="end" style="font-size:13px;fill:#fff;stroke:none">ResearchSpace + Metapolis</text>
+        <rect x="692" y="88" width="150" height="132" style="fill:#f7f6f2"/>
+        <path d="M692 130 H842 M770 88 V220" stroke="#e7e5e0" stroke-width="9" fill="none"/>
+        <path d="M702 206 H832" class="st" stroke-width="2"/>
+        <text class="el" x="767" y="198" text-anchor="middle" style="font-size:11px">1500 ─ 2026</text>
+        <rect x="692" y="88" width="150" height="132" fill="none" class="sa" stroke-width="2.5"/>
+        <rect x="692" y="88" width="100" height="17" class="bxa"/><text class="m" x="698" y="100" style="font-size:10px;fill:#fff;stroke:none">map · timeline</text>
+        <path d="M880 110 L915 178 M950 110 L915 178" class="sa" stroke-width="2.5"/>
+        <text class="m" x="915" y="94" text-anchor="middle" style="font-size:10px;fill:var(--accent)">relations</text>
+        <rect x="692" y="234" width="276" height="104" fill="none" class="sa" stroke-width="2.5"/>
+        <rect x="918" y="234" width="50" height="17" class="bxa"/><text class="m" x="924" y="246" style="font-size:10px;fill:#fff;stroke:none">forms</text>
+        <text class="m" x="680" y="444" style="font-size:12px;fill:var(--accent)">+ METAPOLIS: maps, timeline, forms, stories</text>
+      </g>
+
+      <!-- step 2: a footprint travels across and lands on the web map -->
+      <g data-at="2" class="land">
+        <g style="fill:#d9d6cf"><rect x="700" y="110" width="30" height="16"/><rect x="782" y="96" width="44" height="24"/><rect x="782" y="140" width="40" height="34"/></g>
+        <path d="M760 150 L880 110 M760 150 L915 178 M760 150 L950 110" stroke="var(--ink)" stroke-width="1.3" stroke-dasharray="4 4" fill="none"/>
+        <g class="tl-hand"><circle cx="704" cy="206" r="6" class="bxa"/></g>
+      </g>
+      <g data-at="2"><g class="trav"><path d="M166 188 H194 V216 H184 V246 H166 Z" style="fill:var(--soft)" class="sa" stroke-width="2.5"/></g></g>
+    </svg>
+  </div>
+  <aside class="notes">Drawing and georeferencing stay in QGIS, free mapping software used by mapmakers worldwide. Data, enrichment, search, authoring and publishing come from ResearchSpace, an open-source research platform created at the British Museum. On the right you can see what ResearchSpace lacks: a map. Step 0: the obvious idea was to rebuild a map editor in the browser. We decided early not to: it would take years and never be as good as QGIS. Press →: instead, Metapolis transforms ResearchSpace from within: everything in crimson on the right is Metapolis, the map and its timeline, new forms, relations that carry notes, stories, together with the live link to the geometries drawn in GIS. Press →: a footprint drawn in QGIS travels across the bridge and lands on the web map, where it is linked to the people, events and sources of the knowledge graph, with a timeline that shows it in its own years.</aside>
+</section>
+
+<section class="slide c" data-w="pipe" data-manual data-steps="5" data-intro="From historical evidence to the web map, in five steps: press →.">
+  <div class="lab"><span>metapolis · 03</span><span>the whole process · step through with →</span></div>
+  <h2 class="h">From historical evidence <span class="acc">to the web map</span>.</h2>
+  <div class="body v" style="gap:2.2vmin">
+    <div class="ctl"><span class="v pp-say" style="font-size:2.3vmin">&nbsp;</span></div>
+    <div class="pipe">
+      <div class="ps" data-g="hmap" data-p="historical map" data-say="It starts from evidence: a historical map, aligned with today's streets (georeferenced)."><b>Find</b><span>a historical map</span></div>
+      <div class="ps" data-g="polygon" data-p="QGIS" data-say="A GIS specialist traces the building's footprint over the old map, and gives it start and end years."><b>Draw</b><span>a footprint</span></div>
+      <div class="ps" data-g="graph" data-p="knowledge graph" data-say="The drawing is saved in a spatial database that the platform reads live: in the knowledge graph it becomes a Building."><b>Connect</b><span>live, no export</span></div>
+      <div class="ps" data-g="link" data-p="archives · Wikidata · Getty" data-say="Historians link it to people, events and documents, and to data from elsewhere: archives, Wikidata, the Getty vocabularies."><b>Enrich</b><span>data from elsewhere</span></div>
+      <div class="ps" data-g="map" data-p="web map" data-say="Published: on the map the building appears in its years, one click away from its evidence."><b>Publish</b><span>on the web map</span></div>
+    </div>
+    <div class="pp-lane"><div class="pk"></div></div>
+    <div class="row" style="flex:0 0 auto">
+      <div class="pt"><b>no export step</b><p>Edit the drawing, refresh the web map.</p></div>
+      <div class="pt k"><b>another backend</b><p>Geometries stored inside the graph itself, as for Florentia Illustrata.</p></div>
+    </div>
+  </div>
+  <aside class="notes">The whole process, one step per →. Find: it starts from evidence, a historical map, georeferenced so that it lines up with today's streets. Draw: a GIS specialist traces the building's footprint over it in QGIS and gives it start and end years. Connect: the geometry is saved in a spatial database, PostGIS, where GIS people already work; ResearchSpace queries it live, through SQL Sail, so nothing is exported, and in the knowledge graph the footprint becomes a Building. Enrich: historians link it to people, events and documents, and to data from elsewhere, such as archives, Wikidata, VIAF, WorldCat and the Getty vocabularies. Publish: on the web map the building appears in its years, one click away from its evidence. An alternative geometry backend: QLever, or any GeoSPARQL endpoint; Florentia Illustrata reads its parcels from QLever.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>metapolis · 04</span><span>who does what</span></div>
+  <h2 class="h">Everyone works <span class="acc">where they are best</span>.</h2>
+  <div class="cards short">
+    <div class="cd" style="--d:.1s"><b>01 · GIS specialist</b><h5>draws</h5><p>Footprints on the map, with start and end years.</p><div class="ft"><span class="tag">map</span></div></div>
+    <div class="cd" style="--d:.3s"><b>02 · historian</b><h5>describes</h5><p>Buildings, people, events and sources, in web forms.</p><div class="ft"><span class="tag">forms</span></div></div>
+    <div class="cd" style="--d:.5s"><b>03 · everyone</b><h5>links</h5><p>Entities to each other, documents to places, notes to relations.</p><div class="ft"><span class="tag">graph</span></div></div>
+    <div class="cd a" style="--d:.7s"><b>04 · reader</b><h5>explores</h5><p>Map, timeline and sources, in the browser.</p><div class="ft"><span class="tag">web</span></div></div>
+  </div>
+  <aside class="notes">The GIS specialist draws footprints in QGIS and sets start and end years. The historian creates buildings, people, events and sources through web forms. Everyone links entities, attaches documents and writes notes on relations. The reader explores map, timeline and sources. The GIS person keeps working in QGIS; the historian works in web forms; and the two meet on the map.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>metapolis · 05</span><span>the data model · step through with →</span></div>
+  <h2 class="h">Relations are <span class="acc">entities too</span>.</h2>
+  <div class="body">
+    <div class="fig g15">
+      <svg viewBox="0 0 820 500" class="kgs dm">
+        <g data-at="1">
+          <path class="ge st" pathLength="1" d="M240 104 L338 188" stroke-width="2" marker-end="url(#ah)"/>
+          <text class="el" x="300" y="128">took place at</text>
+          <rect class="bxw" x="20" y="50" width="220" height="56"/><rect x="36" y="64" width="28" height="26" rx="3" style="fill:var(--bg)" class="sa" stroke-width="2"/><rect x="36" y="64" width="28" height="8" class="bxa"/><path d="M42 59v8M58 59v8" class="sa" stroke-width="2.5"/><path d="M42 81h5M50 81h5M58 81h1" class="sa" stroke-width="3"/><text class="nl" x="145" y="85" text-anchor="middle">Event</text>
+          <path class="ge st" pathLength="1" d="M580 104 L482 188" stroke-width="2" marker-end="url(#ah)"/>
+          <text class="el" x="552" y="150">owned</text>
+          <rect class="bxw" x="580" y="50" width="220" height="56"/><circle cx="610" cy="70" r="7.5" class="bxi"/><path d="M596 96a14 13 0 0 1 28 0z" class="bxi"/><text class="nl" x="705" y="85" text-anchor="middle">Person</text>
+          <path class="ge st" pathLength="1" d="M240 382 L338 252" stroke-width="2" marker-end="url(#ah)"/>
+          <text class="el" x="300" y="352">documents</text>
+          <rect class="bxw" x="20" y="380" width="220" height="56"/><path d="M38 391 h18 l8 8 v27 h-26 z" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><path d="M56 391 v8 h8" fill="none" stroke="#9a9a9a" stroke-width="2"/><path d="M43 406h16M43 413h16M43 420h11" stroke="#9a9a9a" stroke-width="1.5"/><text class="nl" x="145" y="415" text-anchor="middle">Source</text>
+        </g>
+        <g data-at="2">
+          <rect x="230" y="298" width="118" height="38" rx="6" style="fill:var(--bg)" class="sa" stroke-width="2"/>
+          <text x="289" y="323" text-anchor="middle" style="font-size:15px;font-weight:700;fill:var(--accent);stroke:none">relation</text>
+          <path class="sa" d="M348 324 L380 350" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <rect x="380" y="345" width="340" height="96" class="sa" stroke-width="1.5" stroke-dasharray="6 5" style="fill:var(--bg)"/>
+          <text class="el" x="398" y="372" style="fill:var(--accent)">NOTES</text>
+          <text x="398" y="398" style="font-size:16px">why this source documents</text>
+          <text x="398" y="421" style="font-size:16px">this building, and how sure we are</text>
+        </g>
+        <g data-at="3" class="ext">
+          <path class="sa" d="M690 106 V160" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text class="m" x="700" y="137" text-anchor="middle" style="font-size:12px;fill:var(--accent)">same as · Wikidata Q174330</text>
+          <image href="assets/img/wiki_brunelleschi.jpg" x="590" y="160" width="220" height="159"/>
+          <rect x="590" y="160" width="220" height="159" fill="none" stroke="#9a9a9a" stroke-width="1.5"/>
+          <path class="sa" d="M410 250 L406 262M130 436 L100 456" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <rect x="346" y="262" width="120" height="30" rx="15" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="406" y="282" text-anchor="middle" class="ac" style="font-size:14px;font-weight:600">Getty AAT</text>
+          <rect x="40" y="456" width="120" height="30" rx="15" class="sa" stroke-width="1.5" stroke-dasharray="5 4" style="fill:var(--bg)"/><text x="100" y="476" text-anchor="middle" class="ac" style="font-size:14px;font-weight:600">WorldCat</text>
+        </g>
+        <g data-at="4" style="font-size:15px;font-weight:600">
+          <text class="ac" x="130" y="130" text-anchor="middle">acquisition of title</text>
+          <text class="ac" x="690" y="130" text-anchor="middle">Fulvia Targioni Tozzetti</text>
+          <text class="ac" x="130" y="370" text-anchor="middle">Catasto, 1835</text>
+          <text class="ac" x="410" y="276" text-anchor="middle">a house, Via dell'Amorino</text>
+        </g>
+        <rect class="bxa" x="330" y="190" width="160" height="60"/><path d="M342 210 l16 -10 l16 10 z" style="fill:#fff"/><path d="M345 213 v20 M352 213 v20 M364 213 v20 M371 213 v20 M341 236 h34" stroke="#fff" stroke-width="2.5"/><text class="nl" x="428" y="227" text-anchor="middle" style="fill:#fff">Building</text>
+      </svg>
+    </div>
+    <div class="col g1 pts mid">
+      <div class="pt k"><b>four entities</b><p><strong>Building · Event · Person · Source</strong>, each with its own form.</p></div>
+      <div class="pt" data-at="1"><b>linked</b><p>Every link has a meaning: took place at, owned, documents.</p></div>
+      <div class="pt" data-at="2"><b>relations are entities</b><p>With domain, range and <strong>notes</strong>: not only <em>that</em> a source is connected, but <em>why</em>.</p></div>
+      <div class="pt" data-at="3"><b>enriched</b><p>A person in our graph is the same as on Wikipedia and Wikidata; also VIAF, WorldCat and the Getty vocabularies.</p></div>
+      <div class="pt" data-at="4"><b>an example</b><p>A house in Via dell'Amorino, acquired by Fulvia Targioni Tozzetti, documented by the 1835 cadastre.</p></div>
+    </div>
+  </div>
+  <aside class="notes">Four core entities: Building, Event, Person, Source. Relations are entities too, with domain, range and notes. Enrichment from Wikipedia and Wikidata, VIAF, WorldCat and the Getty vocabularies: at step three, a person in the graph, here Filippo Brunelleschi as a well-known example, is linked to his Wikidata identity, Q174330, and through it to his Wikipedia page. One design choice to highlight: a relation is not just a line between two things. It is an entity with its own notes, so a scholar can record why a source is connected to a building, not only that it is. That is where interpretation lives. Press → four times; the last step gives a concrete case from Florentia Illustrata: a house in Via dell'Amorino, the acquisition of title, Fulvia Targioni Tozzetti, and the 1835 cadastre.</aside>
+</section>
+
+<section class="slide c" data-w="reel">
+  <div class="lab"><span>metapolis</span><span>the map, in four moves</span></div>
+  <h2 class="h s">A familiar map, with <span class="acc">time</span> and <span class="acc">evidence</span> built in.</h2>
+  <div class="body">
+    <div class="col g1 mid rls ia">
+      <button class="rl" data-v="assets/video/s15-02.mp4" data-name="maps"><b>01</b><span>Compare superimposed historical maps</span><i></i></button>
+      <button class="rl" data-v="assets/video/s15-03.mp4" data-name="past and present"><b>02</b><span>Visualize past and present</span><i></i></button>
+      <button class="rl" data-v="assets/video/s15-04.mp4" data-name="year by year"><b>03</b><span>Highlight places by metadata, year by year</span><i></i></button>
+      <button class="rl" data-v="assets/video/s15-05.mp4" data-name="documents"><b>04</b><span>Navigate the documents from the buildings</span><i></i></button>
+    </div>
+    <div class="vwin g2">
+      <div class="dbar"><i></i><i></i><i></i><span class="durl">veniss.net · <span class="rl-name"></span></span></div>
+      <video muted playsinline preload="auto"></video>
+    </div>
+  </div>
+  <aside class="notes">The heart of it: a familiar, Google-Maps-like interface, but with time as a first-class dimension and every feature one click away from its evidence. Four moves, recorded on VeNiss: compare superimposed historical maps; visualize past and present; highlight places by metadata, year by year; navigate the documents from the buildings. Clips play in order; click one to jump. The live demos come with the use cases.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>metapolis · 07</span><span>sources</span></div>
+  <h2 class="h">Sources on the map, <span class="acc">not in footnotes</span>.</h2>
+  <div class="body">
+    <figure class="fig g2"><img src="assets/img/source_form.jpg" alt="Editing a primary source in VeNiss: a form next to a bird's-eye view of the island of La Certosa, in the IIIF viewer"></figure>
+    <div class="col g1 pts mid">
+      <div class="pt"><b>IIIF</b><p>Archival images at full resolution, zoomable.</p></div>
+      <div class="pt"><b>transcription</b><p>In web forms, next to the image.</p></div>
+      <div class="pt"><b>attribution</b><p>Every contribution credited to its researcher.</p></div>
+      <div class="pt k"><b>narratives</b><p>Texts annotated with links to their entities.</p></div>
+    </div>
+  </div>
+  <div class="src">VeNiss: a primary source described next to its image, a bird's-eye view of the island of La Certosa (c. 1650), in the IIIF viewer.</div>
+  <aside class="notes">Archival images served via IIIF; transcription through web forms; contributions attributed to each researcher; narratives annotated with links to entities. The document is not an attachment at the end of the book. It is on the map, next to the building it describes, and it can be read, transcribed and cited from there.</aside>
+</section>
+
+<section class="slide dark">
+  <div class="lab"><span>metapolis · 08</span><span>built to last</span></div>
+  <div class="fit"><p>Software is ephemeral. <span class="acc">Research data should not be.</span></p></div>
+  <div class="lab"><span>RDF · Linked Open Data · the ontology travels with the data · open source: github.com/villaitatti/metapolis</span></div>
+  <aside class="notes">Data stored as RDF, Linked Open Data; meaning travels with the data, because the ontology is inside the model; open-source code on GitHub. Software is ephemeral; research data should not be. Because the data is RDF with its semantics embedded, it can be read and moved to another system decades from now, without Metapolis.</aside>
+</section>
+
+<!-- ================= PART III · FLORENTIA ILLUSTRATA ================= -->
+<section class="slide red">
+  <div class="lab part"><span>part two · the projects · 02</span><span>II / III</span></div>
+  <div class="fit" style="font-weight:900"><p>florentia illustrata</p></div>
+</section>
+
+<section class="slide c bg">
+  <div class="bgimg light" style="background-image:url(assets/img/florence.jpg)"></div>
+  <div class="lab"><span>florentia illustrata · 01</span><span>the source <span class="wip">not yet public</span></span></div>
+  <h2 class="h">Florence, <span class="acc">parcel by parcel</span>, in 1835.</h2>
+  <div class="nums" style="grid-template-columns:1.25fr 1fr;grid-template-rows:1fr 1fr;align-content:stretch">
+    <div class="a" style="grid-row:span 2;justify-content:center"><div class="stat" style="font-size:min(24vmin,13vw)"><span data-count="17681">17681</span><small>land parcels</small></div><p style="font-size:3vmin;max-width:24ch">Each one linked to its owners, its use and its acquisition.</p></div>
+    <div style="justify-content:center"><div class="stat" style="font-size:12vmin">1835<small>Catasto Generale Toscano</small></div><p>The first geometric cadastre of the city.</p></div>
+    <div style="justify-content:center"><div class="stat" style="font-size:12vmin">1<small>knowledge graph</small></div><p>Open data from Belli, Lucchesi and Raggi (FUP 2022), turned into a graph.</p></div>
+  </div>
+  <div class="src">Overlays: the c. 1850 plan of the city and the 2023 orthophoto (Regione Toscana) · florentiaillustrata.net</div>
+  <aside class="notes">Florence in the Catasto Generale Toscano, c. 1835, at florentiaillustrata.net: 17,681 land parcels, each linked to its owners, its use and its acquisition. Data from Belli, Lucchesi, Raggi, Firenze nella prima metà dell'Ottocento (FUP 2022), turned into a knowledge graph. Historical overlays: the 1850 plan of the city and the 2023 orthophoto. Florentia starts from a single source: the nineteenth-century cadastre of Florence, with almost eighteen thousand parcels. In a book, this is a table. In Metapolis, every parcel is a place on the map, connected to the people who owned it and to what it was used for.</aside>
+</section>
+
+<section class="slide c" data-w="say">
+  <div class="lab"><span>florentia illustrata · 02</span><span>from records to relations · step through with →</span></div>
+  <h2 class="h">From records <span class="acc">to a web of relations</span>.</h2>
+  <div class="ctl say"><span class="v" data-k="0">Seven records from the 1835 cadastre. In a table, each row stands alone.</span><span class="v" data-k="1" hidden>But the same name, the same husband and the same two streets come back, row after row.</span><span class="v" data-k="2" hidden>As a graph they connect: one woman, five of her properties, two places, a husband.</span><span class="v" data-k="3" hidden>Her neighbours join through the places they share: a goldsmith in her street, a grocer on the square. The city becomes a network.</span></div>
+  <div class="body rg">
+    <div class="recs">
+      <table class="tb sm rt">
+        <tr><th>n.</th><th>owner</th><th class="c3">described as</th><th>property</th><th>street</th></tr>
+        <tr><td class="n0">5272</td><td class="nm">Morelli, Rosa</td><td class="c3 wf">wife of Jacopo Mosel</td><td>entrance</td><td class="s1">Via degli Archibusieri</td></tr>
+        <tr><td class="n0">5273</td><td class="nm">Morelli, Rosa</td><td class="c3 wf">wife of Jacopo Mosel</td><td>shop · silversmith</td><td class="s1">Via degli Archibusieri</td></tr>
+        <tr><td class="n0">5275</td><td class="nm">Morelli, Rosa</td><td class="c3 wf">wife of Jacopo Mosel</td><td>shop</td><td class="s1">Via degli Archibusieri</td></tr>
+        <tr><td class="n0">5284</td><td>Moro, Tommaso</td><td class="c3"></td><td>shop · goldsmith</td><td class="s1">Via degli Archibusieri</td></tr>
+        <tr><td class="n0">6948</td><td>Morosi, Massimo</td><td class="c3"></td><td>shop · grocer</td><td class="s2">Piazza S. Andrea</td></tr>
+        <tr><td class="n0">6949</td><td class="nm">Morelli, Rosa</td><td class="c3 wf">wife of Jacopo Mosel</td><td>shop</td><td class="s2">Piazza S. Andrea</td></tr>
+        <tr><td class="n0">6950</td><td class="nm">Morelli, Rosa</td><td class="c3 wf">wife of Jacopo Mosel</td><td>house</td><td class="s2">Piazza S. Andrea</td></tr>
+      </table>
+    </div>
+    <div class="fig rgg">
+      <svg viewBox="0 0 600 440" class="kgs">
+        <g data-at="2">
+          <!-- Rosa owns five properties; each property is in a street; she is recorded as wife of Jacopo Mosel -->
+          <path class="ge st" pathLength="1" d="M300 196 L70 262M300 196 L135 244M300 196 L200 266M300 196 L425 262M300 196 L505 258" stroke-width="1.6"/>
+          <text class="el" x="232" y="214" text-anchor="middle" style="fill:var(--ink)">owns</text>
+          <path d="M70 280 L110 340M135 262 L112 340M200 284 L118 340M425 280 L486 340M505 276 L494 340" stroke="#9a9a9a" stroke-width="1.4" stroke-dasharray="4 4" fill="none"/>
+          <text class="el" x="152" y="318">in</text><text class="el" x="470" y="318">in</text>
+          <path class="ge sa" pathLength="1" d="M300 182 L300 108" stroke-width="2.2"/>
+          <text class="el" x="308" y="150" style="fill:var(--accent)">wife of</text>
+          <circle cx="300" cy="78" r="12" style="fill:var(--bg)" class="st" stroke-width="2.5"/><path d="M282 108a18 16 0 0 1 36 0" style="fill:var(--bg)" class="st" stroke-width="2.5"/>
+          <text x="300" y="58" text-anchor="middle" style="font-size:15px">Jacopo Mosel</text>
+          <circle cx="300" cy="170" r="13" class="bxi"/><path d="M280 204a20 18 0 0 1 40 0z" class="bxi"/>
+          <text x="300" y="228" text-anchor="middle" style="font-size:17px;font-weight:800;fill:var(--accent)">Rosa Morelli</text>
+          <g style="fill:var(--wash2)" stroke="var(--ink)" stroke-width="2"><rect x="56" y="250" width="28" height="28"/><rect x="121" y="232" width="28" height="28"/><rect x="186" y="254" width="28" height="28"/><rect x="411" y="250" width="28" height="28"/><rect x="491" y="246" width="28" height="28"/></g>
+          <g class="el" style="font-size:13px"><text x="70" y="294" text-anchor="middle">entrance</text><text x="135" y="226" text-anchor="middle">silversmith</text><text x="200" y="298" text-anchor="middle">shop</text><text x="425" y="294" text-anchor="middle">shop</text><text x="505" y="290" text-anchor="middle">house</text></g>
+          <path d="M110 372 c-14 -16 -14 -34 0 -34 c14 0 14 18 0 34 z" style="fill:var(--bg)" class="st" stroke-width="2.5"/><circle cx="110" cy="352" r="4" class="bxi"/>
+          <text x="110" y="394" text-anchor="middle" style="font-size:15px;font-weight:700">Via degli Archibusieri</text>
+          <path d="M490 372 c-14 -16 -14 -34 0 -34 c14 0 14 18 0 34 z" style="fill:var(--bg)" class="st" stroke-width="2.5"/><circle cx="490" cy="352" r="4" class="bxi"/>
+          <text x="490" y="394" text-anchor="middle" style="font-size:15px;font-weight:700">Piazza S. Andrea</text>
+        </g>
+        <g data-at="3">
+          <!-- neighbours reach Rosa through the places they share -->
+          <path class="ge st" pathLength="1" d="M40 110 L40 168" stroke-width="1.6"/>
+          <path d="M40 196 L104 340" stroke="#9a9a9a" stroke-width="1.4" stroke-dasharray="4 4" fill="none"/>
+          <circle cx="40" cy="80" r="11" class="bxi"/><path d="M24 108a16 14 0 0 1 32 0z" class="bxi"/>
+          <text x="40" y="60" text-anchor="middle" style="font-size:15px">Tommaso Moro</text>
+          <rect x="26" y="168" width="28" height="28" style="fill:var(--wash2)" stroke="var(--ink)" stroke-width="2"/><text class="el" x="64" y="186" style="font-size:13px">goldsmith</text>
+          <path class="ge st" pathLength="1" d="M560 110 L560 168" stroke-width="1.6"/>
+          <path d="M560 196 L496 340" stroke="#9a9a9a" stroke-width="1.4" stroke-dasharray="4 4" fill="none"/>
+          <circle cx="560" cy="80" r="11" class="bxi"/><path d="M544 108a16 14 0 0 1 32 0z" class="bxi"/>
+          <text x="560" y="60" text-anchor="middle" style="font-size:15px">Massimo Morosi</text>
+          <rect x="546" y="168" width="28" height="28" style="fill:var(--wash2)" stroke="var(--ink)" stroke-width="2"/><text class="el" x="536" y="186" text-anchor="end" style="font-size:13px">grocer</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="src">Catasto Generale Toscano, 1835: parcels 5272–6950, as modelled in Florentia Illustrata. Rosa Morelli owned six properties; five are shown here.</div>
+  <aside class="notes">Seven real records from the 1835 cadastre. In a table, each row stands alone: a parcel number, an owner, a description, a property, a street. Press →: look again, and the same name comes back five times, always with the same description, "wife of Jacopo Mosel", in the same two streets. Press →: as a graph, the rows connect: one person, Rosa Morelli, owns five properties, among them a silversmith's shop; the properties are in two places, Via degli Archibusieri and Piazza S. Andrea; and she is linked to her husband. Press →: the two other records are her neighbours, a goldsmith in her street and a grocer on the square, and they join the network through the places they share. Now every question can follow these links: whose shops stood next to whose, which families held property where. The next slide shows it live.</aside>
+</section>
+
+<section class="slide c demo" data-w="demo" data-steps="4">
+  <div class="lab"><span>florentia illustrata · live <span class="wip">not yet public</span></span><span>ownership</span></div>
+  <ol class="rail"><li class="rh">demo</li><li>a parcel</li><li>its owners</li><li>one owner</li><li>all their parcels</li></ol>
+  <div class="dwin">
+    <div class="dbar">
+      <i></i><i></i><i></i>
+      <span class="durl">florentiaillustrata.net · Via dell'Amorino, parcel 1005</span>
+      <span class="dhint"><span class="out">click the page to use it</span><span class="in">keys go to the page · click outside it, then →</span></span>
+      <button class="btn" data-z=".8">80%</button><button class="btn on" data-z="1">100%</button><button class="btn" data-z="1.25">125%</button><button class="btn" data-z="1.5">150%</button>
+      <i class="sep"></i>
+      <button class="btn" data-act="reset" title="Reload the starting page">↺ reset</button>
+      <a class="btn" href="https://florentiaillustrata.net/resource/rsp:gender-and-property?states=gender-property-map%3DJTdCJTIydmlldyUyMiUzQSU3QiUyMmNlbnRlciUyMiUzQSU1QjEyNTI1NjkuNCUyQzU0MzA3MjIuMCU1RCUyQyUyMnpvb20lMjIlM0ExOC44JTJDJTIycm90YXRpb24lMjIlM0EwJTdEJTJDJTIyYmFzZW1hcCUyMiUzQSUyMk9wZW5TdHJlZXRNYXAlMjIlMkMlMjJzZWxlY3RlZCUyMiUzQSUyMmh0dHBzJTNBJTJGJTJGZmxvcmVudGlhaWxsdXN0cmF0YS5uZXQlMkZyZXNvdXJjZSUyRmFwcGV6emFtZW50byUyRjEwMDUlMjIlN0Q%3D%26gender-property-map-controls%3DJTdCJTIyc3R5bGluZyUyMiUzQSU3QiUyMmVuYWJsZWQlMjIlM0F0cnVlJTJDJTIyY29sb3JCeSUyMiUzQSUyMm93bmVycyUyMiUyQyUyMmxhYmVsQnklMjIlM0ElMjIlMjIlMkMlMjJsYWJlbEJhY2tncm91bmQlMjIlM0FmYWxzZSU3RCUyQyUyMnBhbmVsJTIyJTNBJTIyZGV0YWlscyUyMiU3RA%3D%3D" target="_blank" rel="noopener">new tab ↗</a>
+      <button class="btn" data-act="max" title="Fill the screen (Esc to exit)">⤢ expand</button>
+    </div>
+    <div class="dview">
+      <div class="dfall"><b>Loading Florentia Illustrata…</b><p>It needs a login: present from the demo server (node demo-server.mjs), then log in inside the frame.</p></div>
+      <iframe data-src="https://florentiaillustrata.net/resource/rsp:gender-and-property?states=gender-property-map%3DJTdCJTIydmlldyUyMiUzQSU3QiUyMmNlbnRlciUyMiUzQSU1QjEyNTI1NjkuNCUyQzU0MzA3MjIuMCU1RCUyQyUyMnpvb20lMjIlM0ExOC44JTJDJTIycm90YXRpb24lMjIlM0EwJTdEJTJDJTIyYmFzZW1hcCUyMiUzQSUyMk9wZW5TdHJlZXRNYXAlMjIlMkMlMjJzZWxlY3RlZCUyMiUzQSUyMmh0dHBzJTNBJTJGJTJGZmxvcmVudGlhaWxsdXN0cmF0YS5uZXQlMkZyZXNvdXJjZSUyRmFwcGV6emFtZW50byUyRjEwMDUlMjIlN0Q%3D%26gender-property-map-controls%3DJTdCJTIyc3R5bGluZyUyMiUzQSU3QiUyMmVuYWJsZWQlMjIlM0F0cnVlJTJDJTIyY29sb3JCeSUyMiUzQSUyMm93bmVycyUyMiUyQyUyMmxhYmVsQnklMjIlM0ElMjIlMjIlMkMlMjJsYWJlbEJhY2tncm91bmQlMjIlM0FmYWxzZSU3RCUyQyUyMnBhbmVsJTIyJTNBJTIyZGV0YWlscyUyMiU3RA%3D%3D" title="Florentia Illustrata, live demo: ownership" allow="fullscreen; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+  </div>
+  <aside class="notes">Live demo (log in first; the frame opens on parcel 1005 in Via dell'Amorino, coloured by owners). Press → to mark each step on the rail. 1. The parcel: a house with eight Targioni Tozzetti co-owners. 2. Its owners in the details panel. 3. Open one owner: father, spouse, title. 4. Highlight every parcel that person owned across the city. Then switch to the macro categories colouring, turn on the 1850 plan and swipe against the 2023 orthophoto if time allows.</aside>
+</section>
+
+<section class="slide dark">
+  <div class="lab"><span>florentia illustrata · 03</span><span>a research question</span></div>
+  <div class="fit"><p>Rosa Morelli was not alone. <span class="acc">How many women owned property in 1835 Florence, and what did they own?</span></p></div>
+  <div class="lab"><span>A question the cadastre was never meant to answer · Andreose, Grillo, Spinaci, AIUCD 2026</span></div>
+  <aside class="notes">Back to Rosa Morelli, the shop owner we met at the start. Once the cadastre is a graph, her record is not an isolated curiosity: we can ask how many women owned property in 1835 Florence, and what kind of property. It is a question the cadastre was never designed to answer: it does not even record gender. This is the research question of the AIUCD 2026 paper by Erica Andreose, Remo Grillo and Gianmarco Spinaci. The next slides show how we got there, what we found, and where it is told: in a story on the platform.</aside>
+</section>
+
+<section class="slide c" data-w="pipe" data-manual data-steps="5" data-intro="The cadastre names every owner, but never says whether they were a man or a woman. Press → to follow the clues.">
+  <div class="lab"><span>florentia illustrata · 04</span><span>beyond spatial data · AIUCD 2026</span></div>
+  <h2 class="h">Finding the women owners, <span class="acc">clue by clue</span>.</h2>
+  <div class="body v" style="gap:2.2vmin">
+    <div class="ctl"><span class="v pp-say" style="font-size:2.3vmin">&nbsp;</span></div>
+    <div class="pipe">
+      <div class="ps" data-g="table" data-p="17,681 parcels" data-say="Owners are recorded by name, patronymic and descriptors, but there is no gender field."><b>the cadastre</b><span>no gender field</span></div>
+      <div class="ps" data-g="tags" data-p="“moglie di”" data-say="An owner described as “moglie di”, wife of, is a woman: the graph follows that relation."><b>wife of</b><span>“moglie di”</span></div>
+      <div class="ps" data-g="text" data-p="given names" data-say="The other given names are matched against an open list of Italian names; only names that are always female are kept."><b>first names</b><span>an open list</span></div>
+      <div class="ps" data-g="people" data-p="+79 women" data-say="79 more owners are likely unmarried women, 3 of them nuns."><b>+79 women</b><span>3 of them nuns</span></div>
+      <div class="ps" data-g="map" data-p="a gender map" data-say="One query becomes a map layer: women only, co-ownership, men only, institutions."><b>gender map</b><span>one query, one layer</span></div>
+    </div>
+    <div class="pp-lane"><div class="pk"></div></div>
+    <div class="row" style="flex:0 0 auto">
+      <div class="pt k"><b>estimates, not certainties</b><p>Homonyms and identities are not resolved yet.</p></div>
+      <div class="pt"><b>the paper</b><p>Andreose, Grillo, Spinaci, “Beyond Spatial Data”, AIUCD 2026.</p></div>
+    </div>
+  </div>
+  <aside class="notes">Because the data is a graph, it can answer questions it was not built for. The cadastre does not record gender. But by following the "moglie di", wife of, relation, and by matching first names against an open list, a team identified women landowners, including widows and nuns, and mapped them: 79 more likely unmarried women, 3 of them nuns. That is the AIUCD 2026 paper Beyond Spatial Data, by Erica Andreose, Remo Grillo and Gianmarco Spinaci: a gender history of property from a cadastral dataset, without changing the data model.</aside>
+</section>
+
+<section class="slide c" data-w="bars">
+  <div class="lab"><span>florentia illustrata · 05</span><span>interactive</span></div>
+  <h2 class="h">What women owned, <span class="acc">and how much</span>.</h2>
+  <div class="body">
+    <div class="col g2 mid" style="gap:2.6vmin">
+      <div class="ctl ia"><button class="btn on" data-set="cat">by category</button><button class="btn" data-set="type">by property type</button><span style="margin-left:2.4vmin">show</span><button class="btn on" data-mode="counts">parcels</button><button class="btn" data-mode="share">women : men</button></div>
+      <div class="bps" data-set="cat">
+        <div class="bp" data-a="1076" data-b="9197"><span class="l">urban buildings</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="15" data-b="115"><span class="l">commercial</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="5" data-b="27"><span class="l">open spaces</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="0" data-b="19"><span class="l">open spaces, green</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="2" data-b="5"><span class="l">religious buildings</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+      </div>
+      <div class="bps" data-set="type" hidden>
+        <div class="bp" data-a="622" data-b="5199"><span class="l">casa</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="194" data-b="1771"><span class="l">casa e corte</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="69" data-b="582"><span class="l">ingresso</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="24" data-b="216"><span class="l">ingresso e casa</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="20" data-b="136"><span class="l">fabbricato</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="13" data-b="123"><span class="l">palazzo</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+      </div>
+      <div class="legend"><span><i class="sw-a"></i>women</span><span><i class="sw-i"></i>men</span><span>parcels, 1835</span></div>
+    </div>
+    <div class="col g1 pts mid">
+      <div class="pt"><b>mostly homes</b><p><em>Casa</em> and <em>casa e corte</em>: most of what women owned.</p></div>
+      <div class="pt"><b>far fewer</b><p>About 1,100 urban-building parcels, against more than 9,000.</p></div>
+      <div class="pt k"><b>almost never</b><p>Shops, open spaces, religious buildings.</p></div>
+    </div>
+  </div>
+  <div class="src">Andreose, Grillo, Spinaci, “Beyond Spatial Data”, AIUCD 2026 · doi:10.6092/unibo/amsacta/8980</div>
+  <aside class="notes">The results. Women did own property, mostly residential: casa (622 parcels) and casa e corte (194). The same profile as men, at a much smaller scale: about 1,100 urban-building parcels against more than 9,000. Activities, open spaces and religious spaces were almost exclusively owned by men. Interactive: switch between macro categories and property types, and between parcel counts and the women : men ratio.</aside>
+</section>
+
+<section class="slide">
+  <div class="lab"><span>florentia illustrata · 06</span><span>quote</span></div>
+  <div class="fit q"><p>“A query becomes a layer, <span class="mark">a category becomes a dynamic legend.</span>”</p></div>
+  <div class="lab"><span>Andreose, Grillo, Spinaci, “Beyond Spatial Data”, AIUCD 2026</span></div>
+  <aside class="notes">From the conclusions of the paper: the analysis is not a separate tool; it happens on the map. Next: the same work told as a story.</aside>
+</section>
+
+<section class="slide c demo" data-w="demo" data-steps="4">
+  <div class="lab"><span>florentia illustrata · live <span class="wip">new: stories</span></span><span>gender and property in 1835 Florence</span></div>
+  <ol class="rail"><li class="rh">demo</li><li>open the story</li><li>one step, one map state</li><li>the map follows the text</li><li>leave it and explore</li></ol>
+  <div class="dwin">
+    <div class="dbar">
+      <i></i><i></i><i></i>
+      <span class="durl">florentiaillustrata.net · story: gender and property in 1835 Florence</span>
+      <span class="dhint"><span class="out">click the page to use it</span><span class="in">keys go to the page · click outside it, then →</span></span>
+      <button class="btn" data-z=".8">80%</button><button class="btn on" data-z="1">100%</button><button class="btn" data-z="1.25">125%</button><button class="btn" data-z="1.5">150%</button>
+      <i class="sep"></i>
+      <button class="btn" data-act="reset" title="Reload the starting page">↺ reset</button>
+      <a class="btn" href="https://florentiaillustrata.net/resource/home?states=test-map-controls%3DJTdCJTIycGFuZWwlMjIlM0FudWxsJTdE%26test-map%3DJTdCJTIydmlldyUyMiUzQSU3QiUyMmNlbnRlciUyMiUzQSU1QjEyNTM2MTAuNCUyQzU0MzA0OTcuMSU1RCUyQyUyMnpvb20lMjIlM0ExNC40NSUyQyUyMnJvdGF0aW9uJTIyJTNBMCU3RCU3RA%3D%3D&amp;story=http%3A%2F%2Fwww.researchspace.org%2Finstances%2Fstories%2Fad508a7f-99b6-4265-a8ad-258700aee38f&amp;storySlide=1" target="_blank" rel="noopener">new tab ↗</a>
+      <button class="btn" data-act="max" title="Fill the screen (Esc to exit)">⤢ expand</button>
+    </div>
+    <div class="dview">
+      <div class="dfall"><b>Loading the story…</b><p>It needs a login: present from the demo server (node demo-server.mjs). If the story does not open, use Stories in the site header.</p></div>
+      <iframe data-src="https://florentiaillustrata.net/resource/home?states=test-map-controls%3DJTdCJTIycGFuZWwlMjIlM0FudWxsJTdE%26test-map%3DJTdCJTIydmlldyUyMiUzQSU3QiUyMmNlbnRlciUyMiUzQSU1QjEyNTM2MTAuNCUyQzU0MzA0OTcuMSU1RCUyQyUyMnpvb20lMjIlM0ExNC40NSUyQyUyMnJvdGF0aW9uJTIyJTNBMCU3RCU3RA%3D%3D&amp;story=http%3A%2F%2Fwww.researchspace.org%2Finstances%2Fstories%2Fad508a7f-99b6-4265-a8ad-258700aee38f&amp;storySlide=1" title="Florentia Illustrata, live demo: stories" allow="fullscreen; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+  </div>
+  <aside class="notes">Stories, new in Metapolis: a narrative made of map states. The story "Gender and property in 1835 Florence" has 12 steps: women landowners, from records to a knowledge graph, who counts as a woman, the gender map, what women owned, held alone more often than shared, a family estate, urban space by category, shops around the market, reading a single parcel, uncertain identities, conclusions. Each step sets the map: centre, zoom, colouring, selected parcel. Press → to mark the rail: open the story, step through, show that the map follows the text, then leave the story and keep exploring from the same view. The story is loaded on production: the frame opens it at its first step, over the main map.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>florentia illustrata · 07</span><span>what became possible</span></div>
+  <h2 class="h">A table became <span class="acc">a city you can question</span>.</h2>
+  <div class="ms">
+    <div class="msr"><span class="mt">01</span><b>owners, citywide</b><p>Every parcel of a person, across Florence, in one click.</p></div>
+    <div class="msr"><span class="mt">02</span><b>new questions</b><p>A gender history of property, from a source that records no gender.</p></div>
+    <div class="msr"><span class="mt">03</span><b>stories</b><p>Arguments told as sequences of live map states.</p></div>
+    <div class="msr"><span class="mt">04</span><b>through time <span class="wip">in progress</span></b><p>1835 → 2011 → 2026: which buildings survived, disappeared, or were merged.</p></div>
+    <div class="msr acc"><span class="mt">05</span><b>same data model</b><p>No change to the model: a query became a layer.</p></div>
+  </div>
+  <aside class="notes">What became possible: owners across the whole city; a question the source never asked; stories; and, in progress, the building-history map, which takes the same parcels forward in time, 1835, 2011, 2026: you can see which buildings survived, which disappeared, and which were merged into one. All without changing the data model.</aside>
+</section>
+
+<!-- ================= PART III · VENISS ================= -->
+<section class="slide dark bg">
+  <div class="bgimg" style="background-image:url(assets/img/venice_islands.jpg)"></div>
+  <div class="logos"><img src="assets/img/veniss_logo.png" alt="VeNiss" style="height:7vmin"><i class="sep"></i><img src="assets/img/erc_logo_white.png" alt="European Research Council" style="height:7vmin"></div>
+  <div class="fit"><p>Venice's Nissology<span class="acc">.</span></p></div>
+  <p class="h s" style="font-weight:400;color:rgba(255,255,255,.8);max-width:60ch">Reframing the lagoon city as an archipelago, 16th–21st centuries.</p>
+  <div class="who" style="grid-template-columns:repeat(4,1fr)">
+    <div><b>ERC Starting Grant</b><span>2023 – 2027 · no. 101040474</span></div>
+    <div><b>60+ islands</b><span>five centuries of the lagoon</span></div>
+    <div><b>Ludovica Galeazzo</b><span>principal investigator</span></div>
+    <div><b>Padova · Firenze · I Tatti</b><span>three research teams</span></div>
+  </div>
+  <div class="lab"><span>the projects · 03 · veniss.eu · the platform: veniss.net</span></div>
+  <aside class="notes">VeNiss, Venice's Nissology: Reframing the Lagoon City as an Archipelago, a model for spatial and temporal urban analysis, 16th to 21st centuries. An ERC Starting Grant (2023–2027), PI Ludovica Galeazzo, based at the University of Padua, Department of Cultural Heritage, with the Department of Architecture of the University of Florence and I Tatti. The project was conceived in I Tatti's Digital Humanities Lab. It studies Venice's more than sixty "domestic" islands, places for food supply, defence, healthcare and civic rituals, from the Cinquecento to today. VeNiss is the project whose needs shaped Metapolis.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>veniss · 01</span><span>methodology · veniss.eu</span></div>
+  <h2 class="h">Seven work packages, <span class="acc">one infrastructure</span>.</h2>
+  <div class="body v">
+    <div class="day">
+      <div class="dh"><b>VeNiss</b><span>2023 – 2027</span></div>
+      <div class="agenda">
+        <div style="flex:1"><div class="nm">WP1 · bibliographic research</div><div class="blk" style="--h:70%;transition-delay:.05s"></div></div>
+        <div style="flex:1"><div class="nm">WP2 · iconographic research</div><div class="blk" style="--h:70%;transition-delay:.12s"></div></div>
+        <div style="flex:1"><div class="nm">WP3 · archival research</div><div class="blk" style="--h:70%;transition-delay:.19s"></div></div>
+        <div style="flex:1"><div class="nm">WP4 · survey campaign</div><div class="blk w" style="--h:70%;transition-delay:.26s"></div></div>
+        <div style="flex:1"><div class="nm">WP5 · HGIS mapping</div><div class="blk w" style="--h:70%;transition-delay:.33s"></div></div>
+        <div style="flex:1"><div class="nm">WP6 · HBIM modelling</div><div class="blk w" style="--h:70%;transition-delay:.4s"></div></div>
+        <div style="flex:1"><div class="nm acc">WP7 · digital research infrastructure</div><div class="blk a" style="--h:70%;transition-delay:.47s"></div></div>
+      </div>
+    </div>
+    <div class="legend"><span><i class="sw-i"></i>historical research</span><span><i class="sw-w"></i>survey, mapping, modelling</span><span><i class="sw-a"></i>the platform, built at I Tatti</span></div>
+  </div>
+  <aside class="notes">Seven work packages: bibliographic, iconographic and archival research; a survey campaign with topographic and laser-scanner surveys; HGIS mapping in QGIS and PostGIS; HBIM modelling; and the digital research infrastructure, the platform at veniss.net, which is where Metapolis comes in. Everything the other six produce ends up in one graph.</aside>
+</section>
+
+<section class="slide c" data-w="bars">
+  <div class="lab"><span>veniss · 02</span><span>from a database to a graph</span></div>
+  <h2 class="h">Archipelago in 2020, <span class="acc">VeNiss today</span>.</h2>
+  <div class="body">
+    <div class="col g2 mid" style="gap:2.6vmin">
+      <div class="bps" data-set="growth" style="--lw:20ch">
+        <div class="bp" data-a="1863" data-b="131"><span class="l">sources</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="690" data-b="147"><span class="l">events</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="589" data-b="174"><span class="l">people</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+        <div class="bp" data-a="321" data-b="57"><span class="l">islands + buildings</span><span class="tr"><i class="fa"></i><i class="fb"></i></span><span class="vl"></span></div>
+      </div>
+      <div class="legend"><span><i class="sw-a"></i>VeNiss, October 2026</span><span><i class="sw-i"></i>Archipelago database, 2020</span></div>
+    </div>
+    <div class="col g1 mid" style="gap:3vmin">
+      <div class="stat"><span data-count="7551">7551</span><small>entries in the graph</small></div>
+      <div class="pts"><div class="pt k"><b>and also</b><p>1,698 archival units · 2,203 images · 27 georeferenced historical maps.</p></div></div>
+    </div>
+  </div>
+  <div class="src">veniss.net database overview, October 2026, including records still in progress · Archipelago database export, March 2020.</div>
+  <aside class="notes">Where VeNiss started and where it is. In 2020 the Archipelago FileMaker database held 131 sources, 147 events, 174 people and 57 places. Today the VeNiss graph counts about 7,500 entries: 1,351 primary and 512 secondary sources, 690 events, 589 people, 59 islands and 262 buildings, 1,698 archival units, 2,203 images, 27 georeferenced historical maps. These counts include records still in progress. The home page of veniss.net shows this overview live.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>veniss · 03</span><span>beyond Florentia</span></div>
+  <h2 class="h">What VeNiss <span class="acc">adds</span>.</h2>
+  <div class="cards c3">
+    <div class="cd" style="--d:.1s"><img src="assets/img/sanservolo_3d.jpg" alt="A building of San Servolo in 3D on the map"><b>01 · 3D <span class="wip">in progress</span></b><h5>Buildings in three dimensions</h5><p>Survey → 3D model → on the map: models that follow the timeline.</p></div>
+    <div class="cd a" style="--d:.35s"><img src="assets/img/spyglass.jpg" alt="A spyglass over a historical map of the lagoon"><b>02 · layers</b><h5>Historical maps, layered</h5><p>27 georeferenced maps, compared with swipe and spyglass.</p></div>
+    <div class="cd" style="--d:.6s"><img src="assets/img/source_form.jpg" alt="A primary source being described in a form"><b>03 · forms</b><h5>Collective input</h5><p>Three research teams, one graph: every entry through web forms.</p></div>
+  </div>
+  <aside class="notes">What VeNiss adds compared with Florentia: 3D buildings that follow the timeline; many georeferenced historical maps, layered and compared with swipe and spyglass; and collective input, with three teams, in Padua, Florence and at I Tatti, entering sources, events and people through the same web forms.</aside>
+</section>
+
+<section class="slide c" data-w="swipe">
+  <div class="lab"><span>veniss · 04</span><span>drag the picture</span></div>
+  <h2 class="h s">Then and now: <span class="acc sw-name">Madonna del Monte</span>.</h2>
+  <div class="body">
+    <div class="fig g2 ia">
+      <div class="sw">
+        <img class="now" src="assets/img/madonna_now.jpg" alt="The island today">
+        <img class="then" src="assets/img/madonna_then.jpg" alt="The island in a historical view">
+        <i class="bar"></i><span class="cap l">then</span><span class="cap r">today</span>
+      </div>
+    </div>
+    <div class="col g1 mid" style="gap:2.6vmin">
+      <div class="ctl ia"><button class="btn on" data-then="assets/img/madonna_then.jpg" data-now="assets/img/madonna_now.jpg">Madonna del Monte</button><button class="btn" data-then="assets/img/certosa_then.jpg" data-now="assets/img/certosa_now.jpg">Certosa</button><button class="btn" data-then="assets/img/sangiacomo_then.jpg" data-now="assets/img/sangiacomo_now.jpg">San Giacomo in Paludo</button></div>
+      <div class="ctl ia"><span>compare</span><button class="btn on" data-lens="swipe">swipe</button><button class="btn" data-lens="spyglass">spyglass</button></div>
+      <div class="pts">
+        <div class="pt"><b>on the platform</b><p>The same gestures work on the map, over georeferenced historical maps.</p></div>
+        <div class="pt k"><b>sixty islands</b><p>Many were abandoned; some are now ruins.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="src">Historical views and photographs: VeNiss project.</div>
+  <aside class="notes">Interactive: drag across the picture to swipe between a historical view and today, or switch to the spyglass and move the pointer. Three islands: Madonna del Monte, Certosa, San Giacomo in Paludo. On the platform the same swipe and spyglass work on the map, over georeferenced historical maps.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>veniss · 05</span><span>3D <span class="wip">in progress</span></span></div>
+  <h2 class="h">The Lazzaretto Vecchio, <span class="acc">phase by phase</span>.</h2>
+  <div class="body">
+    <div class="vwin g2">
+      <div class="dbar"><i></i><i></i><i></i><span class="durl">veniss.net · Lazzaretto Vecchio in 3D</span></div>
+      <video src="assets/video/lazzaretto_3d.mp4" muted playsinline loop preload="auto" data-auto></video>
+    </div>
+    <div class="col g1 pts mid">
+      <div class="pt"><b>from survey to map</b><p>Laser scan → 3D model → shown on the map.</p></div>
+      <div class="pt"><b>on the timeline</b><p>35 buildings in 131 phases, from 1870 to 2024.</p></div>
+      <div class="pt k"><b>ghost footprints</b><p>Buildings not yet surveyed stand as open walls: their height is unknown.</p></div>
+    </div>
+  </div>
+  <aside class="notes">Every island and every building has phases: when it was built, changed, demolished. The timeline drives all of them, including the 3D models. On the Lazzaretto Vecchio, 35 surveyed buildings in 131 phases, from the laser-scanner survey through HBIM and IFC to 3D Tiles, shown in Cesium. Buildings not yet surveyed appear as "ghost" footprints: open walls, because their real height is unknown. The next slide shows it live.</aside>
+</section>
+
+<section class="slide c demo" data-w="demo" data-steps="5">
+  <div class="lab"><span>veniss · live <span class="wip">not yet public</span></span><span>maps, layers, 3D</span></div>
+  <ol class="rail"><li class="rh">demo</li><li>a historical map</li><li>transparency &amp; spyglass</li><li>swipe</li><li>the timeline</li><li>Lazzaretto Vecchio in 3D</li></ol>
+  <div class="dwin">
+    <div class="dbar">
+      <i></i><i></i><i></i>
+      <span class="durl">veniss.net/resource/veniss:Main</span>
+      <span class="dhint"><span class="out">click the page to use it</span><span class="in">keys go to the page · click outside it, then →</span></span>
+      <button class="btn" data-z=".8">80%</button><button class="btn on" data-z="1">100%</button><button class="btn" data-z="1.25">125%</button><button class="btn" data-z="1.5">150%</button>
+      <i class="sep"></i>
+      <button class="btn" data-act="reset" title="Reload the starting page">↺ reset</button>
+      <a class="btn" href="https://veniss.net/resource/veniss:Main" target="_blank" rel="noopener">new tab ↗</a>
+      <button class="btn" data-act="max" title="Fill the screen (Esc to exit)">⤢ expand</button>
+    </div>
+    <div class="dview">
+      <div class="dfall"><b>Loading VeNiss…</b><p>It needs a login: present from the demo server (node demo-server.mjs), then log in inside the frame.</p></div>
+      <iframe data-src="https://veniss.net/resource/veniss:Main" title="VeNiss, live demo: maps, layers and 3D" allow="fullscreen; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+  </div>
+  <aside class="notes">Live demo (log in first, inside the frame: the map is not public). Press → to mark each step. 1. Open the map: islands and buildings; turn on a historical map. 2. Lower its transparency; use the spyglass. 3. Swipe against today's orthophoto. 4. Move the timeline: island and building phases appear and change. 5. Zoom into the Lazzaretto Vecchio (zoom 15 or more) and press the 3D cube: the 3D buildings follow the timeline; buildings not yet surveyed show as ghost footprints. Click a building for its phases, events and archival sources.</aside>
+</section>
+
+<section class="slide c demo" data-w="demo" data-steps="4">
+  <div class="lab"><span>veniss · live</span><span>forms: collective input</span></div>
+  <ol class="rail"><li class="rh">demo</li><li>an island</li><li>its phases and sources</li><li>edit, in a form</li><li>saved and attributed</li></ol>
+  <div class="dwin">
+    <div class="dbar">
+      <i></i><i></i><i></i>
+      <span class="durl">veniss.net · island: Lazzaretto Vecchio</span>
+      <span class="dhint"><span class="out">click the page to use it</span><span class="in">keys go to the page · click outside it, then →</span></span>
+      <button class="btn" data-z=".8">80%</button><button class="btn on" data-z="1">100%</button><button class="btn" data-z="1.25">125%</button><button class="btn" data-z="1.5">150%</button>
+      <i class="sep"></i>
+      <button class="btn" data-act="reset" title="Reload the starting page">↺ reset</button>
+      <a class="btn" href="https://veniss.net/resource/?uri=https%3A%2F%2Fveniss.net%2Fresource%2Fbuiltwork%2Feaa5f557-40fd-422e-a81d-52c86c4f6ba1" target="_blank" rel="noopener">new tab ↗</a>
+      <button class="btn" data-act="max" title="Fill the screen (Esc to exit)">⤢ expand</button>
+    </div>
+    <div class="dview">
+      <div class="dfall"><b>Loading VeNiss…</b><p>It needs a login: present from the demo server (node demo-server.mjs), then log in inside the frame.</p></div>
+      <iframe data-src="https://veniss.net/resource/?uri=https%3A%2F%2Fveniss.net%2Fresource%2Fbuiltwork%2Feaa5f557-40fd-422e-a81d-52c86c4f6ba1" title="VeNiss, live demo: forms" allow="fullscreen; clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+  </div>
+  <aside class="notes">Collective input. The page of an island, the Lazzaretto Vecchio: its phases, events and archival sources. If you logged in for the previous demo you are still logged in here; open the edit form: the same web form every team uses, in Padua, Florence and at I Tatti. Save: the change is in the graph at once, credited to whoever made it. Press → to mark each step on the rail.</aside>
+</section>
+
+<section class="slide c">
+  <div class="lab"><span>veniss · 06</span><span>the lagoon and public health · step through with →</span></div>
+  <h2 class="h">Isolation made the islands <span class="acc">the place for quarantine</span>.</h2>
+  <div class="tl">
+    <div class="tl-axis"><i style="left:50%;width:34%"></i><span style="left:67%">three centuries</span></div>
+    <div class="tle up" data-at="1" style="--x:6%"><b>1423</b><p>The Senate decrees a hospital for the plague-stricken.</p><em>Lazzaretto Vecchio</em></div>
+    <div class="tle dn" data-at="2" style="--x:22%"><b>1429</b><p>Enlarged with eighty more rooms.</p><em>Lazzaretto Vecchio</em></div>
+    <div class="tle up" data-at="3" style="--x:40%"><b>1468</b><p>A second island, for quarantine: preventing contagion.</p><em>Lazzaretto Nuovo</em></div>
+    <div class="tle up rt" data-at="4" style="--x:92%"><b>1759</b><p>Declared unusable: decay, bad air, silted canals.</p><em>Lazzaretto Nuovo</em></div>
+  </div>
+  <div class="src">From the VeNiss knowledge graph (records in progress).</div>
+  <aside class="notes">The narratives turn the data into arguments. The Lagoon and Public Health follows how isolation made the islands the place for quarantine: the Senate decreed the Lazzaretto Vecchio in 1423, enlarged in 1429; in 1468 the Lazzaretto Nuovo, on the island of Vigna Murata, for quarantine, to prevent contagion; centuries later, in 1759, it was declared unusable. Other narratives look at the islands and the city's food supply, and at public and private spaces. Each statement in the story is one click away from the map and from the sources. Press → four times. (The dates come from VeNiss records still in progress.)</aside>
+</section>
+
+<section class="slide duo red">
+  <div class="half hd">
+    <div class="lab"><span>veniss · 07</span><span>2020</span></div>
+    <h2 class="h">Archipelago, <span class="acc">in pieces</span>.</h2>
+    <div class="wrows">
+      <div class="wr"><span class="wk">sources</span><p>a database<small>131 sources · 147 events · 174 people</small></p><i class="wv">×</i></div>
+      <div class="wr"><span class="wk">geometries</span><p>a separate map<small>separate files, no link to the sources</small></p><i class="wv">×</i></div>
+      <div class="wr"><span class="wk">narrative</span><p>text, elsewhere<small>no way to the map or the documents</small></p><i class="wv">×</i></div>
+    </div>
+  </div>
+  <div class="half">
+    <div class="lab"><span>&nbsp;</span><span>2026</span></div>
+    <h2 class="h">VeNiss, <span class="acc">one graph</span>.</h2>
+    <div class="wrows">
+      <div class="wr"><span class="wk">sources</span><p>7,500+ entries<small>entered through forms by three teams</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">geometries</span><p>drawn once, live on the web map<small>islands and buildings in phases, in 2D and 3D</small></p><i class="wv">✓</i></div>
+      <div class="wr"><span class="wk">time</span><p>five centuries, one timeline<small>27 historical maps that follow it</small></p><i class="wv">✓</i></div>
+    </div>
+  </div>
+  <aside class="notes">VeNiss is where the problems on the fragmented-workflow slide came from: a database for the sources on one side, a GIS on the other, and five centuries of a changing lagoon in between. Today it is one graph: sources entered by three teams, geometries drawn in QGIS and live on the web map, in 2D and 3D, and one timeline that drives buildings, islands and historical maps.</aside>
+</section>
+
+<!-- ================= CLOSING ================= -->
+<!-- ================= PART III · Q&A ================= -->
+<section class="slide red">
+  <div class="lab part"><span>part three</span><span>III / III</span></div>
+  <div class="fit" style="font-weight:900"><p>questions</p></div>
+</section>
+
+<section class="slide dark bg">
+  <video class="bgvid" src="assets/video/swipe_spyglass.mp4" muted playsinline loop preload="auto" data-auto aria-hidden="true"></video>
+  <div class="logos">
+    <img class="lg-it" src="assets/itatti_logo_white.png" alt="I Tatti, The Harvard University Center for Italian Renaissance Studies">
+    <i class="sep"></i>
+    <img class="lg-hv" src="assets/harvard_logo_white.svg" alt="Harvard University">
+    <i class="sep"></i>
+    <span class="dt" role="img" aria-label="digiTatti, the Harvard digital humanities lab for early modern studies"><svg viewBox="0 0 220 224"><use href="#dt-arc"/></svg><span><b>digiTatti</b><small>the Harvard<br>digital humanities lab<br>for early modern studies</small></span></span>
+  </div>
+  <div class="fit"><p>Places as networks, through time, <span class="acc">in one place</span>. <span style="color:rgba(255,255,255,.6)">Thank you.</span></p></div>
+  <div class="lab"><span>Lukas Klic · Remo Grillo · Gianmarco Spinaci — dh.itatti.harvard.edu · NEH HAA-287761-22 · ERC 101040474 · built on an open-source research platform</span></div>
+  <aside class="notes">We started by saying that a place is a network of relationships, and that our tools only see the shapes. Metapolis puts the map, the time, the sources and the interpretation in one place, and makes all of it open for others to explore and build on. Thank you. (Behind the text: the VeNiss map, swipe and spyglass.)</aside>
+</section>
+
+
+<div id="ds" class="ia" role="status"></div>
+<div id="track"><div id="bar"></div></div>
+<div id="pn"></div>
+
+<script>
+(function(){
+  /* ============ helpers ============ */
+  var W = {};
+  function $(s, sel){ return s.querySelector(sel); }
+  function $$(s, sel){ return [].slice.call(s.querySelectorAll(sel)); }
+  function later(s, fn, ms){ var t = setTimeout(fn, ms); (s._t = s._t || []).push(t); return t; }
+  function every(s, fn, ms){ var t = setInterval(fn, ms); (s._i = s._i || []).push(t); return t; }
+  function clearTimers(s){ (s._t||[]).forEach(clearTimeout); (s._i||[]).forEach(clearInterval); s._t = []; s._i = []; }
+  function short(n){
+    var u = [[1e9,' B'],[1e6,' M'],[1e3,' k']];
+    for (var j = 0; j < u.length; j++) if (n >= u[j][0]){ var v = n / u[j][0]; return +v.toFixed(v < 10 ? 1 : 0) + u[j][1]; }
+    return String(n);
+  }
+  function bytes(b){
+    var u = [[1e9,' GB'],[1e6,' MB'],[1e3,' KB']];
+    for (var j = 0; j < u.length; j++) if (b >= u[j][0]){ var v = b / u[j][0]; return +v.toFixed(v < 10 ? 1 : 0) + u[j][1]; }
+    return b + ' B';
+  }
+
+  // numbers with data-count count up from zero when their slide opens
+  function countUp(s){
+    $$(s, '[data-count]').forEach(function(e){
+      var to = +e.dataset.count, dec = (e.dataset.count.split('.')[1] || '').length, t0 = null;
+      e.textContent = (0).toFixed(dec);
+      function f(t){
+        if (!s.classList.contains('active')) return;
+        if (t0 === null) t0 = t;
+        var p = Math.min(1, (t - t0) / 1300);
+        e.textContent = (to * (1 - Math.pow(1 - p, 3))).toFixed(dec);
+        if (p < 1) requestAnimationFrame(f);
+      }
+      requestAnimationFrame(f);
+    });
+  }
+
+  /* ============ widgets ============ */
+  // --- animated pipeline: stages are .ps in the HTML; a packet travels through them
+  W.pipe = {
+    G: {
+      page: '<svg viewBox="0 0 160 90"><rect x="56" y="6" width="48" height="66" style="fill:var(--bg)" stroke="currentColor" stroke-width="3"/><path d="M66 22h28M66 32h28M66 42h18M66 52h26" stroke="currentColor" stroke-width="3"/></svg>',
+      text: '<svg viewBox="0 0 160 90"><path d="M36 16h88M36 32h72M36 48h88M36 64h52" stroke="currentColor" stroke-width="7"/></svg>',
+      tags: '<svg viewBox="0 0 160 90"><path d="M36 16h18M90 16h34M36 32h72M36 48h26M104 48h20M36 64h52" stroke="currentColor" stroke-width="7"/><rect x="56" y="9" width="32" height="14" style="fill:var(--accent)"/><rect x="64" y="41" width="38" height="14" style="fill:var(--accent)"/></svg>',
+      triple: '<svg viewBox="0 0 160 90"><circle cx="30" cy="40" r="16" fill="currentColor"/><path d="M48 40h56" stroke="currentColor" stroke-width="4"/><path d="M102 31l14 9-14 9z" fill="currentColor"/><circle cx="132" cy="40" r="16" style="fill:var(--accent)"/></svg>',
+      graph: '<svg viewBox="0 0 160 90"><path d="M80 44L30 18M80 44L84 8M80 44L134 24M80 44L42 74M80 44L122 72M30 18L84 8M134 24L122 72" stroke="currentColor" stroke-width="2.5"/><circle cx="30" cy="18" r="8" fill="currentColor"/><circle cx="84" cy="8" r="7" fill="currentColor"/><circle cx="134" cy="24" r="8" fill="currentColor"/><circle cx="42" cy="74" r="8" fill="currentColor"/><circle cx="122" cy="72" r="7" fill="currentColor"/><circle cx="80" cy="44" r="13" style="fill:var(--accent)"/></svg>'
+    },
+    init: function(s){
+      $$(s, '.ps').forEach(function(p, j){ p.insertAdjacentHTML('afterbegin', '<em>' + (j < 9 ? '0' : '') + (j + 1) + '</em>'); });
+    },
+    // show stage j (j = -1: no stage yet, only the section's data-intro)
+    show: function(s, j){
+      var st = $$(s, '.ps'), pk = $(s, '.pk'), say = $(s, '.pp-say'), n = st.length, p = st[j];
+      st.forEach(function(x, m){ x.classList.toggle('on', m === j); x.classList.toggle('done', m < j); });
+      if (!p){ pk.style.opacity = 0; say.innerHTML = s.dataset.intro || '&nbsp;'; return; }
+      pk.classList.toggle('jump', pk.style.opacity === '0' || j === 0);
+      pk.style.opacity = 1;
+      pk.style.left = (p.offsetLeft + p.offsetWidth / 2) + 'px';
+      pk.innerHTML = (this.G[p.dataset.g] || '') + '<i>' + (p.dataset.p || '') + '</i>';
+      say.innerHTML = '<b class="acc">' + (j + 1) + ' / ' + n + '</b> · ' + p.dataset.say;
+    },
+    // with data-manual, → shows the next stage (data-steps = the number of stages); otherwise the stages play in a loop
+    enter: function(s){
+      var self = this, n = $$(s, '.ps').length, T = 0;
+      if (s.hasAttribute('data-manual')) return this.show(s, (+s.dataset.k || 0) - 1);
+      $$(s, '.ps').forEach(function(p, j){ later(s, function(){ self.show(s, j); }, T); T += j === n - 1 ? 3800 : 2200; });
+      later(s, function(){ self.enter(s); }, T);
+    },
+    step: function(s, k){ if (s.hasAttribute('data-manual')) this.show(s, k - 1); }
+  };
+
+  // more glyphs for the packet of the pipelines in this deck
+  var LN = ' stroke="currentColor" stroke-width="3" fill="none"';
+  W.pipe.G.polygon = '<svg viewBox="0 0 160 90"><path d="M44 70L34 32L78 12L126 28L118 72z" style="fill:var(--soft)"' + LN.replace(' fill="none"', '') + '/><g fill="currentColor"><circle cx="44" cy="70" r="5"/><circle cx="34" cy="32" r="5"/><circle cx="78" cy="12" r="5"/><circle cx="126" cy="28" r="5"/><circle cx="118" cy="72" r="5"/></g></svg>';
+  W.pipe.G.db = '<svg viewBox="0 0 160 90"><ellipse cx="80" cy="16" rx="36" ry="10"' + LN + '/><path d="M44 16v52c0 6 16 11 36 11s36-5 36-11V16M44 42c0 6 16 11 36 11s36-5 36-11"' + LN + '/><path d="M70 30l12-3 6 8-9 6-9-4z" style="fill:var(--accent)"/></svg>';
+  W.pipe.G.sql = '<svg viewBox="0 0 160 90"><path d="M8 45h26M126 45h26"' + LN + ' stroke-dasharray="5 5"/><rect x="36" y="22" width="88" height="46" rx="4" style="fill:var(--bg)" stroke="currentColor" stroke-width="3"/><text x="80" y="53" text-anchor="middle" style="font:500 22px var(--mono);fill:var(--accent)">SQL</text></svg>';
+  W.pipe.G.map = '<svg viewBox="0 0 160 90"><path d="M20 22l40-12 40 12 40-12v58l-40 12-40-12-40 12z" style="fill:var(--bg)" stroke="currentColor" stroke-width="3"/><path d="M60 10v58M100 22v58"' + LN + '/><path d="M66 36l22-6 12 16-16 14-16-8z" style="fill:var(--accent)"/></svg>';
+  W.pipe.G.table = '<svg viewBox="0 0 160 90"><rect x="24" y="10" width="112" height="70" style="fill:var(--bg)" stroke="currentColor" stroke-width="3"/><path d="M24 28h112M24 45h112M24 62h112M58 10v70M100 10v70" stroke="currentColor" stroke-width="2"/><rect x="58" y="28" width="42" height="17" style="fill:var(--soft)"/></svg>';
+  W.pipe.G.hmap = '<svg viewBox="0 0 160 90"><rect x="20" y="8" width="120" height="74" style="fill:#efe6d2" stroke="#b9a37a" stroke-width="2.5"/><path d="M20 60 C50 48, 70 72, 100 56 S130 46, 140 54" stroke="#b9a37a" stroke-width="2" fill="none"/><rect x="60" y="26" width="26" height="20" style="fill:#d6c39a" stroke="#8a7346" stroke-width="1.5"/><path d="M118 16v16M110 24h16" stroke="#8a7346" stroke-width="1.5"/></svg>';
+  W.pipe.G.link = '<svg viewBox="0 0 160 90"><path d="M80 45L30 18M80 45L130 18M80 45L80 76" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/><rect x="66" y="31" width="28" height="28" style="fill:var(--wash2)" stroke="currentColor" stroke-width="2.5"/><rect x="21" y="6" width="18" height="24" style="fill:var(--bg)" stroke="#9a9a9a" stroke-width="2"/><circle cx="130" cy="18" r="10" fill="currentColor"/><rect x="71" y="69" width="18" height="18" transform="rotate(45 80 78)" style="fill:var(--accent)"/></svg>';
+  W.pipe.G.people = '<svg viewBox="0 0 160 90"><g fill="currentColor"><circle cx="40" cy="30" r="11"/><path d="M22 74a18 18 0 0 1 36 0z"/><circle cx="120" cy="30" r="11"/><path d="M102 74a18 18 0 0 1 36 0z"/></g><g style="fill:var(--accent)"><circle cx="80" cy="24" r="13"/><path d="M58 76a22 22 0 0 1 44 0z"/></g></svg>';
+
+  // --- a place as a network: one building's story, event by event; then a clock runs down its life;
+  //     then we zoom out to the city, where every building has a story of its own
+  W.place = {
+    SAY: [
+      'On a map, a building is just a shape.',
+      '1460 · a wool merchant commissions it; a building contract documents it.',
+      '1590 · his heirs sell it to a noble family; a notarial deed records the sale.',
+      '1720 · an architect adds a new wing; his drawing survives.',
+      '1890 · the City demolishes the wing for a new street; a photograph shows it.',
+      'Through time: every change of shape has its people and its evidence.',
+      'Zoom out: every building in the city has a story like this one.'
+    ],
+    PHASE: ['C', 'A', 'A', 'B', 'C', 'C', 'C'],
+    // where each year sits on the building's life line: [year, y]
+    LIFE: [[1440, 118], [1460, 195], [1590, 285], [1720, 375], [1890, 465], [2026, 512]],
+    init: function(s){
+      // the city around the building: blocks of footprints, each with a small network of its own
+      var seed = 11, h = '', minis = '', home = null;
+      function rnd(){ seed = seed * 16807 % 2147483647; return (seed - 1) / 2147483646; }
+      for (var r = 0; r < 4; r++) for (var c = 0; c < 6; c++){
+        var bx = 30 + c * 160, by = 36 + r * 124, n = 2 + (rnd() * 2 | 0), w = (140 - (n - 1) * 6) / n;
+        for (var j = 0; j < n; j++){
+          var x = bx + j * (w + 6), ht = 58 + rnd() * 46, cx = x + w / 2, cy = by + ht / 2, d = Math.hypot(cx - 500, cy - 270);
+          var b = { x: x, y: by, w: w, h: ht, cx: cx, cy: cy, d: d };
+          if (!home || d < home.d) home = b;
+          b.svg = '<rect class="bld" x="' + x.toFixed(1) + '" y="' + by + '" width="' + w.toFixed(1) + '" height="' + ht.toFixed(1) + '"/>';
+          b.mini = '<g class="mini" style="--d:' + (0.9 + d / 420).toFixed(2) + 's"><path d="M' + cx.toFixed(1) + ' ' + cy.toFixed(1) + 'l-10 -9M' + cx.toFixed(1) + ' ' + cy.toFixed(1) + 'l10 -9M' + cx.toFixed(1) + ' ' + cy.toFixed(1) + 'v10" class="st" stroke-width="1"/>'
+            + '<circle cx="' + (cx - 10).toFixed(1) + '" cy="' + (cy - 9).toFixed(1) + '" r="3.4" class="bxi"/><circle cx="' + (cx + 10).toFixed(1) + '" cy="' + (cy - 9).toFixed(1) + '" r="3.4" class="bxa"/><circle cx="' + cx.toFixed(1) + '" cy="' + (cy + 10).toFixed(1) + '" r="3.4" style="fill:#9a9a9a"/></g>';
+          (s._blds = s._blds || []).push(b);
+        }
+      }
+      s._blds.forEach(function(b){ h += b === home ? '<rect class="home" x="' + b.x.toFixed(1) + '" y="' + b.y + '" width="' + b.w.toFixed(1) + '" height="' + b.h.toFixed(1) + '"/>' : b.svg; if (b !== home) minis += b.mini; });
+      var label = '<text class="m" x="' + home.cx.toFixed(1) + '" y="' + (home.y - 8) + '" text-anchor="middle" style="font-size:13px;fill:var(--accent)">THIS BUILDING</text>';
+      $(s, '.pl-city').innerHTML = h + minis + label;
+      // the network shrinks into its building, which lands where it stands in the city
+      s._zoom = 'translate(' + (home.cx - 500).toFixed(1) + 'px,' + (home.cy - 63).toFixed(1) + 'px) scale(.07)';
+    },
+    step: function(s, k){
+      var self = this, net = $(s, '.pl-net'), y = 1440;
+      clearInterval(s._clock);
+      $(s, '.pl-say').textContent = this.SAY[Math.min(k, 6)];
+      net.classList.toggle('out', k >= 6);
+      net.style.transform = k >= 6 ? s._zoom : '';
+      this.year(s, null);
+      this.phase(s, this.PHASE[Math.min(k, 6)]);
+      if (k !== 5) return;
+      this.year(s, y);
+      s._clock = every(s, function(){ y = y >= 2026 ? 1440 : Math.min(2026, y + 4); self.year(s, y); }, 50);
+    },
+    phase: function(s, p){ $$(s, '.ph').forEach(function(g){ g.classList.toggle('off', g.dataset.ph !== p); }); },
+    year: function(s, y){
+      $$(s, '.row').forEach(function(r){ r.classList.toggle('ahead', y !== null && +r.dataset.year > y); });
+      $(s, '.pl-year').textContent = y === null ? '' : y;
+      if (y === null) return;
+      this.phase(s, y < 1720 ? 'A' : y < 1890 ? 'B' : 'C');
+      var L = this.LIFE, j = 1;
+      while (j < L.length - 1 && y > L[j][0]) j++;
+      var t = (y - L[j - 1][0]) / (L[j][0] - L[j - 1][0]), py = L[j - 1][1] + t * (L[j][1] - L[j - 1][1]);
+      $(s, '.pl-hand').setAttribute('transform', 'translate(0,' + py.toFixed(1) + ')');
+    }
+  };
+  // --- a register scrolls by, slows down and stops on one name; then that record opens (data-w="ledger")
+  W.ledger = {
+    enter: function(s){
+      var w = $(s, '.lg-wrap'), lg = $(s, '.ledger'), inner = $(s, '.lg-in'), me = $(s, '.lg-r.me'), v = $(s, '.lg-v');
+      lg.classList.remove('focus'); w.classList.remove('done');
+      inner.style.transition = 'none'; inner.style.transform = 'translateY(0)';
+      if (+s.dataset.k > 0) return this.open(s);     // coming back from the next slide: skip the scroll
+      inner.getBoundingClientRect();
+      inner.style.transition = 'transform 4.4s cubic-bezier(.5,.02,.18,1)';
+      inner.style.transform = 'translateY(' + (-(me.offsetTop + me.offsetHeight / 2 - v.clientHeight / 2)).toFixed(0) + 'px)';
+      later(s, function(){ lg.classList.add('focus'); }, 4500);
+      later(s, function(){ w.classList.add('done'); }, 6000);
+    },
+    open: function(s){ $(s, '.ledger').classList.add('focus'); $(s, '.lg-wrap').classList.add('done'); },
+    step: function(s, k){ if (k > 0) this.open(s); }
+  };
+
+  // --- a caption that follows the steps: in .say, the span whose data-k is the latest reached is shown
+  // --- the plan: each part is as wide as its number of bars, and the bars rise one after the other
+  W.plan = {
+    init: function(s){
+      $$(s, '.plan .grp').forEach(function(g){ g.style.flex = (g.dataset.n || $$(g, '.agenda>div').length) + ' 1 0'; });
+      $$(s, '.plan .blk').forEach(function(b, j){ b.style.transitionDelay = (.05 + j * .08) + 's'; });
+    }
+  };
+
+  W.say = {
+    step: function(s, k){
+      var cur = null, xs = $$(s, '.say [data-k]');
+      xs.forEach(function(x){ if (+x.dataset.k <= k) cur = x; });
+      xs.forEach(function(x){ x.hidden = x !== cur; });
+    }
+  };
+
+  // --- feature reel: each .rl button plays its clip; when a clip ends the next one starts
+  W.reel = {
+    init: function(s){
+      var self = this, v = $(s, 'video'), bs = $$(s, '.rl');
+      bs.forEach(function(b, j){ b.addEventListener('click', function(){ self.play(s, j); }); });
+      v.addEventListener('ended', function(){ if (s.classList.contains('active')) self.play(s, (s._r + 1) % bs.length); });
+      v.addEventListener('timeupdate', function(){ if (v.duration) $(bs[s._r], 'i').style.height = (v.currentTime / v.duration * 100) + '%'; });
+    },
+    play: function(s, j){
+      var bs = $$(s, '.rl'), v = $(s, 'video');
+      s._r = j;
+      bs.forEach(function(b, m){ b.classList.toggle('on', m === j); $(b, 'i').style.height = 0; });
+      v.src = bs[j].dataset.v;
+      var p = v.play(); if (p) p.catch(function(){});
+      $(s, '.rl-name').textContent = bs[j].dataset.name;
+    },
+    enter: function(s){ this.play(s, 0); },
+    leave: function(s){ $(s, 'video').pause(); }
+  };
+
+  // --- paired bars: rows .bp with data-a / data-b; "counts" puts both on one scale, "share" splits each row into a and b
+  W.bars = {
+    init: function(s){
+      var self = this;
+      s._mode = 'counts'; s._set = $(s, '.bps').dataset.set;
+      $$(s, 'button[data-mode]').forEach(function(b){ b.addEventListener('click', function(){ s._mode = b.dataset.mode; self.mark(s, 'button[data-mode]', b); self.draw(s); }); });
+      $$(s, 'button[data-set]').forEach(function(b){ b.addEventListener('click', function(){ s._set = b.dataset.set; self.mark(s, 'button[data-set]', b); self.draw(s); }); });
+    },
+    mark: function(s, sel, on){ $$(s, sel).forEach(function(x){ x.classList.toggle('on', x === on); }); },
+    draw: function(s, zero){
+      $$(s, '.bps').forEach(function(g){ g.hidden = g.dataset.set !== s._set; });
+      var rows = $$(s, '.bps[data-set="' + s._set + '"] .bp'), share = s._mode === 'share', max = 0;
+      rows.forEach(function(r){ max = Math.max(max, +r.dataset.a, +r.dataset.b); });
+      rows.forEach(function(r){
+        var a = +r.dataset.a, b = +r.dataset.b, t = a + b || 1, pa = a / t * 100;
+        var fa = share ? { left: 0, top: 0, h: 100, w: pa } : { left: 0, top: 0, h: 47, w: a / max * 100 };
+        var fb = share ? { left: pa, top: 0, h: 100, w: 100 - pa } : { left: 0, top: 53, h: 47, w: b / max * 100 };
+        [[$(r, '.fa'), fa], [$(r, '.fb'), fb]].forEach(function(x){
+          var st = x[0].style; st.left = x[1].left + '%'; st.top = x[1].top + '%'; st.height = x[1].h + '%'; st.width = (zero ? 0 : x[1].w) + '%';
+        });
+        $(r, '.vl').innerHTML = share ? '<b>' + (a ? '1</b> : ' + (b / a).toFixed(b / a < 10 ? 1 : 0) : '0</b> : ' + b.toLocaleString('en-US'))
+          : '<b>' + a.toLocaleString('en-US') + '</b> · ' + b.toLocaleString('en-US');
+      });
+    },
+    enter: function(s){ var self = this; this.draw(s, true); later(s, function(){ self.draw(s); }, 300); }
+  };
+
+  // --- then / now: drag to swipe between two pictures, or switch to a spyglass that follows the pointer
+  W.swipe = {
+    init: function(s){
+      var self = this, box = $(s, '.sw'), drag = false;
+      function pos(e){ var r = box.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * 100, (e.clientY - r.top) / r.height * 100]; }
+      box.addEventListener('pointerdown', function(e){ drag = true; s._auto = false; box.setPointerCapture(e.pointerId); self.at(s, pos(e)); });
+      box.addEventListener('pointermove', function(e){ if (drag || box.classList.contains('spy')){ s._auto = false; self.at(s, pos(e)); } });
+      box.addEventListener('pointerup', function(){ drag = false; });
+      $$(s, 'button[data-then]').forEach(function(b){ b.addEventListener('click', function(){
+        self.mark(s, 'button[data-then]', b);
+        $(box, '.then').src = b.dataset.then; $(box, '.now').src = b.dataset.now;
+        $(s, '.sw-name').textContent = b.textContent;
+      }); });
+      $$(s, 'button[data-lens]').forEach(function(b){ b.addEventListener('click', function(){
+        self.mark(s, 'button[data-lens]', b); box.classList.toggle('spy', b.dataset.lens === 'spyglass');
+      }); });
+    },
+    mark: W.bars.mark,
+    at: function(s, p){
+      var box = $(s, '.sw');
+      box.style.setProperty('--x', Math.max(0, Math.min(100, p[0])).toFixed(2) + '%');
+      box.style.setProperty('--y', Math.max(0, Math.min(100, p[1])).toFixed(2) + '%');
+    },
+    // a short sweep on arrival shows that the picture can be moved
+    enter: function(s){
+      var self = this, t0 = null;
+      s._auto = true;
+      (function f(t){
+        if (!s._auto || !s.classList.contains('active')) return;
+        if (t === undefined) return requestAnimationFrame(f);
+        if (t0 === null) t0 = t;
+        var p = (t - t0) / 2800;
+        if (p >= 1) return self.at(s, [50, 50]);
+        self.at(s, [50 + 36 * Math.sin(p * Math.PI * 2), 50]);
+        requestAnimationFrame(f);
+      })();
+    }
+  };
+  // --- live demo: zoom, reset, expand
+  W.demo = {
+    init: function(s){
+      var win = $(s, '.dwin'), fr = $(s, 'iframe'), zs = $$(s, '[data-z]');
+      zs.forEach(function(b){ b.addEventListener('click', function(){
+        var z = +b.dataset.z;
+        zs.forEach(function(x){ x.classList.toggle('on', x === b); });
+        fr.style.width = fr.style.height = (100 / z) + '%';
+        fr.style.transform = z === 1 ? '' : 'scale(' + z + ')';
+      }); });
+      // once the page is in, hide the loading note (it would show through a transparent page)
+      fr.addEventListener('load', function(){ if (fr.getAttribute('src')) $(s, '.dfall').style.visibility = 'hidden'; });
+      $(s, '[data-act="reset"]').addEventListener('click', function(){ if (fr.getAttribute('src')) fr.src = fr.getAttribute('src'); });
+      $(s, '[data-act="max"]').addEventListener('click', function(){ win.classList.toggle('max'); });
+    },
+    // the rail lists the demo's steps: → marks the next one (the section's data-steps is their number)
+    step: function(s, k){
+      $$(s, '.rail li:not(.rh)').forEach(function(li, j){ li.classList.toggle('done', j < k - 1); li.classList.toggle('on', j === k - 1); });
+    },
+    leave: function(s){ $(s, '.dwin').classList.remove('max'); }
+  };
+
+  /* ============ engine ============ */
+  var slides = [].slice.call(document.querySelectorAll('.slide'));
+  var bar = document.getElementById('bar'), pn = document.getElementById('pn'), i = -1, k = 0;
+
+  slides.forEach(function(s){ var w = W[s.dataset.w]; if (w && w.init) w.init(s); });
+
+  function maxStep(s){
+    if (s._max != null) return s._max;
+    var m = +(s.dataset.steps || 0);
+    $$(s, '[data-at]').forEach(function(e){ m = Math.max(m, +e.dataset.at); });
+    return (s._max = m);
+  }
+  function applyStep(s, kk){
+    $$(s, '[data-at]').forEach(function(e){ e.classList.toggle('on', kk >= +e.dataset.at); });
+    s.dataset.k = kk;
+    var w = W[s.dataset.w]; if (w && w.step) w.step(s, kk);
+  }
+
+  // size the type so the text fills its box as much as possible
+  function fit(el){
+    if (getComputedStyle(el).display === 'none') return;
+    var lo = 8, hi = Math.max(40, Math.min(el.clientHeight, el.clientWidth) * 1.2 | 0);
+    function ok(){ return el.scrollHeight <= el.clientHeight + 1 && el.scrollWidth <= el.clientWidth + 1; }
+    el.style.justifyContent = 'flex-start';
+    while (hi - lo > 1){ var m = (lo + hi) >> 1; el.style.fontSize = m + 'px'; if (ok()) lo = m; else hi = m; }
+    el.style.fontSize = lo + 'px';
+    el.style.justifyContent = '';
+  }
+  function fitAll(){ document.querySelectorAll('.fit').forEach(fit); }
+
+  // iframes load from data-src one slide ahead, then stay loaded
+  function preload(s){
+    if (s) $$(s, 'iframe[data-src]').forEach(function(f){
+      var u = f.dataset.src; f.removeAttribute('data-src');
+      viaDemoServer(u, function(v){ f.src = v; });
+    });
+  }
+  // served by demo-server.mjs: demo pages go through its local proxy, so logins inside the frame stick.
+  // Ask the server itself: other local servers (VS Code's Live Server, python -m http.server) do not answer
+  var DEMO_SERVER = !window.fetch || !/^https?:$/.test(location.protocol) ? Promise.resolve(false)
+    : fetch('/__demo/ping', { cache: 'no-store' })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(j){ return !!j && 'serves' in j; }, function(){ return false; });
+  function viaDemoServer(u, cb){
+    DEMO_SERVER.then(function(ok){
+      if (!ok) return cb(u);
+      fetch('/__demo/proxy?url=' + encodeURIComponent(u))
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(j){ cb(j && j.url || u); }, function(){ cb(u); });
+    });
+  }
+
+  // opened as a file with live demos: check whether the demo server runs, and offer to start it
+  // (the launcher from `node demo-server.mjs --install` opens on the digitatti-demo: link, after the browser asks)
+  var ds = document.getElementById('ds'), hasDemo = !!document.querySelector('.slide.demo');
+  var FILE = location.protocol === 'file:' ? decodeURIComponent(location.pathname) : '';
+  var INSTALL = 'node "' + FILE.slice(0, FILE.lastIndexOf('/') + 1) + 'demo-server.mjs" --install';
+  function esc(t){ return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function dsShow(html){ ds.innerHTML = '<b>live demo</b><span>' + html + '</span><button class="btn x" data-ds="x" aria-label="Close">×</button>'; ds.classList.add('on'); }
+  function dsFind(cb){
+    var left = 5, found = null;
+    for (var p = 8000; p < 8005; p++) fetch('http://127.0.0.1:' + p + '/__demo/ping?file=' + encodeURIComponent(FILE))
+      .then(function(r){ return r.json(); }).then(function(j){ if (j.serves && !found) found = j.url; }, function(){})
+      .then(function(){ if (--left === 0) cb(found); });
+  }
+  function dsCheck(){
+    if (!hasDemo || !window.fetch) return;
+    DEMO_SERVER.then(function(ok){
+      if (ok) return;
+      ds._busy = false;
+      if (!FILE) return dsShow('Logins inside the demo frame need the demo server, and this copy comes from ' + esc(location.host) + '. Open the .html file from your disk instead (not through VS Code’s Live Server), then use “start it”; or run <code>node demo-server.mjs</code> in its folder.');
+      dsFind(function(url){
+        ds._url = url;
+        if (url) dsShow('The demo server is running. <button class="btn go" data-ds="open">open the slides through it →</button>');
+        else dsShow('Logins inside the demo frame need the demo server. <button class="btn go" data-ds="start">▶ start it</button>');
+      });
+    });
+  }
+  ds.addEventListener('click', function(e){
+    var b = e.target.closest('[data-ds]'), a = b && b.dataset.ds;
+    if (a === 'x') ds.classList.remove('on');
+    else if (a === 'open') location.href = ds._url + '#' + (i + 1);
+    else if (a === 'copy' && navigator.clipboard) navigator.clipboard.writeText(INSTALL).then(function(){ b.textContent = 'copied'; });
+    else if (a === 'start'){
+      ds._busy = true;
+      location.href = 'digitatti-demo://start?file=' + encodeURIComponent(FILE);
+      dsShow('Starting… confirm the browser’s request to open “digiTatti Demo Server”.');
+      var t0 = Date.now();
+      (function poll(){
+        dsFind(function(url){
+          if (url) location.href = url + '#' + (i + 1);
+          else if (Date.now() - t0 < 15000) setTimeout(poll, 800);
+          else dsShow('It did not start. Install the launcher once, in Terminal: <code>' + esc(INSTALL) + '</code> <button class="btn" data-ds="copy">copy</button> Or run <code>node demo-server.mjs</code> in this folder and open the address it prints.');
+        });
+      })();
+    }
+  });
+
+  function go(n, atEnd){
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    if (n === i) return;
+    closeModal && closeModal();
+    if (i >= 0){ var old = slides[i]; old.classList.remove('active'); clearTimers(old); $$(old, 'video').forEach(function(v){ v.pause(); }); var wo = W[old.dataset.w]; if (wo && wo.leave) wo.leave(old); }
+    i = n; var s = slides[i];
+    s.classList.add('active');
+    k = atEnd ? maxStep(s) : 0;
+    applyStep(s, k);
+    // videos marked data-auto start from the beginning whenever their slide opens
+    $$(s, 'video[data-auto]').forEach(function(v){ try { v.currentTime = 0; } catch (e) {} var p = v.play(); if (p) p.catch(function(){}); });
+    bar.style.width = (slides.length > 1 ? i / (slides.length - 1) * 100 : 0) + '%';
+    var c = s.classList, b = document.body.classList;
+    b.toggle('bg-dark', c.contains('dark')); b.toggle('bg-red', c.contains('red')); b.toggle('first', i === 0);
+    pn.textContent = (i + 1) + ' / ' + slides.length;
+    history.replaceState(null, '', '#' + (i + 1));
+    s.querySelectorAll('.fit').forEach(fit);
+    countUp(s);
+    preload(s); preload(slides[i + 1]);
+    if (c.contains('demo')) dsCheck(); else if (!ds._busy) ds.classList.remove('on');
+    var w = W[s.dataset.w]; if (w && w.enter) w.enter(s);
+  }
+  function next(){ var s = slides[i]; if (k < maxStep(s)){ k++; applyStep(s, k); } else go(i + 1); }
+  function prev(){ var s = slides[i]; if (k > 0){ k--; applyStep(s, k); } else go(i - 1, true); }
+
+  var h = parseInt(location.hash.slice(1), 10);
+  go(isNaN(h) ? 0 : h - 1);
+  if (!slides[i].classList.contains('demo')) dsCheck();
+
+  fitAll();
+  if (document.fonts){ document.fonts.ready.then(fitAll); document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', fitAll); }
+  setTimeout(fitAll, 400);
+  window.addEventListener('load', fitAll);
+  var lastW = 0, lastH = 0;
+  function onSize(){ if (innerWidth === lastW && innerHeight === lastH) return; lastW = innerWidth; lastH = innerHeight; fitAll(); }
+  window.addEventListener('resize', onSize);
+  if (window.ResizeObserver) new ResizeObserver(onSize).observe(document.documentElement);
+
+  // modals: buttons with data-modal open the matching .modal
+  function openModal(){ return document.querySelector('.modal.open'); }
+  function closeModal(){ var m = openModal(); if (m) m.classList.remove('open'); }
+  document.querySelectorAll('[data-modal]').forEach(function(b){
+    b.addEventListener('click', function(){ var m = document.getElementById(b.dataset.modal); if (m) m.classList.add('open'); });
+  });
+  document.querySelectorAll('.modal').forEach(function(m){
+    m.addEventListener('click', function(e){ if (e.target === m || e.target.closest('.mclose')) closeModal(); });
+  });
+
+  // a click inside an iframe moves the keyboard there: mark it, so it is clear why → does nothing
+  window.addEventListener('blur', function(){ setTimeout(function(){ var a = document.activeElement; document.body.classList.toggle('in-frame', !!a && a.tagName === 'IFRAME'); }); });
+  window.addEventListener('focus', function(){ document.body.classList.remove('in-frame'); });
+
+  document.addEventListener('keydown', function(e){
+    var key = e.key;
+    if (openModal()){ if (key === 'Escape' || key === 'Backspace'){ e.preventDefault(); closeModal(); } return; }
+    var mx = document.querySelector('.dwin.max');
+    if (mx && key === 'Escape'){ e.preventDefault(); mx.classList.remove('max'); return; }
+    if (['ArrowRight','ArrowDown','PageDown',' ','Enter'].indexOf(key) > -1){ e.preventDefault(); next(); }
+    else if (['ArrowLeft','ArrowUp','PageUp','Backspace'].indexOf(key) > -1){ e.preventDefault(); prev(); }
+    else if (key === 'Home') go(0);
+    else if (key === 'End') go(slides.length - 1);
+    else if (key === 'n' || key === 'N') document.body.classList.toggle('show-notes');
+    else if (key === 'f' || key === 'F'){
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+  document.addEventListener('click', function(e){
+    if (e.target.closest('.notes, .ia, .modal, .demo, button, input, a, label, select')) return;
+    if (e.clientX < innerWidth / 3) prev(); else next();
+  });
+  var x0 = null;
+  document.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, {passive: true});
+  document.addEventListener('touchend', function(e){
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40){ if (dx < 0) next(); else prev(); } x0 = null;
+  });
+})();
+</script>
+</body>
+</html>
